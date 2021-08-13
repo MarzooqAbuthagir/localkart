@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_margin="3dp"
+    android:padding="3dp"
+    android:orientation="horizontal"
+    android:id="@+id/root_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="110dp"
+    android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="7dp"
+        android:layout_height="match_parent"/>
+
+    <ImageView
+        android:id="@+id/iv_plan"
+        android:layout_gravity="center"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:src="@drawable/current_plan" />
+
+    <View
+        android:layout_width="5dp"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_plan_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text=""
+            android:singleLine="true"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/desc_text"
+            android:textSize="11dp" />
+
+        <TextView
+            android:id="@+id/tv_plan_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="true"
+            android:text=""
+            android:singleLine="true"
+            android:fontFamily="@font/roboto_bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="11dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_plan_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:singleLine="true"
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/desc_text"
+                android:textSize="13dp" />
+
+            <TextView
+                android:id="@+id/tv_plan_validity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:singleLine="true"
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/desc_text"
+                android:textSize="11dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="5dp"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

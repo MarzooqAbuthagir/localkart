@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center_vertical|center_horizontal"
+    android:background="#80000000"
+    android:gravity="center"
+    android:orientation="vertical">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="5dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:layout_margin="10dp"
+                android:padding="7dp"
+                android:text="Enter OTP"
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+
+            <com.alimuzaffar.lib.pin.PinEntryEditText
+                android:id="@+id/txt_pin_entry"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:cursorVisible="true"
+                android:textCursorDrawable="@null"
+                android:descendantFocusability="beforeDescendants"
+                android:digits="1234567890"
+                android:focusableInTouchMode="true"
+                android:inputType="number"
+                android:fontFamily="@font/roboto_regular"
+                android:maxLength="4"
+                app:pinBackgroundDrawable="@drawable/bg_pin"
+                android:textIsSelectable="true"
+                android:textSize="20sp"
+                android:visibility="gone"
+                app:pinAnimationType="popIn">
+
+                <requestFocus />
+            </com.alimuzaffar.lib.pin.PinEntryEditText>
+
+            <LinearLayout
+                android:id="@+id/root_otp_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <EditText
+                    android:id="@+id/otp_edit_box1"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:importantForAutofill="no"
+                    android:maxLength="1"
+                    android:textSize="30sp"
+                    android:background="@drawable/edittext_curve_bg">
+                    <requestFocus/>
+                </EditText>
+
+                <EditText
+                    android:id="@+id/otp_edit_box2"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:textSize="30sp"
+                    android:inputType="number"
+                    android:importantForAutofill="no"
+                    android:maxLength="1"
+                    android:background="@drawable/edittext_curve_bg"/>
+
+                <EditText
+                    android:id="@+id/otp_edit_box3"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:textSize="30sp"
+                    android:inputType="number"
+                    android:importantForAutofill="no"
+                    android:maxLength="1"
+                    android:background="@drawable/edittext_curve_bg"/>
+
+                <EditText
+                    android:id="@+id/otp_edit_box4"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:gravity="center"
+                    android:textSize="30sp"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:importantForAutofill="no"
+                    android:maxLength="1"
+                    android:background="@drawable/edittext_curve_bg" />
+
+
+            </LinearLayout>
+
+            <Button
+                android:visibility="visible"
+                android:id="@+id/btn_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Submit"
+                android:layout_gravity="center"
+                android:padding="15dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/white"
+                android:textAllCaps="true"
+                android:background="@drawable/button_theme"/>
+
+            <TextView
+                android:id="@+id/tv_resend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:padding="7dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14dp" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:scrollbars="vertical"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/white_curve_box">
+
+        <TextView
+            android:id="@+id/tv_heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="left"
+            android:padding="15dp"
+            android:text=""
+            android:textAllCaps="false"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black"
+            android:textSize="18dp" />
+
+        <com.xw.repo.BubbleSeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seek_bar"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            app:bsb_track_color="@color/grey"
+            app:bsb_bubble_color="@color/colorPrimaryDark"
+            app:bsb_bubble_text_color="@color/white"
+            app:bsb_second_track_color="@color/colorPrimaryDark"
+            app:bsb_max="60"
+            app:bsb_min="0"
+            app:bsb_progress="0"
+            app:bsb_section_count="5"
+            app:bsb_section_text_position="bottom_sides"
+            app:bsb_show_progress_in_float="false"
+            app:bsb_show_section_text="true"
+            app:bsb_show_thumb_text="true"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp"/>
+
+        <LinearLayout
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:layout_gravity="center"
+                android:padding="15dp"
+                android:layout_margin="10dp"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:fontFamily="@font/roboto_regular"
+                android:background="@drawable/button_theme"/>
+
+            <Button
+                android:id="@+id/btn_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ok"
+                android:layout_gravity="center"
+                android:padding="15dp"
+                android:layout_margin="10dp"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:fontFamily="@font/roboto_regular"
+                android:background="@drawable/button_theme"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

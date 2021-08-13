@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_marginBottom="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/offer_card">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_offer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:padding="15dp"
+                android:text="OFFER 1"
+                android:textAllCaps="false"
+                android:background="@drawable/curve"
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+            <ImageView
+                android:id="@+id/iv_edit"
+                android:layout_centerInParent="true"
+                android:layout_toLeftOf="@+id/view1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_baseline_edit_24" />
+
+            <View
+                android:id="@+id/view1"
+                android:layout_toLeftOf="@+id/iv_delete"
+                android:layout_width="10dp"
+                android:layout_height="30dp"/>
+
+            <ImageView
+                android:id="@+id/iv_delete"
+                android:layout_centerInParent="true"
+                android:layout_toLeftOf="@+id/view"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_round_delete_forever_24" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_alignParentEnd="true"
+                android:layout_width="10dp"
+                android:layout_height="30dp"/>
+        </RelativeLayout>
+
+        <EditText
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black"
+            android:hint="Heading (Not exceeding 8 words)"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:inputType="textCapWords"
+            android:id="@+id/et_heading"
+            android:enabled="false"
+            android:background="@drawable/grey_curve_box"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp"/>
+
+        <EditText
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:id="@+id/et_desc"
+            android:enabled="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:lines="3"
+            android:background="@drawable/grey_curve_box"
+            android:hint="Description (Not exceeding 20 words)"
+            android:textColor="@color/black"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:scrollHorizontally="false"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp"/>
+
+        <ImageView
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:scaleType="fitXY"
+            android:id="@+id/iv_img"
+            android:layout_gravity="center"
+            android:src="@drawable/upload_image"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

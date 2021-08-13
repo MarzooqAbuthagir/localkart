@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Local Kart</string>
+
+    <string name="progresstitle">Loading... Please Wait</string>
+    <string name="somethingwentwrong">Something went wrong</string>
+    <string name="nointernet">Check your Network Connection</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="logout_title">Logout</string>
+    <string name="logout_msg">Are you sure ?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string name="internal_storage">Internal storage</string>
+
+    <string name="view_map"><u>View Map</u></string>
+
+    <string name="sup"><sup>₹ </sup></string>
+</resources>

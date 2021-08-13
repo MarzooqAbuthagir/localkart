@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_profile"
+            android:title="Profile" />
+
+<!--        <item-->
+<!--            android:id="@+id/nav_settings"-->
+<!--            android:icon="@drawable/ic_settings"-->
+<!--            android:title="Settings" />-->
+
+        <item
+            android:id="@+id/nav_about_us"
+            android:icon="@drawable/ic_about_us"
+            android:title="About Us" />
+
+        <item
+            android:id="@+id/nav_reg_business"
+            android:icon="@drawable/ic_advertise_your_business"
+            android:title="Advertise Your Business" />
+
+        <item
+            android:id="@+id/nav_manage_business"
+            android:icon="@drawable/ic_advertise_your_business"
+            android:title="Manage My Business" />
+
+        <item
+            android:id="@+id/nav_franchise"
+            android:icon="@drawable/ic_become_a_franchise"
+            android:title="Become a Franchise" />
+
+        <item
+            android:id="@+id/nav_refer"
+            android:icon="@drawable/ic_refer"
+            android:title="Refer" />
+
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_share_nav"
+            android:title="Share" />
+
+        <item
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/ic_feedback"
+            android:title="Feedback" />
+
+        <item
+            android:id="@+id/nav_rate_us"
+            android:icon="@drawable/ic_rating"
+            android:title="Rate Us" />
+
+        <item
+            android:id="@+id/nav_privacy_policy"
+            android:icon="@drawable/ic_privacy_policy"
+            android:title="Privacy Policy" />
+
+        <item
+            android:id="@+id/nav_Logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Logout" />
+    </group>
+</menu>

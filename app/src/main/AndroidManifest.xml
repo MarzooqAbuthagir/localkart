@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kart">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".activity.ProfileActivity"></activity>
+        <activity android:name=".activity.PreviewOfferActivity" />
+        <activity android:name=".activity.FranchiseActivity" />
+        <activity android:name=".activity.PrivacyPolicyActivity" />
+        <activity android:name=".activity.RateUsActivity" />
+        <activity android:name=".activity.AboutUsActivity" />
+        <activity android:name=".activity.FeedbackActivity" />
+        <activity android:name=".activity.FAQActivity" />
+        <activity android:name=".activity.PayWebViewActivity" />
+        <activity android:name=".activity.ViewRepostActivity" />
+        <activity android:name=".activity.RepostActivity" />
+        <activity android:name=".activity.ViewHistoryActivity" />
+        <activity android:name=".activity.MyBusinessActivity6" />
+        <activity android:name=".activity.MyBusinessActivity5" />
+        <activity android:name=".activity.MyBusinessActivity4" />
+        <activity android:name=".activity.MyBusinessActivity3" />
+        <activity android:name=".activity.MyBusinessActivity2" />
+        <activity android:name=".activity.MyBusinessActivity" />
+        <activity android:name=".activity.ShopLocationActivity" />
+        <activity android:name=".activity.DirectoryMoreDetailsActivity" />
+        <activity android:name=".activity.DealsMoreDetailsActivity" />
+        <activity android:name=".activity.DealsActivity" />
+        <activity android:name=".activity.HistoryActivity" />
+        <activity android:name=".activity.ViewPostActivity" />
+        <activity android:name=".activity.PlanActivity" />
+        <activity android:name=".activity.SubscriptionActivity" />
+        <activity android:name=".activity.CreatePostActivity" />
+        <activity android:name=".activity.ManageBusinessActivity" />
+        <activity android:name=".activity.AdvertiseBusinessActivity6" />
+        <activity android:name=".activity.AdvertiseBusinessActivity5" />
+        <activity android:name=".activity.AdvertiseBusinessActivity4" />
+        <activity android:name=".activity.AdvertiseBusinessActivity3" />
+        <activity android:name=".activity.AdvertiseBusinessActivity2" />
+        <activity android:name=".activity.AdvertiseBusinessActivity" />
+        <activity android:name=".activity.SubActivity" />
+        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.MainActivity"
+            android:configChanges="keyboardHidden"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCAdZwm8yXwsIX-V5aZtXc64Q2xpEbHWio" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+    </application>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+</manifest>
