@@ -1,13 +1,16 @@
 package com.kart.activity;
 
+import android.Manifest;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
@@ -24,9 +27,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -49,6 +55,7 @@ import com.kart.model.CategoryData;
 import com.kart.model.SubCategoryData;
 import com.kart.support.Utilis;
 import com.kart.support.VolleySingleton;
+import com.theartofdev.edmodo.cropper.CropImage;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
@@ -56,10 +63,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class AdvertiseBusinessActivity extends AppCompatActivity {
@@ -87,12 +98,19 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
 
     String str_result = "", str_message = "", strBusinessName = "", strDesc = "";
 
-    int SELECT_FILE = 102;
     String base64img = "";
     ImageView ivLogo;
 
     EditText etDesc;
-    private static final int CROP_IMG = 1;
+
+    File photoFile = null;
+    String mCurrentPhotoPath;
+    Uri photoURI;
+
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 101;
+
+    int CAPTURE_IMAGE_REQUEST = 1;
+    int SELECT_IMAGE_REQUEST = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,9 +250,9 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
         btnSelectLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean result = Utilis.checkPermission(AdvertiseBusinessActivity.this);
-                if (result)
-                    galleryIntent();
+                if (checkAndRequestPermissions(AdvertiseBusinessActivity.this)) {
+                    chooseImage(AdvertiseBusinessActivity.this);
+                }
             }
         });
 
@@ -283,14 +301,26 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
         });
     }
 
-    private void galleryIntent() {
-//        Intent intent = new Intent();
-//        intent.setType("image/*");
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//        startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
-
-        Intent GalIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(Intent.createChooser(GalIntent, "Select Image From Gallery"), SELECT_FILE);
+    public static boolean checkAndRequestPermissions(final Activity context) {
+        int WExtstorePermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int cameraPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.CAMERA);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+        if (WExtstorePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded
+                    .add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(context, listPermissionsNeeded
+                            .toArray(new String[listPermissionsNeeded.size()]),
+                    REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
     }
 
     private void getSubCategoryData(String apiName) {
@@ -550,68 +580,100 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == Utilis.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                galleryIntent();
+        if (requestCode == REQUEST_ID_MULTIPLE_PERMISSIONS) {
+            if (ContextCompat.checkSelfPermission(AdvertiseBusinessActivity.this,
+                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getApplicationContext(),
+                        "Permission Requires to Access Camera.", Toast.LENGTH_SHORT)
+                        .show();
+            } else if (ContextCompat.checkSelfPermission(AdvertiseBusinessActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getApplicationContext(),
+                        "Permission Requires to Access Your Storage.",
+                        Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(AdvertiseBusinessActivity.this, "Grant Permission to update profile image", Toast.LENGTH_SHORT).show();
+                chooseImage(AdvertiseBusinessActivity.this);
             }
         }
+    }
+
+    private void chooseImage(Context context) {
+        final CharSequence[] optionsMenu = {"Take Photo", "Choose from Gallery", "Cancel"}; // create a menuOption Array
+        // create a dialog for showing the optionsMenu
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        // set the items in builder
+        builder.setItems(optionsMenu, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (optionsMenu[i].equals("Take Photo")) {
+
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                        try {
+                            photoFile = createImageFile();
+
+                            photoURI = FileProvider.getUriForFile(
+                                    AdvertiseBusinessActivity.this,
+                                    "com.kart.fileprovider",
+                                    photoFile
+                            );
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                            startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
+
+                        } catch (IOException ex) {
+                            // Error occurred while creating the File
+                        }
+                    }
+
+                } else if (optionsMenu[i].equals("Choose from Gallery")) {
+                    // choose from  external storage
+                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(pickPhoto, SELECT_IMAGE_REQUEST);
+                } else if (optionsMenu[i].equals("Exit")) {
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp =
+                new SimpleDateFormat("yyyyMMdd_HHmmss",
+                        Locale.getDefault()).format(new Date());
+        String imageFileName = "IMG_" + timeStamp + "_";
+        File storageDir =
+                getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE) {
-//                onSelectFromGalleryResult(data);
-                Uri uri = data.getData();
-                ImageCropFunction(uri);
-            } else if (requestCode == CROP_IMG) {
-                if (data != null) {
-                    Bundle bundle = data.getExtras();
-                    Bitmap bm = null;
-                    bm = bundle.getParcelable("data");
-
-//                    ivLogo.setImageBitmap(bm);
-                    Glide.with(AdvertiseBusinessActivity.this).asBitmap().load(bm)
-                            .placeholder(R.drawable.placeholder_profile)
-                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(ivLogo);
-
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    assert bm != null;
-                    bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
-                    byte[] byteArray = byteArrayOutputStream.toByteArray();
-                    base64img = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                    System.out.println("Gallery image " + base64img);
-                }
-            }
+        if (requestCode == CAPTURE_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(1, 1).setRequestedSize(300, 300).start(AdvertiseBusinessActivity.this);
+        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            Uri resultUri = result.getUri();
+            onSelectFromGalleryResult(resultUri);
+        } else if (requestCode == SELECT_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+            photoURI = data.getData();
+            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(1, 1).setRequestedSize(300, 300).start(AdvertiseBusinessActivity.this);
         }
     }
 
-    private void ImageCropFunction(Uri uri) {
-        try {
-            Intent CropIntent = new Intent("com.android.camera.action.CROP");
-            CropIntent.setDataAndType(uri, "image/*");
-            CropIntent.putExtra("crop", "true");
-            CropIntent.putExtra("outputX", 300);
-            CropIntent.putExtra("outputY", 300); //180
-            CropIntent.putExtra("aspectX", 1); //3
-            CropIntent.putExtra("aspectY", 1); //4
-            CropIntent.putExtra("scaleUpIfNeeded", true);
-            CropIntent.putExtra("return-data", true);
-            startActivityForResult(CropIntent, CROP_IMG);
-        } catch (ActivityNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private void onSelectFromGalleryResult(Intent data) {
+    private void onSelectFromGalleryResult(Uri data) {
         Bitmap bm = null;
         if (data != null) {
             try {
-                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data);
             } catch (IOException e) {
                 e.printStackTrace();
             }
