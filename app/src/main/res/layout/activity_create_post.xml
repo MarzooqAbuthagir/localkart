@@ -19,6 +19,7 @@
             android:textSize="20dp"
             android:singleLine="true"
             android:layout_gravity="center"
+            android:fontFamily="@font/roboto_regular"
             android:id="@+id/toolbar_title" />
     </androidx.appcompat.widget.Toolbar>
 

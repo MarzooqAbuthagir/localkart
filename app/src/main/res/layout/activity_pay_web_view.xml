@@ -22,6 +22,7 @@
             android:layout_gravity="center"
             android:singleLine="true"
             android:textColor="@color/white"
+            android:fontFamily="@font/roboto_regular"
             android:textSize="20dp" />
     </androidx.appcompat.widget.Toolbar>
 
