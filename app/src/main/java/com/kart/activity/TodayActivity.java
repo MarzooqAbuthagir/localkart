@@ -3,9 +3,11 @@ package com.kart.activity;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -176,6 +178,14 @@ public class TodayActivity extends Fragment {
         super.setMenuVisibility(menuVisible);
         if (getView() != null && menuVisible) {
             fetchLastLocation();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(Utilis.callResume == 1 && Utilis.constPostType.equalsIgnoreCase("TODAY")) {
+            getListData();
         }
     }
 
@@ -366,6 +376,9 @@ public class TodayActivity extends Fragment {
                             dealsOfferData.setType(jsonObject.getString("type"));
                             dealsOfferData.setLatitude(jsonObject.getString("latitude"));
                             dealsOfferData.setLongitude(jsonObject.getString("longitude"));
+                            dealsOfferData.setIsSubscribed(jsonObject.getString("isSubscribed"));
+                            dealsOfferData.setOfferHeading(jsonObject.getString("offerHeading"));
+                            dealsOfferData.setOffferDesc(jsonObject.getString("offerDescription"));
 
                             JSONObject js = jsonObject.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(
@@ -376,8 +389,54 @@ public class TodayActivity extends Fragment {
                             dataList.add(dealsOfferData);
                         }
 
-                        DealsAdapter adapter = new DealsAdapter(getActivity(), dataList, strType, 0, latitude, longitude);
+                        DealsAdapter adapter = new DealsAdapter(getActivity(), dataList, strType, 0, latitude, longitude, "TODAY");
                         recyclerView.setAdapter(adapter);
+
+                        adapter.setOnItemClickListener(new DealsAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, final int position) {
+
+                                if (Utilis.isInternetOn()) {
+                                    String state = Integer.parseInt(dataList.get(position).getIsSubscribed()) == 0 ? "Subscribe" : "UnSubscribe";
+                                    androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
+                                    builder.setTitle("Confirmation")
+                                            .setMessage("Are you sure want to " + state + " the shop?")
+                                            .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // Do nothing but close the dialog
+                                                    dialog.dismiss();
+
+                                                    if (Integer.parseInt(dataList.get(position).getIsSubscribed()) == 0) {
+                                                        subscribeShop(position);
+                                                    } else {
+                                                        unsubscribeShop(position);
+                                                    }
+                                                }
+                                            })
+                                            .setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // Do nothing
+                                                    dialog.dismiss();
+                                                }
+                                            });
+
+                                    androidx.appcompat.app.AlertDialog alert = builder.create();
+                                    alert.show();
+
+                                    Button btn_yes = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+                                    Button btn_no = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+                                    btn_no.setTextColor(Color.parseColor("#000000"));
+                                    btn_yes.setTextColor(Color.parseColor("#000000"));
+
+                                } else {
+                                    Toast.makeText(getActivity(), getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
 
                     } else if (Integer.parseInt(str_result) == 2) {
                         str_message = obj.getString("message");
@@ -419,6 +478,7 @@ public class TodayActivity extends Fragment {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
+                params.put("userIndexId", userDetail.getId());
                 params.put("type", strType);
                 params.put("catId", strCatId);
                 params.put("subCatId", strSubCatId);
@@ -433,6 +493,151 @@ public class TodayActivity extends Fragment {
         };
 
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(getActivity()).addToRequestQueue(stringRequest);
+    }
+
+    private void unsubscribeShop(final int position) {
+        Utilis.showProgress(getActivity());
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.unsubscribe, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    //converting response to json object
+                    JSONObject obj = new JSONObject(response);
+
+                    System.out.println(Tag + " unsubscribeShop response - " + response);
+
+                    Utilis.dismissProgress();
+
+                    String str_result = obj.getString("errorCode");
+                    String str_message = "";
+                    System.out.print(Tag + " unsubscribeShop result" + str_result);
+
+                    if (Integer.parseInt(str_result) == 0) {
+                        str_message = obj.getString("Message");
+                        getListData();
+
+                    } else if (Integer.parseInt(str_result) == 2) {
+                        str_message = obj.getString("Message");
+                        Toast.makeText(getActivity(), str_message, Toast.LENGTH_SHORT).show();
+
+                    } else if (Integer.parseInt(str_result) == 1) {
+                        str_message = obj.getString("Message");
+                        Toast.makeText(getActivity(), str_message, Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Utilis.dismissProgress();
+                Toast.makeText(getActivity(), getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                if (error instanceof NoConnectionError) {
+                    System.out.println("NoConnectionError");
+                } else if (error instanceof TimeoutError) {
+                    System.out.println("TimeoutError");
+
+                } else if (error instanceof ServerError) {
+                    System.out.println("ServerError");
+
+                } else if (error instanceof AuthFailureError) {
+                    System.out.println("AuthFailureError");
+
+                } else if (error instanceof NetworkError) {
+                    System.out.println("NetworkError");
+                }
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("shopType", dataList.get(position).getType());
+                params.put("shopId", dataList.get(position).getShopIndexId());
+                params.put("userIndexId", userDetail.getId());
+                System.out.println(Tag + " unsubscribeShop inputs " + params);
+                return params;
+            }
+        };
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(getActivity()).addToRequestQueue(stringRequest);
+    }
+
+    private void subscribeShop(final int position) {
+        Utilis.showProgress(getActivity());
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.savesubscribers, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    //converting response to json object
+                    JSONObject obj = new JSONObject(response);
+
+                    System.out.println(Tag + " subscribeShop response - " + response);
+
+                    Utilis.dismissProgress();
+
+                    String str_result = obj.getString("errorCode");
+                    String str_message = "";
+                    System.out.print(Tag + " subscribeShop result" + str_result);
+
+                    if (Integer.parseInt(str_result) == 0) {
+                        str_message = obj.getString("Message");
+
+                        getListData();
+                    } else if (Integer.parseInt(str_result) == 2) {
+                        str_message = obj.getString("Message");
+                        Toast.makeText(getActivity(), str_message, Toast.LENGTH_SHORT).show();
+
+                    } else if (Integer.parseInt(str_result) == 1) {
+                        str_message = obj.getString("Message");
+                        Toast.makeText(getActivity(), str_message, Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Utilis.dismissProgress();
+                Toast.makeText(getActivity(), getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                if (error instanceof NoConnectionError) {
+                    System.out.println("NoConnectionError");
+                } else if (error instanceof TimeoutError) {
+                    System.out.println("TimeoutError");
+
+                } else if (error instanceof ServerError) {
+                    System.out.println("ServerError");
+
+                } else if (error instanceof AuthFailureError) {
+                    System.out.println("AuthFailureError");
+
+                } else if (error instanceof NetworkError) {
+                    System.out.println("NetworkError");
+                }
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("shopType", dataList.get(position).getType());
+                params.put("shopId", dataList.get(position).getShopIndexId());
+                params.put("userIndexId", userDetail.getId());
+                System.out.println(Tag + " subscribeShop inputs " + params);
+                return params;
+            }
+        };
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         VolleySingleton.getInstance(getActivity()).addToRequestQueue(stringRequest);
     }
 

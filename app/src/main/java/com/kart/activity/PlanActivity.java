@@ -8,17 +8,22 @@ import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -317,16 +322,16 @@ public class PlanActivity extends AppCompatActivity {
                                 }
                             });
 
-                            planPriceAdapter = new PlanPriceAdapter(PlanActivity.this, planPrices);
-                            recyclerViewPlan.setAdapter(planPriceAdapter);
-
-                            planPriceAdapter.setOnItemClickListener(new PlanPriceAdapter.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(View view, int position) {
-                                    String planId = planPrices.get(position).getPlanId();
-                                    getPaymentApiCall(planId);
-                                }
-                            });
+//                            planPriceAdapter = new PlanPriceAdapter(PlanActivity.this, planPrices);
+//                            recyclerViewPlan.setAdapter(planPriceAdapter);
+//
+//                            planPriceAdapter.setOnItemClickListener(new PlanPriceAdapter.OnItemClickListener() {
+//                                @Override
+//                                public void onItemClick(View view, int position) {
+//                                    String planId = planPrices.get(position).getPlanId();
+//                                    getPaymentApiCall(planId);
+//                                }
+//                            });
 
                             setPlanPriceView();
 
@@ -369,6 +374,211 @@ public class PlanActivity extends AppCompatActivity {
                     Map<String, String> params = new HashMap<>();
                     params.put("userIndexId", userDetail.getId());
                     System.out.println(Tag + " getApiCall inputs " + params);
+                    return params;
+                }
+            };
+
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+        } else {
+            Toast.makeText(this, PlanActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    int code = 0;
+    Button btnApply;
+    EditText etCode;
+    TextView tvAmount, tvFinalAmount;
+    String strRefType = "";
+
+    private void showCodeDialog(View view, final int position) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(PlanActivity.this, R.style.CustomAlertDialog);
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from(view.getContext()).inflate(R.layout.alert_referral_coupon_code, viewGroup, false);
+        final TextView tvPlanName = dialogView.findViewById(R.id.tv_plan_name);
+        tvAmount = dialogView.findViewById(R.id.tv_amount);
+        tvFinalAmount = dialogView.findViewById(R.id.tv_final_amount);
+        RelativeLayout layCode = dialogView.findViewById(R.id.lay_code);
+        etCode = dialogView.findViewById(R.id.et_code);
+        btnApply = dialogView.findViewById(R.id.btn_apply);
+        Button btnSubmit = dialogView.findViewById(R.id.btn_submit);
+        Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+
+        if (Integer.parseInt(planPrices.get(position).getPlanPrice()) != 0) {
+            layCode.setVisibility(View.VISIBLE);
+        } else {
+            code = 0;
+            etCode.setText("");
+            etCode.setEnabled(true);
+            strRefType = "";
+            layCode.setVisibility(View.GONE);
+        }
+
+        tvAmount.setText(Html.fromHtml(PlanActivity.this.getResources().getString(R.string.sup)) + "" + planPrices.get(position).getPlanPrice());
+        tvPlanName.setText(planPrices.get(position).getPlanName());
+        tvFinalAmount.setText(Html.fromHtml(PlanActivity.this.getResources().getString(R.string.sup)) + "" + strAmount);
+
+        etCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String code = editable.toString();
+                if (code.length() > 0) {
+                    btnApply.setVisibility(View.VISIBLE);
+                    //                    btnApply.setBackgroundColor(getResources().getColor(R.color.apply));
+                } else {
+                    btnApply.setVisibility(View.GONE);
+                    //                    btnApply.setBackgroundColor(getResources().getColor(R.color.apply));
+                }
+                btnApply.setText("Apply");
+                btnApply.setBackgroundResource(R.drawable.apply_curve);
+            }
+        });
+
+        btnApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (code == 0) {
+                    applyCode(etCode.getText().toString().trim(), planPrices.get(position).getPlanPrice(), strAmount);
+
+                } else {
+                    code = 0;
+                    etCode.setText("");
+                    etCode.setEnabled(true);
+                    etCode.requestFocus();
+                    btnApply.setText("Apply");
+//                    btnApply.setBackgroundColor(getResources().getColor(R.color.apply));
+                    btnApply.setBackgroundResource(R.drawable.apply_curve);
+
+                    strRefType = "";
+//                    tvAmount.setText(Html.fromHtml(PlanActivity.this.getResources().getString(R.string.sup)) + "" + planPrices.get(position).getPlanPrice());
+                    tvFinalAmount.setText(Html.fromHtml(PlanActivity.this.getResources().getString(R.string.sup)) + "" + strAmount);
+                }
+            }
+        });
+
+        final AlertDialog alertDialog = builder.create();
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String planId = planPrices.get(position).getPlanId();
+//                String[] amount = tvAmount.getText().toString().trim().split(" ");
+                String[] amount = tvFinalAmount.getText().toString().trim().split(" ");
+                getPaymentApiCall(planId, amount[1]);
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void applyCode(final String refCode, final String planPrice, final String strAmount) {
+        if (Utilis.isInternetOn()) {
+            Utilis.showProgress(PlanActivity.this);
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.applycode, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        //converting response to json object
+                        JSONObject obj = new JSONObject(response);
+
+                        System.out.println(Tag + " applyCode response - " + response);
+
+                        Utilis.dismissProgress();
+
+                        str_result = obj.getString("errorCode");
+                        System.out.print(Tag + " applyCode result " + str_result);
+
+                        if (Integer.parseInt(str_result) == 0) {
+
+                            str_message = obj.getString("message");
+
+                            code = 1;
+                            etCode.setEnabled(false);
+                            btnApply.setText("Remove");
+//                            btnApply.setBackgroundColor(getResources().getColor(R.color.remove));
+                            btnApply.setBackgroundResource(R.drawable.remove_curve);
+
+//                            tvAmount.setText(Html.fromHtml(PlanActivity.this.getResources().getString(R.string.sup)) + "" + obj.getString("finalAmount"));
+                            tvFinalAmount.setText(Html.fromHtml(PlanActivity.this.getResources().getString(R.string.sup)) + "" + obj.getString("finalAmount"));
+                            strRefType = obj.getString("referralType");
+
+                        } else if (Integer.parseInt(str_result) == 2) {
+                            str_message = obj.getString("message");
+                            AlertDialog.Builder builder = new AlertDialog.Builder(PlanActivity.this);
+                            builder.setMessage(str_message)
+                                    .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            code = 0;
+                                            etCode.setText("");
+                                            etCode.setEnabled(true);
+                                            etCode.requestFocus();
+                                            btnApply.setText("Apply");
+//                                            btnApply.setBackgroundColor(getResources().getColor(R.color.apply));
+                                            btnApply.setBackgroundResource(R.drawable.apply_curve);
+
+                                            strRefType = "";
+//                                            tvAmount.setText(Html.fromHtml(PlanActivity.this.getResources().getString(R.string.sup)) + "" + planPrice);
+                                            tvFinalAmount.setText(Html.fromHtml(PlanActivity.this.getResources().getString(R.string.sup)) + "" + strAmount);
+
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+
+                        } else if (Integer.parseInt(str_result) == 1) {
+                            str_message = obj.getString("message");
+                            Toast.makeText(PlanActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    Utilis.dismissProgress();
+                    Toast.makeText(PlanActivity.this, PlanActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                    if (error instanceof NoConnectionError) {
+                        System.out.println("NoConnectionError");
+                    } else if (error instanceof TimeoutError) {
+                        System.out.println("TimeoutError");
+
+                    } else if (error instanceof ServerError) {
+                        System.out.println("ServerError");
+
+                    } else if (error instanceof AuthFailureError) {
+                        System.out.println("AuthFailureError");
+
+                    } else if (error instanceof NetworkError) {
+                        System.out.println("NetworkError");
+                    }
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("userIndexId", userDetail.getId());
+                    params.put("referralCode", refCode);
+                    params.put("planAmount", strAmount);
+                    System.out.println(Tag + " applyCode inputs " + params);
                     return params;
                 }
             };
@@ -502,8 +712,8 @@ public class PlanActivity extends AppCompatActivity {
                         AlertDialog alert = builder.create();
                         alert.show();
                     } else {
-                        String planId = planPrices.get(finalI).getPlanId();
-                        getPaymentApiCall(planId);
+                        getAmountCalculationFromApi(view, finalI);
+//                        showCodeDialog(view, finalI);
                     }
                 }
             });
@@ -512,7 +722,97 @@ public class PlanActivity extends AppCompatActivity {
         }
     }
 
-    private void getPaymentApiCall(final String planId) {
+    String strAmount = "0", strStaticAmount = "0";
+
+    private void getAmountCalculationFromApi(final View view, final int position) {
+        if (Utilis.isInternetOn()) {
+            Utilis.showProgress(PlanActivity.this);
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.amountcalculation, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        //converting response to json object
+                        JSONObject obj = new JSONObject(response);
+
+                        System.out.println(Tag + " getAmountCalculationFromApi response - " + response);
+
+                        Utilis.dismissProgress();
+
+                        str_result = obj.getString("errorCode");
+                        System.out.print(Tag + " getAmountCalculationFromApi result " + str_result);
+
+                        if (Integer.parseInt(str_result) == 0) {
+
+                            str_message = obj.getString("message");
+                            strAmount = obj.getString("amount");
+                            strStaticAmount = obj.getString("staticAmount");
+
+                            if (Integer.parseInt(strStaticAmount) > Integer.parseInt(planPrices.get(position).getPlanPrice())) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(PlanActivity.this);
+                                builder.setMessage("You can't downgrade to a lower plan when a higher plan is currently active. Please select any higher plan. (You can subscribe to a lower plan only after the current plan is expired.)")
+                                        .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                strAmount = "0";
+                                                strStaticAmount = "0";
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                AlertDialog alert = builder.create();
+                                alert.show();
+                            } else {
+                                showCodeDialog(view, position);
+                            }
+
+                        } else if (Integer.parseInt(str_result) == 1) {
+                            str_message = obj.getString("message");
+                            Toast.makeText(PlanActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    Utilis.dismissProgress();
+                    Toast.makeText(PlanActivity.this, PlanActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                    if (error instanceof NoConnectionError) {
+                        System.out.println("NoConnectionError");
+                    } else if (error instanceof TimeoutError) {
+                        System.out.println("TimeoutError");
+
+                    } else if (error instanceof ServerError) {
+                        System.out.println("ServerError");
+
+                    } else if (error instanceof AuthFailureError) {
+                        System.out.println("AuthFailureError");
+
+                    } else if (error instanceof NetworkError) {
+                        System.out.println("NetworkError");
+                    }
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("userIndexId", userDetail.getId());
+                    params.put("planId", planPrices.get(position).getPlanId());
+                    System.out.println(Tag + " getAmountCalculationFromApi inputs " + params);
+                    return params;
+                }
+            };
+
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+        } else {
+            Toast.makeText(this, PlanActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getPaymentApiCall(final String planId, final String amount) {
         if (Utilis.isInternetOn()) {
             Utilis.showProgress(PlanActivity.this);
 
@@ -588,6 +888,9 @@ public class PlanActivity extends AppCompatActivity {
                     Map<String, String> params = new HashMap<>();
                     params.put("userIndexId", userDetail.getId());
                     params.put("planId", planId);
+                    params.put("referalCode", code == 1 ? etCode.getText().toString().trim() : "");
+                    params.put("referalType", code == 1 ? strRefType : "");
+                    params.put("amount", amount);
                     System.out.println(Tag + " getPaymentApiCall inputs " + params);
                     return params;
                 }

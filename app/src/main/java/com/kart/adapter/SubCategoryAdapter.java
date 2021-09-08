@@ -47,13 +47,14 @@ public class SubCategoryAdapter extends ArrayAdapter<SubCategoryData> {
         TextView categoryName = listitemView.findViewById(R.id.tv_categoryName);
         ImageView categoryImg = listitemView.findViewById(R.id.iv_categoryImg);
         assert subCategoryData != null;
-        System.out.println("category image "+subCategoryData.getSubCategoryImage());
+//        System.out.println("category image "+subCategoryData.getSubCategoryImage());
         categoryName.setText(subCategoryData.getSubCategoryName());
         Glide.with(con).load(subCategoryData.getSubCategoryImage())
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(categoryImg);
         listitemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Utilis.callResume = 0;
                 Utilis.clearFilterPref(con);
                 Intent intent = new Intent(con, DealsActivity.class);
                 intent.putExtra("key", identity);

@@ -53,7 +53,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         final SilderData silder = silders.get(position);
 
         ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
-        System.out.println("image path " + silder.getImage());
+//        System.out.println("image path " + silder.getImage());
 
         MultiTransformation multiLeft = new MultiTransformation(
                 new CenterCrop(),

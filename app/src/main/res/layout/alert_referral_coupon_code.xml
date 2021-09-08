@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:padding="7dp"
+        android:text="Subscription"
+        android:fontFamily="@font/roboto_regular"
+        android:layout_margin="10dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18dp" />
+
+    <LinearLayout
+        android:weightSum="2"
+        android:paddingStart="7dp"
+        android:paddingEnd="7dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_weight="0.7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:text="Plan Name"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:text=" : "
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_weight="1.3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:id="@+id/tv_plan_name"
+            android:text=""
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:weightSum="2"
+        android:paddingStart="7dp"
+        android:paddingEnd="7dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_weight="0.7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:text="Amount"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:text=" : "
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_weight="1.3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:id="@+id/tv_amount"
+            android:text=""
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:weightSum="2"
+        android:paddingStart="7dp"
+        android:paddingEnd="7dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_weight="0.7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:text="Final Amount"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:text=" : "
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_weight="1.3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:id="@+id/tv_final_amount"
+            android:text=""
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/lay_code"
+        android:layout_margin="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/grey_curve_box">
+
+        <EditText
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="16dp"
+            android:textColor="@color/black"
+            android:hint="Enter Referral / Coupon Code"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:padding="7dp"
+            android:inputType="textCapCharacters"
+            android:layout_toLeftOf="@+id/btn_apply"
+            android:id="@+id/et_code"
+            android:background="@android:color/transparent"/>
+
+
+        <Button
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:id="@+id/btn_apply"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="5dp"
+            android:visibility="gone"
+            android:text="Apply"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:fontFamily="@font/roboto_regular"
+            />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:layout_gravity="center"
+            android:padding="15dp"
+            android:layout_margin="10dp"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:fontFamily="@font/roboto_regular"
+            android:background="@drawable/button_theme"/>
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Proceed to Payment"
+            android:layout_gravity="center"
+            android:padding="15dp"
+            android:layout_margin="10dp"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:fontFamily="@font/roboto_regular"
+            android:background="@drawable/button_theme"/>
+    </LinearLayout>
+</LinearLayout>

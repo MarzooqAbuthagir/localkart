@@ -23,4 +23,7 @@
     <color name="simpletooltip_arrow">@color/colorAccent</color>
 
     <color name="hint">#9b9b9b</color>
+
+    <color name="apply">#1f802f</color>
+    <color name="remove">#ff0000</color>
 </resources>

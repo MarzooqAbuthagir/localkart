@@ -56,7 +56,7 @@ public class ViewPagerShopBannerAdapter extends PagerAdapter {
         final ShopBanner silder = silders.get(position);
 
         ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
-        System.out.println("image path " + silder.getImageUrl());
+//        System.out.println("image path " + silder.getImageUrl());
 
         Glide.with(context).load(silder.getImageUrl())
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);

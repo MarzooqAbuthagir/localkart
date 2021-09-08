@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.ReferralActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        app:theme="@style/AppTheme"
+        android:background="@color/adv_bus_color">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:singleLine="true"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_regular"
+            android:id="@+id/toolbar_title" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/lay_not_business_user"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_no_records"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="You must be a \nBusiness Registered User \nto enjoy all the benefits of referral."
+            android:textColor="@color/desc_text"
+            android:textSize="16dp"
+            android:fontFamily="@font/roboto_regular" />
+
+        <Button
+            android:layout_alignParentBottom="true"
+            android:id="@+id/btn_register_now"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register Now"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:fontFamily="@font/roboto_regular"
+            android:background="@drawable/right_button_theme"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/lay_not_subscription_user"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/btn_buy_plan"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_margin="5dp"
+                    android:text="Your referral code is"
+                    android:textColor="@color/desc_text"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/roboto_regular" />
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/light_pink_curve_box"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="NOT AVAILABLE"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="18dp" />
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="\nReferral code will be generated only after you buy any paid subscription plan. When a referral (coupon) code is used, both the user and you will get the benefits."
+                    android:layout_margin="5dp"
+                    android:lineSpacingExtra="5dp"
+                    android:justificationMode="inter_word"
+                    android:textColor="@color/desc_text"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/roboto_regular"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="\nUSER BENEFITS\nThe user will get discount when he uses your code while subscribing to a new plan. The user needs to enter and apply the code on the payment page."
+                    android:layout_margin="5dp"
+                    android:lineSpacingExtra="5dp"
+                    android:justificationMode="inter_word"
+                    android:textColor="@color/desc_text"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/roboto_regular"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="\nYOUR BENEFITS\nWhen a user completes the subscription purchase by using your referral (coupon) code, then you will get the following free benefits which includes additional Daily, Weekly, and Festival Posts along with validity."
+                    android:layout_margin="5dp"
+                    android:lineSpacingExtra="5dp"
+                    android:justificationMode="inter_word"
+                    android:textColor="@color/desc_text"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/roboto_regular"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <Button
+            android:layout_alignParentBottom="true"
+            android:id="@+id/btn_buy_plan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Buy Subscription Plan"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:fontFamily="@font/roboto_regular"
+            android:background="@drawable/right_button_theme"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:visibility="visible"
+        android:id="@+id/lay_business_user"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/btn_share"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_margin="5dp"
+                    android:text="Your referral code is"
+                    android:textColor="@color/desc_text"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/roboto_regular" />
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_referral_code"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/light_pink_curve_box"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="18dp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="\nWhen the above referral (coupon) code is used, both the user and you will get the benefits."
+                    android:layout_margin="5dp"
+                    android:lineSpacingExtra="5dp"
+                    android:justificationMode="inter_word"
+                    android:textColor="@color/desc_text"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/roboto_regular"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text=""
+                    android:id="@+id/tv_discount_amount"
+                    android:layout_margin="5dp"
+                    android:lineSpacingExtra="5dp"
+                    android:justificationMode="inter_word"
+                    android:textColor="@color/desc_text"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/roboto_regular"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="\nYOUR BENEFITS\nWhen a user completes the subscription purchase by using your referral (coupon) code, then you will get the following free benefits.\n"
+                    android:layout_margin="5dp"
+                    android:lineSpacingExtra="5dp"
+                    android:justificationMode="inter_word"
+                    android:textColor="@color/desc_text"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/roboto_regular"/>
+
+<!--                <View-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="10dp"/>-->
+
+                <View
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@drawable/plan_divider"/>
+
+                <RelativeLayout
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:lineSpacingExtra="5dp"
+                        android:justificationMode="inter_word"
+                        android:text="Daily Post"/>
+
+                    <TextView
+                        android:id="@+id/tv_daily_post"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:lineSpacingExtra="5dp"
+                        android:justificationMode="inter_word"
+                        android:text=""/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@drawable/plan_divider"/>
+
+                <RelativeLayout
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:lineSpacingExtra="5dp"
+                        android:justificationMode="inter_word"
+                        android:text="Weekly Post"/>
+
+                    <TextView
+                        android:id="@+id/tv_weekly_post"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:lineSpacingExtra="5dp"
+                        android:justificationMode="inter_word"
+                        android:text=""/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@drawable/plan_divider"/>
+
+                <RelativeLayout
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:lineSpacingExtra="5dp"
+                        android:justificationMode="inter_word"
+                        android:text="Festival Post"/>
+
+                    <TextView
+                        android:id="@+id/tv_festival_post"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:lineSpacingExtra="5dp"
+                        android:justificationMode="inter_word"
+                        android:text=""/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@drawable/plan_divider"/>
+
+                <RelativeLayout
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:lineSpacingExtra="5dp"
+                        android:justificationMode="inter_word"
+                        android:text="Deals Per Post"/>
+
+                    <TextView
+                        android:id="@+id/tv_deals"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:lineSpacingExtra="5dp"
+                        android:justificationMode="inter_word"
+                        android:text=""/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@drawable/plan_divider"/>
+
+                <RelativeLayout
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:lineSpacingExtra="5dp"
+                        android:justificationMode="inter_word"
+                        android:text="Validity"/>
+
+                    <TextView
+                        android:id="@+id/tv_validity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:lineSpacingExtra="5dp"
+                        android:justificationMode="inter_word"
+                        android:text=""/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@drawable/plan_divider"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/note"
+                    android:layout_margin="5dp"
+                    android:lineSpacingExtra="5dp"
+                    android:justificationMode="inter_word"
+                    android:textColor="@color/desc_text"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/roboto_regular"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"/>
+            </LinearLayout>
+        </ScrollView>
+
+        <Button
+            android:layout_alignParentBottom="true"
+            android:id="@+id/btn_share"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Share"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:fontFamily="@font/roboto_regular"
+            android:background="@drawable/right_button_theme"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

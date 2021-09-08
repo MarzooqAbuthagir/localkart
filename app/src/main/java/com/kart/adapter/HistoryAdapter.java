@@ -56,6 +56,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             holder.tvOfferCount.setText("");
         }
 
+        holder.tvStatus.setText(arrayList.get(position).getStatus());
+
         holder.btnView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,7 +96,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView tvDate, tvId, tvType, tvPost, tvOfferCount;
+        TextView tvDate, tvId, tvType, tvPost, tvOfferCount, tvStatus;
         Button btnView;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -104,6 +106,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             tvPost = itemView.findViewById(R.id.tv_post);
             tvOfferCount = itemView.findViewById(R.id.tv_offer_count);
             btnView = itemView.findViewById(R.id.btn_view);
+            tvStatus = itemView.findViewById(R.id.tv_status);
         }
     }
 }

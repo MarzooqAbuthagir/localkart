@@ -47,6 +47,7 @@ import com.kart.model.ContactDetailsData;
 import com.kart.model.LocationData;
 import com.kart.model.UploadImages;
 import com.kart.model.UserDetail;
+import com.kart.support.RegBusinessIdSharedPreference;
 import com.kart.support.RegBusinessSharedPrefrence;
 import com.kart.support.RegBusinessTypeSharedPreference;
 import com.kart.support.Utilis;
@@ -326,6 +327,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
                         RegBusinessSharedPrefrence.setMenuFlag(AdvertiseBusinessActivity6.this, "1");
 
                         RegBusinessTypeSharedPreference.setBusinessType(AdvertiseBusinessActivity6.this, "Services");
+                        RegBusinessIdSharedPreference.setBusinessId(AdvertiseBusinessActivity6.this, str_index_id);
 
                         Intent intent = new Intent(AdvertiseBusinessActivity6.this, MainActivity.class);
                         intent.putExtra("key", keyIntent);

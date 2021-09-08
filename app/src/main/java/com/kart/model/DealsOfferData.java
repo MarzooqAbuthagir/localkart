@@ -15,6 +15,33 @@ public class DealsOfferData {
     private String type;
     private String latitude;
     private String longitude;
+    private String isSubscribed;
+    private String offerHeading;
+    private String offferDesc;
+
+    public String getOfferHeading() {
+        return offerHeading;
+    }
+
+    public void setOfferHeading(String offerHeading) {
+        this.offerHeading = offerHeading;
+    }
+
+    public String getOffferDesc() {
+        return offferDesc;
+    }
+
+    public void setOffferDesc(String offferDesc) {
+        this.offferDesc = offferDesc;
+    }
+
+    public String getIsSubscribed() {
+        return isSubscribed;
+    }
+
+    public void setIsSubscribed(String isSubscribed) {
+        this.isSubscribed = isSubscribed;
+    }
 
     public String getLatitude() {
         return latitude;

@@ -61,6 +61,7 @@ import com.kart.adapter.OfferData;
 import com.kart.adapter.RepostOfferAdapter;
 import com.kart.model.PostInitialData;
 import com.kart.model.UserDetail;
+import com.kart.support.App;
 import com.kart.support.LocationTrack;
 import com.kart.support.RegBusinessTypeSharedPreference;
 import com.kart.support.Utilis;
@@ -134,12 +135,16 @@ public class RepostActivity extends AppCompatActivity {
     int CAPTURE_IMAGE_REQUEST = 1;
     int SELECT_IMAGE_REQUEST = 2;
 
+    App app;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repost);
 
         utilis = new Utilis(RepostActivity.this);
+
+        app = (App) getApplication();
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -1117,6 +1122,8 @@ public class RepostActivity extends AppCompatActivity {
         intent.putExtra("longitude", String.valueOf(longitude));
         intent.putExtra("postType", strPostType);
         intent.putExtra("festivalName", etFestivalName.getText().toString());
+        intent.putExtra("shopIndexId",strShopIndexId);
+        intent.putExtra("shopType", strShopType);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -1227,7 +1234,8 @@ public class RepostActivity extends AppCompatActivity {
 
                             str_message = obj.getString("message");
                             String str_post_index_id = obj.getString("postIndexId");
-                            sendOffer(str_post_index_id);
+                            String isBoost = obj.getString("isBoost");
+                            sendOffer(str_post_index_id, isBoost);
 
                         } else if (Integer.parseInt(str_result) == 2) {
                             str_message = obj.getString("message");
@@ -1281,7 +1289,7 @@ public class RepostActivity extends AppCompatActivity {
         }
     }
 
-    private void sendOffer(final String str_post_index_id) {
+    private void sendOffer(final String str_post_index_id, final String isBoost) {
         if (Utilis.isInternetOn()) {
             Utilis.showProgress(RepostActivity.this);
 
@@ -1304,6 +1312,9 @@ public class RepostActivity extends AppCompatActivity {
                             if (Integer.parseInt(str_result) == 0) {
                                 str_message = obj.getString("message");
                                 if (currentPos + 1 == listOfOffer.size()) {
+                                    if (isBoost.equalsIgnoreCase("Yes")) {
+                                        app.notifyToUsers(str_post_index_id, strShopIndexId, strShopType);
+                                    }
                                     Utilis.dismissProgress();
                                     back();
                                 }

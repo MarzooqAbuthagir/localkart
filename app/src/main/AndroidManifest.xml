@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.kart">
 
     <application
-        android:allowBackup="true"
+        android:name=".support.App"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".activity.ProfileActivity"/>
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup">
+        <activity android:name=".activity.ReferralActivity"></activity>
+        <activity android:name=".activity.NotificationPostActivity" />
+        <activity android:name=".activity.NotificationActivity" />
+        <activity android:name=".activity.ProfileActivity" />
         <activity android:name=".activity.PreviewOfferActivity" />
         <activity android:name=".activity.FranchiseActivity" />
         <activity android:name=".activity.PrivacyPolicyActivity" />
@@ -58,18 +64,13 @@
             android:name=".activity.MainActivity"
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCAdZwm8yXwsIX-V5aZtXc64Q2xpEbHWio" />
-
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
-
-        <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -78,19 +79,36 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
+
+        <service
+            android:name=".support.MyNotificationExtenderService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+            <intent-filter>
+                <action android:name="com.onesignal.NotificationExtender" />
+            </intent-filter>
+        </service>
+
+        <meta-data android:name="com.onesignal.NotificationAccentColor.DEFAULT" android:value="#FFE63E89"/>
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
     </application>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <uses-feature android:name="android.hardware.camera"
-        android:required="true" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
 
 </manifest>

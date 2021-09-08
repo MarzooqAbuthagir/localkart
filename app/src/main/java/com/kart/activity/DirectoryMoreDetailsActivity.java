@@ -1,14 +1,23 @@
 package com.kart.activity;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -16,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -35,8 +45,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
 import com.kart.R;
 import com.kart.adapter.AccessOptionAdapter;
 import com.kart.adapter.ServiceOfferedAdapter;
@@ -44,6 +53,7 @@ import com.kart.adapter.ViewPagerShopBannerAdapter;
 import com.kart.model.AccessOptions;
 import com.kart.model.DirectoryMoreDetailsData;
 import com.kart.model.ShopBanner;
+import com.kart.model.UserDetail;
 import com.kart.support.Utilis;
 import com.kart.support.VolleySingleton;
 
@@ -51,12 +61,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class DirectoryMoreDetailsActivity extends AppCompatActivity {
     private String Tag = "DirectoryMoreDetailsActivity";
@@ -65,7 +74,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "", strShopIndexId = "", strShopType = "", strLatitude = "", strLongitude = "";
+    String keyIntent = "", strShopIndexId = "", strShopType = "", strLatitude = "", strLongitude = "", strIsSubscribed = "", strConstPostType = "";
     String str_result = "", str_message = "";
 
     DirectoryMoreDetailsData detailsData;
@@ -78,7 +87,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
     private static ViewPager mPager;
     LinearLayout sliderDotspanel;
     private static int currentPage = 0;
-//    Timer swipeTimer;
+    //    Timer swipeTimer;
 //    final long DELAY_MS = 1000;//delay in milliseconds before task is to be executed
 //    final long PERIOD_MS = 4500; // time in milliseconds between successive task executions.
     Handler handler = new Handler();
@@ -98,6 +107,13 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
     RecyclerView rvAccessOption;
     AccessOptionAdapter accessOptionAdapter;
 
+    LinearLayout layNotify, layShare;
+    ImageView imgNotify;
+    Button btnSubscribe;
+
+    UserDetail userDetail;
+    static SharedPreferences mPrefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,12 +121,19 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
 
         utilis = new Utilis(DirectoryMoreDetailsActivity.this);
 
+        mPrefs = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString("MyObject", "");
+        userDetail = gson.fromJson(json, UserDetail.class);
+
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
         strShopIndexId = intent.getStringExtra("shopId");
         strShopType = intent.getStringExtra("shopType");
         strLatitude = intent.getStringExtra("latitude");
         strLongitude = intent.getStringExtra("longitude");
+        strIsSubscribed = intent.getStringExtra("isSubscribed");
+        strConstPostType = intent.getStringExtra("constPostType");
 
         Window window = getWindow();
 
@@ -166,6 +189,255 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
 
         TextView toolBarTitle = findViewById(R.id.toolbar_title);
         toolBarTitle.setText("More Details");
+
+        layNotify = findViewById(R.id.lay_subscribe);
+        btnSubscribe = findViewById(R.id.btn_subscribe);
+        imgNotify = findViewById(R.id.img_subscribe);
+
+        if (Integer.parseInt(strIsSubscribed) == 0) {
+            btnSubscribe.setText("Subscribe");
+            imgNotify.setBackgroundResource(R.drawable.ic_outline_notifications_active_24);
+        } else {
+            btnSubscribe.setText("UnSubscribe");
+            imgNotify.setBackgroundResource(R.drawable.ic_bell_subscribe);
+        }
+
+        layNotify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Utilis.isInternetOn()) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(DirectoryMoreDetailsActivity.this);
+                    String state = Integer.parseInt(strIsSubscribed) == 0 ? "Subscribe" : "UnSubscribe";
+                    builder.setTitle("Confirmation")
+                            .setMessage("Are you sure want to " + state + " the shop?")
+                            .setPositiveButton(DirectoryMoreDetailsActivity.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Do nothing but close the dialog
+                                    dialog.dismiss();
+                                    if (Integer.parseInt(strIsSubscribed) == 0) {
+                                        subscribeShop();
+                                    } else {
+                                        unsubscribeShop();
+                                    }
+                                }
+                            })
+                            .setNegativeButton(DirectoryMoreDetailsActivity.this.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Do nothing
+                                    dialog.dismiss();
+                                }
+                            });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                    Button btn_yes = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+                    Button btn_no = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+                    btn_no.setTextColor(Color.parseColor("#000000"));
+                    btn_yes.setTextColor(Color.parseColor("#000000"));
+
+                } else {
+                    Toast.makeText(DirectoryMoreDetailsActivity.this, getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        layShare = findViewById(R.id.lay_share);
+        layShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("image/*");
+                i.putExtra(Intent.EXTRA_STREAM, getImageUri(getBitmapFromView(layMain)));
+                try {
+                    startActivity(Intent.createChooser(i, "My Profile ..."));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public Uri getImageUri(Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public static Bitmap getBitmapFromView(View view) {
+        //Define a bitmap with the same size as the view
+        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        //Bind a canvas to it
+        Canvas canvas = new Canvas(returnedBitmap);
+        //Get the view's background
+        Drawable bgDrawable = view.getBackground();
+        if (bgDrawable != null)
+            //has background drawable, then draw it on the canvas
+            bgDrawable.draw(canvas);
+        else
+            //does not have background drawable, then draw white background on the canvas
+            canvas.drawColor(Color.WHITE);
+        // draw the view on the canvas
+        view.draw(canvas);
+        //return the bitmap
+        return returnedBitmap;
+    }
+
+    private void unsubscribeShop() {
+        Utilis.showProgress(DirectoryMoreDetailsActivity.this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.unsubscribe, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    //converting response to json object
+                    JSONObject obj = new JSONObject(response);
+
+                    System.out.println(Tag + " unsubscribeShop response - " + response);
+
+                    Utilis.dismissProgress();
+
+                    String str_result = obj.getString("errorCode");
+                    String str_message = "";
+                    System.out.print(Tag + " unsubscribeShop result" + str_result);
+
+                    if (Integer.parseInt(str_result) == 0) {
+                        str_message = obj.getString("Message");
+
+                        strIsSubscribed = "0";
+                        btnSubscribe.setText("Subscribe");
+                        imgNotify.setBackgroundResource(R.drawable.ic_outline_notifications_active_24);
+
+                    } else if (Integer.parseInt(str_result) == 2) {
+                        str_message = obj.getString("Message");
+                        Toast.makeText(DirectoryMoreDetailsActivity.this, str_message, Toast.LENGTH_SHORT).show();
+
+                    } else if (Integer.parseInt(str_result) == 1) {
+                        str_message = obj.getString("Message");
+                        Toast.makeText(DirectoryMoreDetailsActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Utilis.dismissProgress();
+                Toast.makeText(DirectoryMoreDetailsActivity.this, getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                if (error instanceof NoConnectionError) {
+                    System.out.println("NoConnectionError");
+                } else if (error instanceof TimeoutError) {
+                    System.out.println("TimeoutError");
+
+                } else if (error instanceof ServerError) {
+                    System.out.println("ServerError");
+
+                } else if (error instanceof AuthFailureError) {
+                    System.out.println("AuthFailureError");
+
+                } else if (error instanceof NetworkError) {
+                    System.out.println("NetworkError");
+                }
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("shopType", strShopType);
+                params.put("shopId", strShopIndexId);
+                params.put("userIndexId", userDetail.getId());
+                System.out.println(Tag + " unsubscribeShop inputs " + params);
+                return params;
+            }
+        };
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(DirectoryMoreDetailsActivity.this).addToRequestQueue(stringRequest);
+    }
+
+    private void subscribeShop() {
+        Utilis.showProgress(DirectoryMoreDetailsActivity.this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.savesubscribers, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    //converting response to json object
+                    JSONObject obj = new JSONObject(response);
+
+                    System.out.println(Tag + " subscribeShop response - " + response);
+
+                    Utilis.dismissProgress();
+
+                    String str_result = obj.getString("errorCode");
+                    String str_message = "";
+                    System.out.print(Tag + " subscribeShop result" + str_result);
+
+                    if (Integer.parseInt(str_result) == 0) {
+                        str_message = obj.getString("Message");
+
+                        strIsSubscribed = "1";
+                        btnSubscribe.setText("UnSubscribe");
+                        imgNotify.setBackgroundResource(R.drawable.ic_bell_subscribe);
+                    } else if (Integer.parseInt(str_result) == 2) {
+                        str_message = obj.getString("Message");
+                        Toast.makeText(DirectoryMoreDetailsActivity.this, str_message, Toast.LENGTH_SHORT).show();
+
+                    } else if (Integer.parseInt(str_result) == 1) {
+                        str_message = obj.getString("Message");
+                        Toast.makeText(DirectoryMoreDetailsActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Utilis.dismissProgress();
+                Toast.makeText(DirectoryMoreDetailsActivity.this, getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                if (error instanceof NoConnectionError) {
+                    System.out.println("NoConnectionError");
+                } else if (error instanceof TimeoutError) {
+                    System.out.println("TimeoutError");
+
+                } else if (error instanceof ServerError) {
+                    System.out.println("ServerError");
+
+                } else if (error instanceof AuthFailureError) {
+                    System.out.println("AuthFailureError");
+
+                } else if (error instanceof NetworkError) {
+                    System.out.println("NetworkError");
+                }
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("shopType", strShopType);
+                params.put("shopId", strShopIndexId);
+                params.put("userIndexId", userDetail.getId());
+                System.out.println(Tag + " subscribeShop inputs " + params);
+                return params;
+            }
+        };
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(DirectoryMoreDetailsActivity.this).addToRequestQueue(stringRequest);
     }
 
     private void getApiCall() {
@@ -486,6 +758,8 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
     }
 
     private void back() {
+        Utilis.callResume = 1;
+        Utilis.constPostType = strConstPostType;
         finish();
     }
 

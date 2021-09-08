@@ -1,22 +1,12 @@
 package com.kart.support;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -84,6 +74,14 @@ public class Utilis {
     public static String viewdeals = "viewdeals";
     public static String getprofiledetails = "getprofiledetails";
     public static String updateprofile = "updateprofile";
+    public static String updatedeviceid = "updatedeviceid";
+    public static String savesubscribers = "savesubscribers";
+    public static String unsubscribe = "unsubscribe";
+    public static String sendpush = "sendpush";
+    public static String notificationlist = "notificationlist";
+    public static String applycode = "applycode";
+    public static String viewreferral = "viewreferral";
+    public static String amountcalculation = "amountcalculation";
 
     // Help and Support Url
     public static String helpUrl = "https://localkart.app/app/help-and-support.php";
@@ -92,6 +90,9 @@ public class Utilis {
     public static String shareUrl = "https://localkart.app/app/download.php";
     public static String rateUsUrl = "https://localkart.app/app/rate-us.php";
     public static String privacyPolicyUrl = "https://localkart.app/app/privacy-policy.php";
+
+    public static int callResume = 0;
+    public static String constPostType = "";
 
     public Utilis(Context con) {
         Utilis.con = con;

@@ -138,8 +138,8 @@ public class PreviewOfferActivity extends AppCompatActivity {
                 try {
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                    String shareMessage = "\n" + strShopName + " \n\n " + offerDataList.get(dealOffer).getHeading() + " \n\n " + offerDataList.get(dealOffer).getDesc() + " \n\nDownload Local Kart Now ";
+//                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
+                    String shareMessage = strShopName + " \n\n" + offerDataList.get(dealOffer).getHeading() + " \n\n" + offerDataList.get(dealOffer).getDesc() + " \n\nDownload Local Kart App Now ";
                     shareMessage = shareMessage + Utilis.shareUrl;
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                     startActivity(Intent.createChooser(shareIntent, "choose one"));

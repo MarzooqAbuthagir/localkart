@@ -60,6 +60,7 @@ import com.kart.model.LocationData;
 import com.kart.model.UploadImages;
 import com.kart.model.UserDetail;
 import com.kart.support.MyGridView;
+import com.kart.support.RegBusinessIdSharedPreference;
 import com.kart.support.RegBusinessSharedPrefrence;
 import com.kart.support.RegBusinessTypeSharedPreference;
 import com.kart.support.Utilis;
@@ -459,6 +460,7 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
                         RegBusinessSharedPrefrence.setMenuFlag(AdvertiseBusinessActivity5.this, "1");
 
                         RegBusinessTypeSharedPreference.setBusinessType(AdvertiseBusinessActivity5.this, "Shopping");
+                        RegBusinessIdSharedPreference.setBusinessId(AdvertiseBusinessActivity5.this, str_index_id);
 
                         Utilis.clearRegPref(AdvertiseBusinessActivity5.this);
 

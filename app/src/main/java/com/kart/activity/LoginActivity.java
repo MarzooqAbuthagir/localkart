@@ -31,8 +31,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.kart.R;
 import com.kart.model.UserDetail;
+import com.kart.support.App;
 import com.kart.support.GenericTextWatcher;
 import com.kart.support.LoginSharedPreference;
+import com.kart.support.RegBusinessIdSharedPreference;
 import com.kart.support.RegBusinessSharedPrefrence;
 import com.kart.support.RegBusinessTypeSharedPreference;
 import com.kart.support.Utilis;
@@ -56,11 +58,14 @@ public class LoginActivity extends AppCompatActivity {
     private String str_otp = "";
     private String str_flag = "";
     private String str_type = "";
+    private String str_shopId = "";
 
     private Dialog dialog;
 
     Utilis utilis;
     SharedPreferences mPrefs;
+
+    App app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,8 @@ public class LoginActivity extends AppCompatActivity {
 
         utilis = new Utilis(LoginActivity.this);
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
+
+        app = (App) getApplication();
 
         etMobile = findViewById(R.id.et_mobile);
         Button btnLogin = findViewById(R.id.btn_login);
@@ -166,6 +173,7 @@ public class LoginActivity extends AppCompatActivity {
                             str_otp = obj.getString("otp");
                             str_flag = obj.getString("flag");
                             str_type = obj.getString("type");
+                            str_shopId = obj.getString("shopId");
 
                             JSONObject json = obj.getJSONObject("result");
                             UserDetail userDetail = new UserDetail();
@@ -293,6 +301,11 @@ public class LoginActivity extends AppCompatActivity {
                         str_type = str_type != null ? str_type : "";
                         RegBusinessTypeSharedPreference.setBusinessType(LoginActivity.this, str_type);
 
+                        str_shopId = str_shopId != null ? str_shopId : "";
+                        RegBusinessIdSharedPreference.setBusinessId(LoginActivity.this, str_shopId);
+
+                        app.initMethod(userDetail.getId());
+
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtra("key", "Shopping");
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -343,6 +356,11 @@ public class LoginActivity extends AppCompatActivity {
 
                     str_type = str_type != null ? str_type : "";
                     RegBusinessTypeSharedPreference.setBusinessType(LoginActivity.this, str_type);
+
+                    str_shopId = str_shopId != null ? str_shopId : "";
+                    RegBusinessIdSharedPreference.setBusinessId(LoginActivity.this, str_shopId);
+
+                    app.initMethod(userDetail.getId());
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("key", "Shopping");

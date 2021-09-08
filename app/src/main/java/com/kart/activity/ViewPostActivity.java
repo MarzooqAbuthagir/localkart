@@ -37,13 +37,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.kart.R;
 import com.kart.adapter.OfferAdapter;
-import com.kart.adapter.ViewPagerAdapter;
 import com.kart.adapter.ViewPagerShopBannerAdapter;
 import com.kart.model.AccessOptions;
 import com.kart.model.AddOfferData;
 import com.kart.model.ShopBanner;
 import com.kart.model.UserDetail;
 import com.kart.model.ViewOfferData;
+import com.kart.support.App;
+import com.kart.support.RegBusinessIdSharedPreference;
 import com.kart.support.RegBusinessTypeSharedPreference;
 import com.kart.support.Utilis;
 import com.kart.support.VolleySingleton;
@@ -56,8 +57,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ViewPostActivity extends AppCompatActivity {
     private String Tag = "ViewPostActivity";
@@ -65,7 +64,7 @@ public class ViewPostActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "", strFromDate = "", strToDate = "", strAccessOption = "", strLati ="", strLongi="", strPostType ="", strFestivalName ="";
+    String keyIntent = "", strFromDate = "", strToDate = "", strAccessOption = "", strLati = "", strLongi = "", strPostType = "", strFestivalName = "";
     RecyclerView recyclerView;
     List<AddOfferData> offerDataList;
     OfferAdapter offerAdapter;
@@ -74,7 +73,7 @@ public class ViewPostActivity extends AppCompatActivity {
     private static ViewPager mPager;
     LinearLayout sliderDotspanel;
     private static int currentPage = 0;
-//    Timer swipeTimer;
+    //    Timer swipeTimer;
 //    final long DELAY_MS = 1000;//delay in milliseconds before task is to be executed
 //    final long PERIOD_MS = 4500; // time in milliseconds between successive task executions.
     Handler handler = new Handler();
@@ -88,12 +87,16 @@ public class ViewPostActivity extends AppCompatActivity {
     List<ShopBanner> shopBannerList = new ArrayList<>();
     ViewPagerShopBannerAdapter viewPagerAdapter;
 
+    App app;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_post);
 
         utilis = new Utilis(ViewPostActivity.this);
+
+        app = (App) getApplication();
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -299,7 +302,8 @@ public class ViewPostActivity extends AppCompatActivity {
 
                             str_message = obj.getString("message");
                             String str_post_index_id = obj.getString("postIndexId");
-                            sendOffer(str_post_index_id);
+                            String isBoost = obj.getString("isBoost");
+                            sendOffer(str_post_index_id, isBoost);
 
                         } else if (Integer.parseInt(str_result) == 2) {
                             str_message = obj.getString("message");
@@ -353,7 +357,7 @@ public class ViewPostActivity extends AppCompatActivity {
         }
     }
 
-    private void sendOffer(final String str_post_index_id) {
+    private void sendOffer(final String str_post_index_id, final String isBoost) {
         if (Utilis.isInternetOn()) {
             Utilis.showProgress(ViewPostActivity.this);
 
@@ -376,6 +380,11 @@ public class ViewPostActivity extends AppCompatActivity {
                             if (Integer.parseInt(str_result) == 0) {
                                 str_message = obj.getString("message");
                                 if (currentPos + 1 == offerDataList.size()) {
+                                    if (isBoost.equalsIgnoreCase("Yes")) {
+                                        app.notifyToUsers(str_post_index_id,
+                                                RegBusinessIdSharedPreference.getBusinessId(ViewPostActivity.this),
+                                                RegBusinessTypeSharedPreference.getBusinessType(ViewPostActivity.this));
+                                    }
                                     Utilis.dismissProgress();
                                     Intent intent = new Intent(ViewPostActivity.this, ManageBusinessActivity.class);
                                     intent.putExtra("key", keyIntent);
@@ -544,7 +553,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
     private void setViews(ViewOfferData viewOfferData) {
         tvShopName.setText(viewOfferData.getName());
-        tvDirection.setText(viewOfferData.getDistance()+" • Map");
+        tvDirection.setText(viewOfferData.getDistance() + " • Map");
         tvAccessKey.setText(viewOfferData.getAccessOptions().getKey());
         tvAccessValue.setText(viewOfferData.getAccessOptions().getValue());
 
@@ -612,7 +621,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
         sliderDotspanel.removeAllViews();
 
-        for(int j = 0; j < dotscount; j++){
+        for (int j = 0; j < dotscount; j++) {
 
             dots[j] = new ImageView(ViewPostActivity.this);
             dots[j].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));

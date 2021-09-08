@@ -3,9 +3,6 @@ package com.kart.adapter;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,11 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestOptions;
 import com.kart.R;
 import com.kart.activity.DealsMoreDetailsActivity;
 import com.kart.model.DealsOfferData;
+import com.kart.support.Utilis;
 import com.kart.support.tooltip.SimpleTooltip;
 
 import java.util.List;
@@ -37,14 +33,22 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
     private int tabPos;
     private double latitude;
     private double longitude;
+    private String constPostType;
 
-    public DealsAdapter(Context context, List<DealsOfferData> directoryDataList, String strType, int i, double latitude, double longitude) {
+    private OnItemClickListener mItemClickListener;
+
+    public DealsAdapter(Context context, List<DealsOfferData> directoryDataList, String strType, int i, double latitude, double longitude, String constPostType) {
         this.con = context;
         this.arrayList = directoryDataList;
         this.identity = strType;
         this.tabPos = i;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.constPostType = constPostType;
+    }
+
+    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
+        this.mItemClickListener = mItemClickListener;
     }
 
     @NonNull
@@ -55,7 +59,7 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DealsAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final DealsAdapter.ViewHolder holder, final int position) {
         if (tabPos == 0) {
             holder.tvDate.setText(arrayList.get(position).getFromDate() + " To " + arrayList.get(position).getToDate());
         } else {
@@ -155,7 +159,7 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
                         break;
 
                     case "WhatsApp":
-                        String url = "https://api.whatsapp.com/send?phone=+91"+arrayList.get(position).getAccessOptions().getValue();
+                        String url = "https://api.whatsapp.com/send?phone=+91" + arrayList.get(position).getAccessOptions().getValue();
                         Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setData(Uri.parse(url));
                         con.startActivity(i);
@@ -201,6 +205,8 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
                 intent.putExtra("longitude", String.valueOf(longitude));
                 intent.putExtra("shopLatitude", arrayList.get(position).getLatitude());
                 intent.putExtra("shopLongitude", arrayList.get(position).getLongitude());
+                intent.putExtra("isSubscribed", arrayList.get(position).getIsSubscribed());
+                intent.putExtra("constPostType", constPostType);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 con.startActivity(intent);
             }
@@ -237,6 +243,45 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
                         .show();
             }
         });
+
+        if (arrayList.get(position).getIsSubscribed().equalsIgnoreCase("0")) {
+            holder.ivNotify.setBackgroundResource(R.drawable.ic_bell);
+        } else {
+            holder.ivNotify.setBackgroundResource(R.drawable.ic_bell_subscribe);
+        }
+        holder.layNotify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (mItemClickListener != null) {
+                    mItemClickListener.onItemClick(view, holder.getAdapterPosition());
+                }
+            }
+        });
+
+        holder.layShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    String shareMessage = "";
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+//                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
+                    if (arrayList.get(position).getOfferCount().equalsIgnoreCase("1"))
+                        shareMessage = arrayList.get(position).getName() + " \n\n" + arrayList.get(position).getOfferHeading() + " \n\n" + arrayList.get(position).getOffferDesc() + " \n\nDownload Local Kart App Now ";
+                    else
+                    {
+                        int count = Integer.parseInt(arrayList.get(position).getOfferCount()) - 1;
+                        shareMessage = arrayList.get(position).getName() + " \n\n" + arrayList.get(position).getOfferHeading() + " \n\n" + arrayList.get(position).getOffferDesc() + "\n\nand " + count + " more deals" + " \n\nDownload Local Kart App Now ";
+                    }
+                    shareMessage = shareMessage + Utilis.shareUrl;
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    con.startActivity(Intent.createChooser(shareIntent, "choose one"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -255,6 +300,7 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
         LinearLayout layAccessOption;
         LinearLayout layMoreDetails;
         LinearLayout layDirection;
+        LinearLayout layNotify, layShare;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -271,6 +317,12 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
             layMoreDetails = itemView.findViewById(R.id.lay_more_details);
             layDirection = itemView.findViewById(R.id.lay_direction);
             ivAccessOption = itemView.findViewById(R.id.iv_access_option);
+            layNotify = itemView.findViewById(R.id.lay_notify);
+            layShare = itemView.findViewById(R.id.lay_share);
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 }

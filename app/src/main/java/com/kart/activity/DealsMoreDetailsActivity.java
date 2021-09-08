@@ -1,7 +1,11 @@
 package com.kart.activity;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +13,7 @@ import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -16,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -33,12 +39,14 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
 import com.kart.R;
 import com.kart.adapter.OfferAdapter;
 import com.kart.adapter.ViewPagerShopBannerAdapter;
 import com.kart.model.AccessOptions;
 import com.kart.model.AddOfferData;
 import com.kart.model.ShopBanner;
+import com.kart.model.UserDetail;
 import com.kart.support.Utilis;
 import com.kart.support.VolleySingleton;
 
@@ -50,8 +58,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class DealsMoreDetailsActivity extends AppCompatActivity {
     private String Tag = "DealsMoreDetailsActivity";
@@ -60,7 +66,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "", strPostIndexId = "", strShopIndexId = "", strType = "", strLatitude = "", strLongitude = "";
+    String keyIntent = "", strPostIndexId = "", strShopIndexId = "", strType = "", strLatitude = "", strLongitude = "", strIsSubscribed = "", strConstPostType = "";
     String str_result = "", str_message = "";
     String strShopLati = "", strShopLongi = "";
 
@@ -70,7 +76,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
     private static ViewPager mPager;
     LinearLayout sliderDotspanel;
     private static int currentPage = 0;
-//    Timer swipeTimer;
+    //    Timer swipeTimer;
 //    final long DELAY_MS = 1000; //delay in milliseconds before task is to be executed
 //    final long PERIOD_MS = 4500; // time in milliseconds between successive task executions.
     Handler handler = new Handler();
@@ -84,12 +90,26 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
     List<AddOfferData> offerDataList = new ArrayList<>();
     OfferAdapter offerAdapter;
 
+    LinearLayout layNotify, layShare;
+    ImageView imgNotify;
+    Button btnSubscribe;
+
+    UserDetail userDetail;
+    static SharedPreferences mPrefs;
+
+    String strShopName = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deals_more_details);
 
         utilis = new Utilis(DealsMoreDetailsActivity.this);
+
+        mPrefs = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString("MyObject", "");
+        userDetail = gson.fromJson(json, UserDetail.class);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -100,6 +120,8 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
         strLongitude = intent.getStringExtra("longitude");
         strShopLati = intent.getStringExtra("shopLatitude");
         strShopLongi = intent.getStringExtra("shopLongitude");
+        strIsSubscribed = intent.getStringExtra("isSubscribed");
+        strConstPostType = intent.getStringExtra("constPostType");
 
         Window window = getWindow();
 
@@ -144,6 +166,237 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
         TextView toolBarTitle = findViewById(R.id.toolbar_title);
         toolBarTitle.setText("More Details");
 
+        layNotify = findViewById(R.id.lay_subscribe);
+        btnSubscribe = findViewById(R.id.btn_subscribe);
+        imgNotify = findViewById(R.id.img_subscribe);
+
+        if (Integer.parseInt(strIsSubscribed) == 0) {
+            btnSubscribe.setText("Subscribe");
+            imgNotify.setBackgroundResource(R.drawable.ic_outline_notifications_active_24);
+        } else {
+            btnSubscribe.setText("UnSubscribe");
+            imgNotify.setBackgroundResource(R.drawable.ic_bell_subscribe);
+        }
+
+        layNotify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Utilis.isInternetOn()) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(DealsMoreDetailsActivity.this);
+                    String state = Integer.parseInt(strIsSubscribed) == 0 ? "Subscribe" : "UnSubscribe";
+                    builder.setTitle("Confirmation")
+                            .setMessage("Are you sure want to " + state + " the shop?")
+                            .setPositiveButton(DealsMoreDetailsActivity.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Do nothing but close the dialog
+                                    dialog.dismiss();
+                                    if (Integer.parseInt(strIsSubscribed) == 0) {
+                                        subscribeShop();
+                                    } else {
+                                        unsubscribeShop();
+                                    }
+                                }
+                            })
+                            .setNegativeButton(DealsMoreDetailsActivity.this.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Do nothing
+                                    dialog.dismiss();
+                                }
+                            });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                    Button btn_yes = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+                    Button btn_no = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+                    btn_no.setTextColor(Color.parseColor("#000000"));
+                    btn_yes.setTextColor(Color.parseColor("#000000"));
+
+                } else {
+                    Toast.makeText(DealsMoreDetailsActivity.this, getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        layShare = findViewById(R.id.lay_share);
+        layShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    String shareMessage = "";
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+//                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
+                    if (offerDataList.size() == 1)
+                        shareMessage = strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + " \n\nDownload Local Kart App Now ";
+                    else {
+                        int count = offerDataList.size() - 1;
+                        shareMessage = strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + "\n\nand " + count + " more deals" + " \n\nDownload Local Kart App Now ";
+                    }
+                    shareMessage = shareMessage + Utilis.shareUrl;
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    startActivity(Intent.createChooser(shareIntent, "choose one"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+    private void unsubscribeShop() {
+        Utilis.showProgress(DealsMoreDetailsActivity.this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.unsubscribe, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    //converting response to json object
+                    JSONObject obj = new JSONObject(response);
+
+                    System.out.println(Tag + " unsubscribeShop response - " + response);
+
+                    Utilis.dismissProgress();
+
+                    String str_result = obj.getString("errorCode");
+                    String str_message = "";
+                    System.out.print(Tag + " unsubscribeShop result" + str_result);
+
+                    if (Integer.parseInt(str_result) == 0) {
+                        str_message = obj.getString("Message");
+
+                        strIsSubscribed = "0";
+                        btnSubscribe.setText("Subscribe");
+                        imgNotify.setBackgroundResource(R.drawable.ic_outline_notifications_active_24);
+
+                    } else if (Integer.parseInt(str_result) == 2) {
+                        str_message = obj.getString("Message");
+                        Toast.makeText(DealsMoreDetailsActivity.this, str_message, Toast.LENGTH_SHORT).show();
+
+                    } else if (Integer.parseInt(str_result) == 1) {
+                        str_message = obj.getString("Message");
+                        Toast.makeText(DealsMoreDetailsActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Utilis.dismissProgress();
+                Toast.makeText(DealsMoreDetailsActivity.this, getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                if (error instanceof NoConnectionError) {
+                    System.out.println("NoConnectionError");
+                } else if (error instanceof TimeoutError) {
+                    System.out.println("TimeoutError");
+
+                } else if (error instanceof ServerError) {
+                    System.out.println("ServerError");
+
+                } else if (error instanceof AuthFailureError) {
+                    System.out.println("AuthFailureError");
+
+                } else if (error instanceof NetworkError) {
+                    System.out.println("NetworkError");
+                }
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("shopType", strType);
+                params.put("shopId", strShopIndexId);
+                params.put("userIndexId", userDetail.getId());
+                System.out.println(Tag + " unsubscribeShop inputs " + params);
+                return params;
+            }
+        };
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(DealsMoreDetailsActivity.this).addToRequestQueue(stringRequest);
+    }
+
+    private void subscribeShop() {
+        Utilis.showProgress(DealsMoreDetailsActivity.this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.savesubscribers, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    //converting response to json object
+                    JSONObject obj = new JSONObject(response);
+
+                    System.out.println(Tag + " subscribeShop response - " + response);
+
+                    Utilis.dismissProgress();
+
+                    String str_result = obj.getString("errorCode");
+                    String str_message = "";
+                    System.out.print(Tag + " subscribeShop result" + str_result);
+
+                    if (Integer.parseInt(str_result) == 0) {
+                        str_message = obj.getString("Message");
+
+                        strIsSubscribed = "1";
+                        btnSubscribe.setText("UnSubscribe");
+                        imgNotify.setBackgroundResource(R.drawable.ic_bell_subscribe);
+                    } else if (Integer.parseInt(str_result) == 2) {
+                        str_message = obj.getString("Message");
+                        Toast.makeText(DealsMoreDetailsActivity.this, str_message, Toast.LENGTH_SHORT).show();
+
+                    } else if (Integer.parseInt(str_result) == 1) {
+                        str_message = obj.getString("Message");
+                        Toast.makeText(DealsMoreDetailsActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Utilis.dismissProgress();
+                Toast.makeText(DealsMoreDetailsActivity.this, getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                if (error instanceof NoConnectionError) {
+                    System.out.println("NoConnectionError");
+                } else if (error instanceof TimeoutError) {
+                    System.out.println("TimeoutError");
+
+                } else if (error instanceof ServerError) {
+                    System.out.println("ServerError");
+
+                } else if (error instanceof AuthFailureError) {
+                    System.out.println("AuthFailureError");
+
+                } else if (error instanceof NetworkError) {
+                    System.out.println("NetworkError");
+                }
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("shopType", strType);
+                params.put("shopId", strShopIndexId);
+                params.put("userIndexId", userDetail.getId());
+                System.out.println(Tag + " subscribeShop inputs " + params);
+                return params;
+            }
+        };
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(DealsMoreDetailsActivity.this).addToRequestQueue(stringRequest);
     }
 
     private void getApiCall() {
@@ -172,7 +425,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
                             str_message = obj.getString("message");
 
                             JSONObject json = obj.getJSONObject("result");
-
+                            strShopName = json.getString("shopName");
                             tvShopName.setText(json.getString("shopName"));
                             tvDate.setText(json.getString("fromDate") + " To " + json.getString("toDate"));
                             tvDirection.setText(json.getString("distance") + " • Map");
@@ -327,7 +580,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
                         break;
 
                     case "WhatsApp":
-                        String url = "https://api.whatsapp.com/send?phone=+91"+accessValue;
+                        String url = "https://api.whatsapp.com/send?phone=+91" + accessValue;
                         Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setData(Uri.parse(url));
                         startActivity(i);
@@ -442,6 +695,8 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
     }
 
     private void back() {
+        Utilis.callResume = 1;
+        Utilis.constPostType = strConstPostType;
         finish();
     }
 

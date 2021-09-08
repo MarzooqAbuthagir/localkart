@@ -53,6 +53,7 @@ import com.kart.adapter.ViewPagerAdapter;
 import com.kart.model.CategoryData;
 import com.kart.model.SilderData;
 import com.kart.model.UserDetail;
+import com.kart.support.App;
 import com.kart.support.LoginSharedPreference;
 import com.kart.support.RegBusinessSharedPrefrence;
 import com.kart.support.Utilis;
@@ -98,8 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     UserDetail userDetail;
     static SharedPreferences mPrefs;
 
-    private TextView tvName, tvMob;
-    private ImageView imgDp;
+    App app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Gson gson = new Gson();
         String json = mPrefs.getString("MyObject", "");
         userDetail = gson.fromJson(json, UserDetail.class);
+
+        app = (App) getApplication();
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -164,10 +166,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(MainActivity.this);
 
         header = navigationView.getHeaderView(0);
-        imgDp = header.findViewById(R.id.img_dp);
+        ImageView imgDp = header.findViewById(R.id.img_dp);
 
-        tvName = header.findViewById(R.id.tv_name);
-        tvMob = header.findViewById(R.id.tv_mob);
+        TextView tvName = header.findViewById(R.id.tv_name);
+        TextView tvMob = header.findViewById(R.id.tv_mob);
 
         tvName.setText(userDetail.getName());
         tvMob.setText(userDetail.getMobile());
@@ -184,6 +186,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         silders = new ArrayList<>();
 
         getBannerImages();
+
+        app.initMethod(userDetail.getId());
 
         btnShopping = findViewById(R.id.btn_shopping);
         btnServices = findViewById(R.id.btn_services);
@@ -507,14 +511,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_refer) {
-
+            Intent intent = new Intent(MainActivity.this, ReferralActivity.class);
+            intent.putExtra("key", keyIntent);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
         } else if (id == R.id.nav_share) {
 
             try {
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                String shareMessage = "\nLocal Kart \nWhy Shop Online? Shop Nearby !\n\nGet More Deals and Benefits !\n\nDownload App Now ";
+//                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
+                String shareMessage = "Local Kart \nWhy Shop Online? Shop Nearby !\n\nGet More Deals and Benefits !\n\nDownload Local Kart App Now ";
                 shareMessage = shareMessage + Utilis.shareUrl;
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                 startActivity(Intent.createChooser(shareIntent, "choose one"));
@@ -536,6 +544,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();
         } else if (id == R.id.nav_privacy_policy) {
             Intent intent = new Intent(MainActivity.this, PrivacyPolicyActivity.class);
+            intent.putExtra("key", keyIntent);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_notification) {
+            Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
             intent.putExtra("key", keyIntent);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

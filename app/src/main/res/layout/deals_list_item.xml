@@ -44,8 +44,7 @@
                 android:id="@+id/iv_notify"
                 android:layout_gravity="center"
                 android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:src="@drawable/ic_bell" />
+                android:layout_height="14dp" />
             </LinearLayout>
             <View
                 android:id="@+id/view1"

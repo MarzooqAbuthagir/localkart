@@ -18,15 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestOptions;
 import com.kart.R;
 import com.kart.activity.DirectoryMoreDetailsActivity;
 import com.kart.model.DirectoryData;
 import com.kart.support.tooltip.SimpleTooltip;
 
 import java.util.List;
-import java.util.Locale;
 
 public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.ViewHolder> {
     private Context con;
@@ -35,12 +32,18 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
     private double latitude;
     private double longitude;
 
+    private OnItemClickListener mItemClickListener;
+
     public DirectoryAdapter(Context context, List<DirectoryData> directoryDataList, String strType, double latitude, double longitude) {
         this.con = context;
         this.arrayList = directoryDataList;
         this.identity = strType;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
+        this.mItemClickListener = mItemClickListener;
     }
 
     @NonNull
@@ -51,7 +54,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         holder.tvShopName.setText(arrayList.get(position).getName());
         holder.tvShopDesc.setText(arrayList.get(position).getDescription());
         holder.tvDistance.setText(arrayList.get(position).getDistance());
@@ -81,6 +84,8 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
                 intent.putExtra("shopType", arrayList.get(position).getShopType());
                 intent.putExtra("latitude", String.valueOf(latitude));
                 intent.putExtra("longitude", String.valueOf(longitude));
+                intent.putExtra("isSubscribed", arrayList.get(position).getIsSubscribed());
+                intent.putExtra("constPostType", "DIRECTORY");
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 con.startActivity(intent);
             }
@@ -117,6 +122,22 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
                         .show();
             }
         });
+
+        if (arrayList.get(position).getIsSubscribed().equalsIgnoreCase("0")) {
+            holder.ivNotify.setBackgroundResource(R.drawable.ic_bell);
+        } else {
+            holder.ivNotify.setBackgroundResource(R.drawable.ic_bell_subscribe);
+        }
+
+        holder.layNotify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (mItemClickListener != null) {
+                    mItemClickListener.onItemClick(view, holder.getAdapterPosition());
+                }
+            }
+        });
     }
 
     @Override
@@ -126,7 +147,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvShopName;
-        ImageView ivShare;
+        ImageView ivShare, ivNotify;
         ImageView ivShopLogo;
         TextView tvShopDesc;
         TextView tvDistance;
@@ -134,6 +155,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
         LinearLayout layCall;
         LinearLayout layMoreDetails;
         LinearLayout layDirection;
+        LinearLayout layNotify;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -146,6 +168,12 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
             layCall = itemView.findViewById(R.id.lay_call);
             layMoreDetails = itemView.findViewById(R.id.lay_more_details);
             layDirection = itemView.findViewById(R.id.lay_direction);
+            ivNotify = itemView.findViewById(R.id.iv_notify);
+            layNotify = itemView.findViewById(R.id.lay_notify);
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 }

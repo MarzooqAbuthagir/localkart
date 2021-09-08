@@ -42,7 +42,7 @@ public class CategoryAdapter extends ArrayAdapter<CategoryData> {
         TextView categoryName = listitemView.findViewById(R.id.tv_categoryName);
         ImageView categoryImg = listitemView.findViewById(R.id.iv_categoryImg);
         assert categoryData != null;
-        System.out.println("category image "+categoryData.getCategoryImage());
+//        System.out.println("category image "+categoryData.getCategoryImage());
         categoryName.setText(categoryData.getCategoryName());
         Glide.with(con).load(categoryData.getCategoryImage())
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(categoryImg);

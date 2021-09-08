@@ -43,6 +43,7 @@ import com.kart.model.AccessOptions;
 import com.kart.model.ShopBanner;
 import com.kart.model.UserDetail;
 import com.kart.model.ViewOfferData;
+import com.kart.support.App;
 import com.kart.support.RegBusinessTypeSharedPreference;
 import com.kart.support.Utilis;
 import com.kart.support.VolleySingleton;
@@ -64,7 +65,7 @@ public class ViewRepostActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "", strFromDate = "", strToDate = "", strAccessOption = "", strLati = "", strLongi = "", strPostType = "", strFestivalName = "";
+    String keyIntent = "", strFromDate = "", strToDate = "", strAccessOption = "", strLati = "", strLongi = "", strPostType = "", strFestivalName = "", strShopIndexId = "", strShopType = "";
     RecyclerView recyclerView;
     List<OfferData> offerDataList;
     ReOfferAdapter offerAdapter;
@@ -87,12 +88,16 @@ public class ViewRepostActivity extends AppCompatActivity {
     List<ShopBanner> shopBannerList = new ArrayList<>();
     ViewPagerShopBannerAdapter viewPagerAdapter;
 
+    App app;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_repost);
 
         utilis = new Utilis(ViewRepostActivity.this);
+
+        app = (App) getApplication();
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -109,6 +114,8 @@ public class ViewRepostActivity extends AppCompatActivity {
         strPostType = intent.getStringExtra("postType");
         strFestivalName = intent.getStringExtra("festivalName");
         offerDataList = Utilis.getReOfferList("offerList");
+        strShopIndexId = intent.getStringExtra("shopIndexId");
+        strShopType = intent.getStringExtra("shopType");
 
         if (offerDataList != null) {
             System.out.println("array list contains images");
@@ -497,7 +504,8 @@ public class ViewRepostActivity extends AppCompatActivity {
 
                             str_message = obj.getString("message");
                             String str_post_index_id = obj.getString("postIndexId");
-                            sendOffer(str_post_index_id);
+                            String isBoost = obj.getString("isBoost");
+                            sendOffer(str_post_index_id, isBoost);
 
                         } else if (Integer.parseInt(str_result) == 2) {
                             str_message = obj.getString("message");
@@ -551,7 +559,7 @@ public class ViewRepostActivity extends AppCompatActivity {
         }
     }
 
-    private void sendOffer(final String str_post_index_id) {
+    private void sendOffer(final String str_post_index_id, final String isBoost) {
         if (Utilis.isInternetOn()) {
             Utilis.showProgress(ViewRepostActivity.this);
 
@@ -574,6 +582,9 @@ public class ViewRepostActivity extends AppCompatActivity {
                             if (Integer.parseInt(str_result) == 0) {
                                 str_message = obj.getString("message");
                                 if (currentPos + 1 == offerDataList.size()) {
+                                    if (isBoost.equalsIgnoreCase("Yes")) {
+                                        app.notifyToUsers(str_post_index_id, strShopIndexId, strShopType);
+                                    }
                                     Utilis.dismissProgress();
                                     back();
                                 }

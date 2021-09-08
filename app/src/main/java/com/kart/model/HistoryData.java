@@ -11,8 +11,9 @@ public class HistoryData {
     private String shopIndexId;
     private String shopLatitude;
     private String shopLongitude;
+    private String status;
 
-    public HistoryData(String postIndexId, String postDate, String postCode, String type, String heading, String count, String shopType, String shopId, String shopLati, String shopLongi) {
+    public HistoryData(String postIndexId, String postDate, String postCode, String type, String heading, String count, String shopType, String shopId, String shopLati, String shopLongi, String status) {
         this.postIndexId = postIndexId;
         this.postDate = postDate;
         this.postCode = postCode;
@@ -21,8 +22,9 @@ public class HistoryData {
         this.count = count;
         this.shopType = shopType;
         this.shopIndexId = shopId;
-        this.shopLatitude= shopLati;
+        this.shopLatitude = shopLati;
         this.shopLongitude = shopLongi;
+        this.status = status;
     }
 
     public String getShopType() {
@@ -103,5 +105,13 @@ public class HistoryData {
 
     public void setCount(String count) {
         this.count = count;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

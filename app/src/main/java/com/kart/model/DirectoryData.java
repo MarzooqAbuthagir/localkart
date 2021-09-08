@@ -10,20 +10,9 @@ public class DirectoryData {
     private String shopType;
     private String latitude;
     private String longitude;
+    private String isSubscribed;
 
     public DirectoryData() {
-    }
-
-    public DirectoryData(String name, String logo, String distance, AccessOptions accessOptions, String description, String shopId, String shopType, String latitude, String longitude) {
-        this.name = name;
-        this.logo = logo;
-        this.distance = distance;
-        this.accessOptions = accessOptions;
-        this.description = description;
-        this.shopId = shopId;
-        this.shopType = shopType;
-        this.latitude = latitude;
-        this.longitude = longitude;
     }
 
     public String getShopType() {
@@ -96,5 +85,13 @@ public class DirectoryData {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public String getIsSubscribed() {
+        return isSubscribed;
+    }
+
+    public void setIsSubscribed(String isSubscribed) {
+        this.isSubscribed = isSubscribed;
     }
 }

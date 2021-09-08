@@ -35,8 +35,10 @@ import com.kart.R;
 import com.kart.model.DistrictData;
 import com.kart.model.StateData;
 import com.kart.model.UserDetail;
+import com.kart.support.App;
 import com.kart.support.GenericTextWatcher;
 import com.kart.support.LoginSharedPreference;
+import com.kart.support.RegBusinessIdSharedPreference;
 import com.kart.support.RegBusinessSharedPrefrence;
 import com.kart.support.RegBusinessTypeSharedPreference;
 import com.kart.support.Utilis;
@@ -78,6 +80,8 @@ public class RegisterActivity extends AppCompatActivity {
     Utilis utilis;
     SharedPreferences mPrefs;
 
+    App app;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +89,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         utilis = new Utilis(RegisterActivity.this);
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
+
+        app = (App) getApplication();
 
         etName = findViewById(R.id.et_name);
         etMobile = findViewById(R.id.et_mobile);
@@ -386,6 +392,9 @@ public class RegisterActivity extends AppCompatActivity {
                             RegBusinessSharedPrefrence.setMenuFlag(RegisterActivity.this, "0");
 
                             RegBusinessTypeSharedPreference.setBusinessType(RegisterActivity.this, "");
+                            RegBusinessIdSharedPreference.setBusinessId(RegisterActivity.this, "");
+
+                            app.initMethod(userDetail.getId());
 
                             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                             intent.putExtra("key", "Shopping");
