@@ -81,14 +81,14 @@ public class ProfileActivity extends AppCompatActivity {
 
     String keyIntent = "";
 
-    EditText etName, etMobile, etEmail, etCountry, etLanguage, etUserType, etUserId;
+    EditText etName, etMobile, etEmail, etCountry, etLanguage, etUserType, etUserId, etState, etDistrict;
     private SearchableSpinner spinState;
-    private ArrayList<StateData> stateListValue = new ArrayList<StateData>();
-    private List<String> stateSpinnerValue = new ArrayList<>();
+    private final ArrayList<StateData> stateListValue = new ArrayList<StateData>();
+    private final List<String> stateSpinnerValue = new ArrayList<>();
 
     private SearchableSpinner spinDistrict;
-    private ArrayList<DistrictData> districtListValue = new ArrayList<DistrictData>();
-    private List<String> districtSpinnerValue = new ArrayList<>();
+    private final ArrayList<DistrictData> districtListValue = new ArrayList<DistrictData>();
+    private final List<String> districtSpinnerValue = new ArrayList<>();
 
     private String strName = "", strMobile = "", strEmail = "", strCountry = "", strLanguage = "", strUserType = "", strUserId = "", strStateId = "", strDistrictId = "";
     String str_result = "", str_message = "";
@@ -167,8 +167,11 @@ public class ProfileActivity extends AppCompatActivity {
         etUserType = findViewById(R.id.et_user_type);
         etUserId = findViewById(R.id.et_user_id);
 
+        etState = findViewById(R.id.et_state);
+        etDistrict = findViewById(R.id.et_district);
+
         spinState.setTitle("Select State");
-        spinDistrict.setTitle("Select District");
+        spinDistrict.setTitle("Select District / Zone");
 
         imgDp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,7 +197,7 @@ public class ProfileActivity extends AppCompatActivity {
                     strStateId = "";
                     DistrictData initDistrictData = new DistrictData();
                     initDistrictData.setDistrictId("-1");
-                    initDistrictData.setDistrictName("District");
+                    initDistrictData.setDistrictName("District / Zone");
                     districtListValue.add(0, initDistrictData);
 
                     districtSpinnerValue.add(districtListValue.get(0).getDistrictName());
@@ -391,7 +394,7 @@ public class ProfileActivity extends AppCompatActivity {
             return false;
         }
         if (strDistrictId.isEmpty()) {
-            Toast.makeText(this, "Select district", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Select district / zone", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -527,7 +530,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                             DistrictData initDistrictData = new DistrictData();
                             initDistrictData.setDistrictId("-1");
-                            initDistrictData.setDistrictName("District");
+                            initDistrictData.setDistrictName("District / Zone");
                             districtListValue.add(0, initDistrictData);
 
                             districtSpinnerValue.clear();
@@ -539,6 +542,7 @@ public class ProfileActivity extends AppCompatActivity {
                             for (int i = 0; i < districtListValue.size(); i++) {
                                 if (districtListValue.get(i).getDistrictId().equalsIgnoreCase(strDistrictId)) {
                                     prefPos = i;
+                                    etDistrict.setText(districtListValue.get(i).getDistrictName());
                                     break;
                                 }
                             }
@@ -646,6 +650,8 @@ public class ProfileActivity extends AppCompatActivity {
                             for (int i = 0; i < stateListValue.size(); i++) {
                                 if (stateListValue.get(i).getStateId().equalsIgnoreCase(strStateId)) {
                                     prefPos = i;
+                                    getDistrictList();
+                                    etState.setText(stateListValue.get(i).getStateName());
                                     break;
                                 }
                             }

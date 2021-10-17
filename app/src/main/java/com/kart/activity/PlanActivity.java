@@ -477,9 +477,10 @@ public class PlanActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String planId = planPrices.get(position).getPlanId();
+                String planName = planPrices.get(position).getPlanName();
 //                String[] amount = tvAmount.getText().toString().trim().split(" ");
                 String[] amount = tvFinalAmount.getText().toString().trim().split(" ");
-                getPaymentApiCall(planId, amount[1]);
+                getPaymentApiCall(planId, amount[1], planName);
             }
         });
         alertDialog.show();
@@ -812,7 +813,7 @@ public class PlanActivity extends AppCompatActivity {
         }
     }
 
-    private void getPaymentApiCall(final String planId, final String amount) {
+    private void getPaymentApiCall(final String planId, final String amount, final String planName) {
         if (Utilis.isInternetOn()) {
             Utilis.showProgress(PlanActivity.this);
 
@@ -838,6 +839,8 @@ public class PlanActivity extends AppCompatActivity {
                             Intent intent = new Intent(PlanActivity.this, PayWebViewActivity.class);
                             intent.putExtra("key", keyIntent);
                             intent.putExtra("planId", planId);
+                            intent.putExtra("amount", amount);
+                            intent.putExtra("planName", planName);
                             intent.putExtra("webUrl", webUrl);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);

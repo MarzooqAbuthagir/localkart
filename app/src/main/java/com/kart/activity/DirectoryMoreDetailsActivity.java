@@ -210,7 +210,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(DirectoryMoreDetailsActivity.this);
                     String state = Integer.parseInt(strIsSubscribed) == 0 ? "Subscribe" : "UnSubscribe";
                     builder.setTitle("Confirmation")
-                            .setMessage("Are you sure want to " + state + " the shop?")
+                            .setMessage("You'll receive notifications when "+ detailsData.getShopName() +" posts new Deals and Offers. Are you sure want to " + state + "?")
                             .setPositiveButton(DirectoryMoreDetailsActivity.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int which) {
@@ -254,6 +254,9 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("image/*");
                 i.putExtra(Intent.EXTRA_STREAM, getImageUri(getBitmapFromView(layMain)));
+                String shareMessage = "Download Local Kart App Now ";
+                shareMessage = shareMessage + Utilis.shareUrl;
+                i.putExtra(Intent.EXTRA_TEXT, shareMessage);
                 try {
                     startActivity(Intent.createChooser(i, "My Profile ..."));
                 } catch (android.content.ActivityNotFoundException ex) {

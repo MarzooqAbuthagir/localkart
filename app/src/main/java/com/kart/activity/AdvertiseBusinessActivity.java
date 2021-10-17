@@ -681,7 +681,7 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
 
 //        ivLogo.setImageBitmap(bm);
         Glide.with(AdvertiseBusinessActivity.this).asBitmap().load(bm)
-                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+//                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(ivLogo);
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

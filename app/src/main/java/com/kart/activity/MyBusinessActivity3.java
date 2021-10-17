@@ -37,6 +37,7 @@ public class MyBusinessActivity3 extends AppCompatActivity {
     EditText etWebsite;
     EditText etFacebook;
     EditText etVcard;
+    EditText etCod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +112,7 @@ public class MyBusinessActivity3 extends AppCompatActivity {
         etWebsite = findViewById(R.id.et_website);
         etFacebook = findViewById(R.id.et_facebook);
         etVcard = findViewById(R.id.et_vcard);
+        etCod = findViewById(R.id.et_cod);
 
         etPhoneNo.setText(contactDetailsData.getPhoneNo());
         etMobileNo.setText(contactDetailsData.getMobileNo());
@@ -120,6 +122,7 @@ public class MyBusinessActivity3 extends AppCompatActivity {
         etWebsite.setText(contactDetailsData.getWebsite());
         etFacebook.setText(contactDetailsData.getFacebook());
         etVcard.setText(contactDetailsData.getVcard());
+        etCod.setText(contactDetailsData.getCod());
 
     }
 

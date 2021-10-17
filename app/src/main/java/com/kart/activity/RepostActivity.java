@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -300,7 +301,7 @@ public class RepostActivity extends AppCompatActivity {
                     Toast.makeText(RepostActivity.this, "Check from and to date", Toast.LENGTH_SHORT).show();
                 } else {
                     if (strPostType.equalsIgnoreCase("2")) {
-                        SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
                         try {
                             Date date1 = myFormat.parse(etFromDate.getText().toString());
                             Date date2 = myFormat.parse(etToDate.getText().toString());
@@ -357,7 +358,7 @@ public class RepostActivity extends AppCompatActivity {
                     Toast.makeText(RepostActivity.this, "Check from and to date", Toast.LENGTH_SHORT).show();
                 } else {
                     if (strPostType.equalsIgnoreCase("2")) {
-                        SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
                         try {
                             Date date1 = myFormat.parse(etFromDate.getText().toString());
                             Date date2 = myFormat.parse(etToDate.getText().toString());
@@ -871,10 +872,10 @@ public class RepostActivity extends AppCompatActivity {
                     Log.e(Tag, "onDateSet: " + e.getMessage(), e);
                 }
 
-                String date = year + "-" + strMonth + "-" + strDay;
+                String date = strDay + "-" + strMonth + "-" + year;
 
                 etFromDate.setText(date);
-                strFromDate = date;
+                strFromDate = year + "-" + strMonth + "-" + strDay;
 
             }
         }, mYear, mMonth, mDay);
@@ -920,10 +921,10 @@ public class RepostActivity extends AppCompatActivity {
                     Log.e(Tag, "onDateSet: " + e.getMessage(), e);
                 }
 
-                String date = year + "-" + strMonth + "-" + strDay;
+                String date = strDay + "-" + strMonth + "-" + year;
 
                 etToDate.setText(date);
-                strToDate = date;
+                strToDate = year + "-" + strMonth + "-" + strDay;
             }
         }, mYear, mMonth, mDay);
         dpd.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -1095,7 +1096,7 @@ public class RepostActivity extends AppCompatActivity {
     }
 
     private boolean checkDates() {
-        SimpleDateFormat dfDate = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dfDate = new SimpleDateFormat("dd-MM-yyyy");
         boolean dateChecker = false;
         try {
             //If start date is after the end date
@@ -1115,8 +1116,10 @@ public class RepostActivity extends AppCompatActivity {
         Utilis.setReOfferList("offerList", listOfOffer, RepostActivity.this);
         Intent intent = new Intent(RepostActivity.this, ViewRepostActivity.class);
         intent.putExtra("key", keyIntent);
-        intent.putExtra("fromDate", strFromDate);
-        intent.putExtra("toDate", strToDate);
+        intent.putExtra("fromDate", etFromDate.getText().toString().trim());
+        intent.putExtra("toDate", etToDate.getText().toString().trim());
+        intent.putExtra("fDate", strFromDate);
+        intent.putExtra("tDate", strToDate);
         intent.putExtra("accessOption", strAccessOption);
         intent.putExtra("latitude", String.valueOf(latitude));
         intent.putExtra("longitude", String.valueOf(longitude));
@@ -1129,86 +1132,113 @@ public class RepostActivity extends AppCompatActivity {
     }
 
     private void postValidation() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(RepostActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(RepostActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.postvalidation, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
+        builder.setMessage("Post details cannot be changed once saved. Are you sure you want to save and show this post to customer?")
+                .setPositiveButton(RepostActivity.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
-                    try {
-                        //converting response to json object
-                        JSONObject obj = new JSONObject(response);
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing but close the dialog
+                        dialog.dismiss();
+                        if (Utilis.isInternetOn()) {
+                            Utilis.showProgress(RepostActivity.this);
 
-                        System.out.println(Tag + " postValidation response - " + response);
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.postvalidation, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
 
-                        Utilis.dismissProgress();
+                                    try {
+                                        //converting response to json object
+                                        JSONObject obj = new JSONObject(response);
 
-                        str_result = obj.getString("errorCode");
-                        System.out.print(Tag + " postValidation result " + str_result);
+                                        System.out.println(Tag + " postValidation response - " + response);
 
-                        if (Integer.parseInt(str_result) == 0) {
+                                        Utilis.dismissProgress();
 
-                            str_message = obj.getString("Message");
+                                        str_result = obj.getString("errorCode");
+                                        System.out.print(Tag + " postValidation result " + str_result);
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(RepostActivity.this);
-                            builder.setMessage(str_message)
-                                    .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
+                                        if (Integer.parseInt(str_result) == 0) {
+
+                                            str_message = obj.getString("Message");
+
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(RepostActivity.this);
+                                            builder.setMessage(str_message)
+                                                    .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.dismiss();
+                                                        }
+                                                    });
+                                            AlertDialog alert = builder.create();
+                                            alert.show();
+                                        } else if (Integer.parseInt(str_result) == 1) {
+                                            str_message = obj.getString("Message");
+                                            sendPost();
                                         }
-                                    });
-                            AlertDialog alert = builder.create();
-                            alert.show();
-                        } else if (Integer.parseInt(str_result) == 1) {
-                            str_message = obj.getString("Message");
-                            sendPost();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+
+                                    Utilis.dismissProgress();
+                                    Toast.makeText(RepostActivity.this, RepostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                                    if (error instanceof NoConnectionError) {
+                                        System.out.println("NoConnectionError");
+                                    } else if (error instanceof TimeoutError) {
+                                        System.out.println("TimeoutError");
+
+                                    } else if (error instanceof ServerError) {
+                                        System.out.println("ServerError");
+
+                                    } else if (error instanceof AuthFailureError) {
+                                        System.out.println("AuthFailureError");
+
+                                    } else if (error instanceof NetworkError) {
+                                        System.out.println("NetworkError");
+                                    }
+                                }
+                            }) {
+                                @Override
+                                protected Map<String, String> getParams() throws AuthFailureError {
+                                    Map<String, String> params = new HashMap<>();
+                                    params.put("userIndexId", obj.getId());
+                                    params.put("typeId", strPostType);
+                                    params.put("fromDate", strFromDate);
+                                    params.put("toDate", strToDate);
+                                    params.put("count", String.valueOf(listOfOffer.size()));
+                                    System.out.println(Tag + " postValidation inputs " + params);
+                                    return params;
+                                }
+                            };
+
+                            stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                            VolleySingleton.getInstance(RepostActivity.this).addToRequestQueue(stringRequest);
+                        } else {
+                            Toast.makeText(RepostActivity.this, RepostActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
+                })
+                .setNegativeButton(RepostActivity.this.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
 
-                    Utilis.dismissProgress();
-                    Toast.makeText(RepostActivity.this, RepostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
-
-                    if (error instanceof NoConnectionError) {
-                        System.out.println("NoConnectionError");
-                    } else if (error instanceof TimeoutError) {
-                        System.out.println("TimeoutError");
-
-                    } else if (error instanceof ServerError) {
-                        System.out.println("ServerError");
-
-                    } else if (error instanceof AuthFailureError) {
-                        System.out.println("AuthFailureError");
-
-                    } else if (error instanceof NetworkError) {
-                        System.out.println("NetworkError");
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing
+                        dialog.dismiss();
                     }
-                }
-            }) {
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("userIndexId", obj.getId());
-                    params.put("typeId", strPostType);
-                    params.put("fromDate", strFromDate);
-                    params.put("toDate", strToDate);
-                    params.put("count", String.valueOf(listOfOffer.size()));
-                    System.out.println(Tag + " postValidation inputs " + params);
-                    return params;
-                }
-            };
+                });
 
-            stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
-        } else {
-            Toast.makeText(this, RepostActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
-        }
+        AlertDialog alert = builder.create();
+        alert.show();
+
+        Button btn_yes = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+        Button btn_no = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+        btn_no.setTextColor(Color.parseColor("#000000"));
+        btn_yes.setTextColor(Color.parseColor("#000000"));
     }
 
     private void sendPost() {
@@ -1316,7 +1346,16 @@ public class RepostActivity extends AppCompatActivity {
                                         app.notifyToUsers(str_post_index_id, strShopIndexId, strShopType);
                                     }
                                     Utilis.dismissProgress();
-                                    back();
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(RepostActivity.this);
+                                    builder.setMessage("Your post has been successfully saved.")
+                                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    back();
+                                                }
+                                            });
+                                    AlertDialog alert = builder.create();
+                                    alert.show();
                                 }
 
                             } else if (Integer.parseInt(str_result) == 2) {

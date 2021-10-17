@@ -100,7 +100,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="18dp"
                         android:fontFamily="@font/roboto_regular"
-                        android:text="Subscription &amp; Plan"/>
+                        android:text="Subscription &amp; Plans"/>
 
 
                 </LinearLayout>
@@ -168,7 +168,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="18dp"
                         android:fontFamily="@font/roboto_regular"
-                        android:text="History"/>
+                        android:text="Ads History"/>
 
 
                 </LinearLayout>

@@ -17,9 +17,11 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -229,6 +231,21 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
             }
         });
 
+        LinearLayout layTC = findViewById(R.id.lay_tc);
+        if (strBusinessId.equalsIgnoreCase("1")) {
+            layTC.setVisibility(View.VISIBLE);
+        } else {
+            layTC.setVisibility(View.GONE);
+        }
+        final CheckBox checkBox = findViewById(R.id.checkbox);
+        TextView tvBusTC = findViewById(R.id.tv_bus_tc);
+        tvBusTC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(AdvertiseBusinessActivity5.this, BusinessTCActivity.class));
+            }
+        });
+
         Button btnPrevious = findViewById(R.id.btn_previous);
         btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -268,9 +285,13 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
                     Toast.makeText(AdvertiseBusinessActivity5.this, "Enter keyword", Toast.LENGTH_SHORT).show();
                 } else if (arrayList.size() == 0) {
                     Toast.makeText(AdvertiseBusinessActivity5.this, "Select photo", Toast.LENGTH_SHORT).show();
-                } else {
+                }  else {
                     if (strBusinessId.equalsIgnoreCase("1")) {
-                        registerBusiness();
+                        if (!checkBox.isChecked()) {
+                            Toast.makeText(AdvertiseBusinessActivity5.this, "Please accept Terms and Conditions", Toast.LENGTH_SHORT).show();
+                        } else {
+                            registerBusiness(view);
+                        }
                     } else {
                         Utilis.saveChip(strChip);
                         Utilis.clearImageList(AdvertiseBusinessActivity5.this);
@@ -342,7 +363,7 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
 
     String str_result = "", str_message = "";
 
-    private void registerBusiness() {
+    private void registerBusiness(final View view) {
         if (Utilis.isInternetOn()) {
             Utilis.showProgress(AdvertiseBusinessActivity5.this);
 
@@ -365,7 +386,7 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
 
                             str_message = obj.getString("message");
                             String str_index_id = obj.getString("indexId");
-                            uploadImages(str_index_id);
+                            uploadImages(str_index_id, view);
 
                         } else if (Integer.parseInt(str_result) == 2) {
                             str_message = obj.getString("message");
@@ -424,6 +445,7 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
                     params.put("website", contactDetailsData.getWebsite());
                     params.put("facebook", contactDetailsData.getFacebook());
                     params.put("digitalVcard", contactDetailsData.getVcard());
+                    params.put("cod", contactDetailsData.getCod());
                     params.put("latitude", locationData.getLatitude());
                     params.put("longitude", locationData.getLongitude());
                     params.put("address", locationData.getAddress());
@@ -442,7 +464,7 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
 
     ProgressDialog progressDialog;
 
-    private void uploadImages(final String str_index_id) {
+    private void uploadImages(final String str_index_id, final View view) {
         progressDialog = ProgressDialog.show(AdvertiseBusinessActivity5.this, "Uploading Images",
                 "Please wait...", true);
 
@@ -457,18 +479,7 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
                         System.out.println("on upload " + currentPos + " array size " + arrayList.size());
                         progressDialog.dismiss();
 
-                        RegBusinessSharedPrefrence.setMenuFlag(AdvertiseBusinessActivity5.this, "1");
-
-                        RegBusinessTypeSharedPreference.setBusinessType(AdvertiseBusinessActivity5.this, "Shopping");
-                        RegBusinessIdSharedPreference.setBusinessId(AdvertiseBusinessActivity5.this, str_index_id);
-
-                        Utilis.clearRegPref(AdvertiseBusinessActivity5.this);
-
-                        Intent intent = new Intent(AdvertiseBusinessActivity5.this, MainActivity.class);
-                        intent.putExtra("key", keyIntent);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
+                        successfulRegister(view, str_index_id);
 
                     }
                 }
@@ -494,6 +505,37 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
             rQueue.add(request);
 
         }
+    }
+
+    private void successfulRegister(View view, final String str_index_id) {
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(AdvertiseBusinessActivity5.this, R.style.CustomAlertDialog);
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from(view.getContext()).inflate(R.layout.alert_business_register, viewGroup, false);
+        Button btnManageMyBusiness = dialogView.findViewById(R.id.btn_manage_my_business);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+        final android.app.AlertDialog alertDialog = builder.create();
+        btnManageMyBusiness.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+
+                RegBusinessSharedPrefrence.setMenuFlag(AdvertiseBusinessActivity5.this, "1");
+
+                RegBusinessTypeSharedPreference.setBusinessType(AdvertiseBusinessActivity5.this, "Shopping");
+                RegBusinessIdSharedPreference.setBusinessId(AdvertiseBusinessActivity5.this, str_index_id);
+
+                Utilis.clearRegPref(AdvertiseBusinessActivity5.this);
+
+                Intent intent = new Intent(AdvertiseBusinessActivity5.this, ManageBusinessActivity.class);
+                intent.putExtra("key", keyIntent);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        alertDialog.show();
     }
 
     private void addNewChip() {

@@ -113,7 +113,7 @@ public class HistoryActivity extends AppCompatActivity {
         });
 
         TextView toolBarTitle = findViewById(R.id.toolbar_title);
-        toolBarTitle.setText("History");
+        toolBarTitle.setText("Ads History");
 
 
         horizontalScrollView = findViewById(R.id.hscrll1);

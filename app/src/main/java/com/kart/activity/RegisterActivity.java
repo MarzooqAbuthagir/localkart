@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -98,7 +99,15 @@ public class RegisterActivity extends AppCompatActivity {
         spinState = findViewById(R.id.spin_state);
         spinState.setTitle("Select State");
         spinDistrict = findViewById(R.id.spin_district);
-        spinDistrict.setTitle("Select District");
+        spinDistrict.setTitle("Select District / Zone");
+        final CheckBox checkBox = findViewById(R.id.checkbox);
+        TextView tvUserTC = findViewById(R.id.tv_user_tc);
+        tvUserTC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(RegisterActivity.this, UserTCActivity.class));
+            }
+        });
         Button btnSubmit = findViewById(R.id.btn_submit);
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,8 +127,10 @@ public class RegisterActivity extends AppCompatActivity {
                 } else if (strStateId.isEmpty()) {
                     Toast.makeText(RegisterActivity.this, "Select state", Toast.LENGTH_SHORT).show();
                 } else if (strDistrictId.isEmpty()) {
-                    Toast.makeText(RegisterActivity.this, "Select district", Toast.LENGTH_SHORT).show();
-                } else {
+                    Toast.makeText(RegisterActivity.this, "Select district / zone", Toast.LENGTH_SHORT).show();
+                } else if (!checkBox.isChecked()) {
+                    Toast.makeText(RegisterActivity.this, "Please accept Terms and Conditions.", Toast.LENGTH_SHORT).show();
+                }  else {
                     sendOtp();
                 }
 
@@ -141,7 +152,7 @@ public class RegisterActivity extends AppCompatActivity {
                     strStateId = "";
                     DistrictData initDistrictData = new DistrictData();
                     initDistrictData.setDistrictId("-1");
-                    initDistrictData.setDistrictName("District");
+                    initDistrictData.setDistrictName("District / Zone");
                     districtListValue.add(0, initDistrictData);
 
                     districtSpinnerValue.add(districtListValue.get(0).getDistrictName());
@@ -309,7 +320,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
                     } else {
-                        Toast.makeText(RegisterActivity.this, "Enter valid OTP", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Enter Valid OTP", Toast.LENGTH_SHORT).show();
                         pinEntry.setText(null);
                     }
                 }
@@ -343,7 +354,7 @@ public class RegisterActivity extends AppCompatActivity {
                     register();
 
                 } else {
-                    Toast.makeText(RegisterActivity.this, "Enter valid OTP", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Enter Valid OTP", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -491,7 +502,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                             DistrictData initDistrictData = new DistrictData();
                             initDistrictData.setDistrictId("-1");
-                            initDistrictData.setDistrictName("District");
+                            initDistrictData.setDistrictName("District / Zone");
                             districtListValue.add(0, initDistrictData);
 
                             districtSpinnerValue.clear();

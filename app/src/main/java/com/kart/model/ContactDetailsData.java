@@ -9,8 +9,9 @@ public class ContactDetailsData {
     private String website;
     private String facebook;
     private String vcard;
+    private String cod;
 
-    public ContactDetailsData(String phoneNo, String mobileNo, String altNo, String whatsappNo, String emailId, String website, String facebook, String vcard) {
+    public ContactDetailsData(String phoneNo, String mobileNo, String altNo, String whatsappNo, String emailId, String website, String facebook, String vcard, String cod) {
         this.phoneNo = phoneNo;
         this.mobileNo = mobileNo;
         this.altNo = altNo;
@@ -19,6 +20,7 @@ public class ContactDetailsData {
         this.website = website;
         this.facebook = facebook;
         this.vcard = vcard;
+        this.cod = cod;
     }
 
     public String getPhoneNo() {
@@ -83,5 +85,13 @@ public class ContactDetailsData {
 
     public void setVcard(String vcard) {
         this.vcard = vcard;
+    }
+
+    public String getCod() {
+        return cod;
+    }
+
+    public void setCod(String cod) {
+        this.cod = cod;
     }
 }

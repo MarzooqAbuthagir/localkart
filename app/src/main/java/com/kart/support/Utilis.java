@@ -82,6 +82,8 @@ public class Utilis {
     public static String applycode = "applycode";
     public static String viewreferral = "viewreferral";
     public static String amountcalculation = "amountcalculation";
+    public static String paymenthistory = "paymenthistory";
+    public static String paymenthistorydetails = "paymenthistorydetails";
 
     // Help and Support Url
     public static String helpUrl = "https://localkart.app/app/help-and-support.php";
@@ -90,6 +92,8 @@ public class Utilis {
     public static String shareUrl = "https://localkart.app/app/download.php";
     public static String rateUsUrl = "https://localkart.app/app/rate-us.php";
     public static String privacyPolicyUrl = "https://localkart.app/app/privacy-policy.php";
+    public static String userTCUrl = "https://localkart.app/user-terms-and-conditions.php";
+    public static String businessTCUrl = "https://localkart.app/business-terms-and-conditions.php";
 
     public static int callResume = 0;
     public static String constPostType = "";

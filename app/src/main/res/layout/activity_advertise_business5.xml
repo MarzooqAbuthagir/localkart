@@ -208,28 +208,62 @@
             android:id="@+id/lay_btm"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_alignParentBottom="true">
-            <Button
-                android:id="@+id/btn_previous"
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/lay_tc"
+                android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Previous"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:fontFamily="@font/roboto_regular"
-                android:background="@drawable/left_button_theme"/>
-            <Button
-                android:id="@+id/btn_next"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Next"
-                android:layout_weight="1"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:fontFamily="@font/roboto_regular"
-                android:background="@drawable/right_button_theme"/>
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center">
+
+                <CheckBox
+                    android:id="@+id/checkbox"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tv_bus_tc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_t_c"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"/>
+
+            </LinearLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <Button
+        android:id="@+id/btn_previous"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Previous"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:fontFamily="@font/roboto_regular"
+        android:background="@drawable/left_button_theme"/>
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:layout_weight="1"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:fontFamily="@font/roboto_regular"
+        android:background="@drawable/right_button_theme"/>
+</LinearLayout>
 
         </LinearLayout>
     </RelativeLayout>

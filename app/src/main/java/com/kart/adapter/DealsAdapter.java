@@ -81,7 +81,8 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
 
         if (arrayList.get(position).getAccessOptions().getKey().equalsIgnoreCase("Phone") ||
                 arrayList.get(position).getAccessOptions().getKey().equalsIgnoreCase("Mobile") ||
-                arrayList.get(position).getAccessOptions().getKey().equalsIgnoreCase("Alternate Number")) {
+                arrayList.get(position).getAccessOptions().getKey().equalsIgnoreCase("Alternate Number") ||
+                arrayList.get(position).getAccessOptions().getKey().equalsIgnoreCase("COD")) {
 //            holder.tvAccessOption.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_call, 0, 0, 0);
 //            for (Drawable drawable : holder.tvAccessOption.getCompoundDrawables()) {
 //                if (drawable != null) {
@@ -168,6 +169,7 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
                     case "Phone":
                     case "Mobile":
                     case "Alternate Number":
+                    case "COD":
                         String telPhone = "tel:" + arrayList.get(position).getAccessOptions().getValue();
                         Intent callIntent = new Intent(Intent.ACTION_DIAL);
                         callIntent.setData(Uri.parse(telPhone));

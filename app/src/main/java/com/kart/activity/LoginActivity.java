@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,6 +83,15 @@ public class LoginActivity extends AppCompatActivity {
         TextView tvRegNow = findViewById(R.id.tv_reg_now);
         TextView tvGreeting = findViewById(R.id.tv_greeting);
 
+        final CheckBox checkBox = findViewById(R.id.checkbox);
+        TextView tvUserTC = findViewById(R.id.tv_user_tc);
+        tvUserTC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, UserTCActivity.class));
+            }
+        });
+
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         String s = sdf.format(new Date());
         String[] separated = s.split(":");
@@ -136,6 +146,8 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Enter mobile number", Toast.LENGTH_SHORT).show();
                 } else if (strMobile.length() < 10) {
                     Toast.makeText(LoginActivity.this, "Enter 10 digit mobile number", Toast.LENGTH_SHORT).show();
+                } else if (!checkBox.isChecked()) {
+                    Toast.makeText(LoginActivity.this, "Please accept Terms and Conditions", Toast.LENGTH_SHORT).show();
                 } else {
                     login();
                 }
@@ -194,7 +206,7 @@ public class LoginActivity extends AppCompatActivity {
                             str_message = obj.getString("message");
                             Toast.makeText(LoginActivity.this, str_message, Toast.LENGTH_SHORT).show();
                         } else if (Integer.parseInt(str_result) == 1) {
-                            str_message = "Mobile number not registered yet";
+                            str_message = "Mobile number not registered";
                             Toast.makeText(LoginActivity.this, str_message, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
@@ -313,7 +325,7 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
 
                     } else {
-                        Toast.makeText(LoginActivity.this, "Enter valid OTP", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Enter Valid OTP", Toast.LENGTH_SHORT).show();
                         pinEntry.setText(null);
                     }
                 }
@@ -369,7 +381,7 @@ public class LoginActivity extends AppCompatActivity {
                     finish();
 
                 } else {
-                    Toast.makeText(LoginActivity.this, "Enter valid OTP", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Enter Valid OTP", Toast.LENGTH_SHORT).show();
                 }
             }
         });

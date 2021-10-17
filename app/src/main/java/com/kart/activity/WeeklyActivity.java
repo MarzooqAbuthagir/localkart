@@ -402,7 +402,7 @@ public class WeeklyActivity extends Fragment {
                                     String state = Integer.parseInt(dataList.get(position).getIsSubscribed()) == 0 ? "Subscribe" : "UnSubscribe";
                                     androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
                                     builder.setTitle("Confirmation")
-                                            .setMessage("Are you sure want to " + state + " the shop?")
+                                            .setMessage("You'll receive notifications when "+ dataList.get(position).getName() +" posts new Deals and Offers. Are you sure want to " + state + "?")
                                             .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
                                                 public void onClick(DialogInterface dialog, int which) {

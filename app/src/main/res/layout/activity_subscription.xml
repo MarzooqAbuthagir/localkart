@@ -34,23 +34,38 @@
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
         android:background="@drawable/white_curve_box"
         android:layout_above="@id/lay_btm"
         android:layout_below="@id/toolbar">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:padding="15dp"
-            android:text="Not yet package subscribe"
+            android:padding="8dp"
+            android:text="You don't have any active subscription."
             android:textAllCaps="false"
             android:background="#fff"
             android:fontFamily="@font/roboto_regular"
             android:textColor="@color/black"
             android:textSize="18dp" />
 
+        <TextView
+            android:id="@+id/tv_view_plan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/view_plans"
+            android:textAllCaps="false"
+            android:background="#fff"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black"
+            android:textSize="22dp" />
     </LinearLayout>
 
     <ScrollView
@@ -279,357 +294,357 @@
                     android:layout_width="match_parent"
                     android:layout_height="15dp"/>
 
-                <LinearLayout
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:background="@drawable/subscription_card"
+            <LinearLayout
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/subscription_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:id="@+id/tv_dp"
+                    android:text=""
+                    android:textAllCaps="false"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textColor="@color/black"
+                    android:textSize="16dp" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center"
-                        android:padding="8dp"
-                        android:id="@+id/tv_wl"
-                        android:text=""
-                        android:textAllCaps="false"
-                        android:fontFamily="@font/roboto_regular"
-                        android:textColor="@color/black"
-                        android:textSize="16dp" />
+                <LinearLayout
+                    android:padding="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
 
                     <LinearLayout
                         android:padding="5dp"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="1">
+                        android:layout_weight="0.25"
+                        android:orientation="vertical">
 
-                        <LinearLayout
-                            android:padding="5dp"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/tv_dp_tot_post"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.25"
-                            android:orientation="vertical">
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text=""
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
 
-                            <TextView
-                                android:id="@+id/tv_wp_tot_post"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text=""
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="14dp" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text="Total"
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="11dp" />
-                        </LinearLayout>
-
-                        <View
-                            android:layout_gravity="center"
-                            android:layout_width="1dp"
-                            android:layout_height="20dp"
-                            android:background="#E3E3E3"/>
-
-                        <LinearLayout
-                            android:padding="5dp"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.25"
-                            android:orientation="vertical">
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text="Total"
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="11dp" />
+                    </LinearLayout>
 
-                            <TextView
-                                android:id="@+id/tv_wp_ava_post"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text=""
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="14dp" />
+                    <View
+                        android:layout_gravity="center"
+                        android:layout_width="1dp"
+                        android:layout_height="20dp"
+                        android:background="#E3E3E3"/>
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text="Available"
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="11dp" />
-                        </LinearLayout>
+                    <LinearLayout
+                        android:padding="5dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.25"
+                        android:orientation="vertical">
 
-                        <View
-                            android:layout_gravity="center"
-                            android:layout_width="1dp"
-                            android:layout_height="20dp"
-                            android:background="#E3E3E3"/>
-
-                        <LinearLayout
-                            android:padding="5dp"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/tv_dp_ava_post"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.25"
-                            android:orientation="vertical">
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text=""
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
 
-                            <TextView
-                                android:id="@+id/tv_wp_use_post"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text=""
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="14dp" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text="Used"
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="11dp" />
-                        </LinearLayout>
-
-                        <View
-                            android:layout_gravity="center"
-                            android:layout_width="1dp"
-                            android:layout_height="20dp"
-                            android:background="#E3E3E3"/>
-
-                        <LinearLayout
-                            android:padding="5dp"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.25"
-                            android:orientation="vertical">
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text="Available"
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="11dp" />
+                    </LinearLayout>
 
-                            <TextView
-                                android:id="@+id/tv_wp_exp_post"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text=""
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="14dp" />
+                    <View
+                        android:layout_gravity="center"
+                        android:layout_width="1dp"
+                        android:layout_height="20dp"
+                        android:background="#E3E3E3"/>
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text="Expired"
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="11dp" />
-                        </LinearLayout>
+                    <LinearLayout
+                        android:padding="5dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.25"
+                        android:orientation="vertical">
 
+                        <TextView
+                            android:id="@+id/tv_dp_use_post"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text=""
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text="Used"
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="11dp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_gravity="center"
+                        android:layout_width="1dp"
+                        android:layout_height="20dp"
+                        android:background="#E3E3E3"/>
+
+                    <LinearLayout
+                        android:padding="5dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.25"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_dp_exp_post"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text=""
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text="Expired"
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="11dp" />
                     </LinearLayout>
 
                 </LinearLayout>
+
+            </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="15dp"/>
 
-                <LinearLayout
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:background="@drawable/subscription_card"
+            <LinearLayout
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/subscription_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:id="@+id/tv_wl"
+                    android:text=""
+                    android:textAllCaps="false"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textColor="@color/black"
+                    android:textSize="16dp" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="center"
-                        android:padding="8dp"
-                        android:id="@+id/tv_dp"
-                        android:text=""
-                        android:textAllCaps="false"
-                        android:fontFamily="@font/roboto_regular"
-                        android:textColor="@color/black"
-                        android:textSize="16dp" />
+                <LinearLayout
+                    android:padding="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
 
                     <LinearLayout
                         android:padding="5dp"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="1">
+                        android:layout_weight="0.25"
+                        android:orientation="vertical">
 
-                        <LinearLayout
-                            android:padding="5dp"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/tv_wp_tot_post"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.25"
-                            android:orientation="vertical">
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text=""
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
 
-                            <TextView
-                                android:id="@+id/tv_dp_tot_post"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text=""
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="14dp" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text="Total"
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="11dp" />
-                        </LinearLayout>
-
-                        <View
-                            android:layout_gravity="center"
-                            android:layout_width="1dp"
-                            android:layout_height="20dp"
-                            android:background="#E3E3E3"/>
-
-                        <LinearLayout
-                            android:padding="5dp"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.25"
-                            android:orientation="vertical">
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text="Total"
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="11dp" />
+                    </LinearLayout>
 
-                            <TextView
-                                android:id="@+id/tv_dp_ava_post"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text=""
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="14dp" />
+                    <View
+                        android:layout_gravity="center"
+                        android:layout_width="1dp"
+                        android:layout_height="20dp"
+                        android:background="#E3E3E3"/>
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text="Available"
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="11dp" />
-                        </LinearLayout>
+                    <LinearLayout
+                        android:padding="5dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.25"
+                        android:orientation="vertical">
 
-                        <View
-                            android:layout_gravity="center"
-                            android:layout_width="1dp"
-                            android:layout_height="20dp"
-                            android:background="#E3E3E3"/>
-
-                        <LinearLayout
-                            android:padding="5dp"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/tv_wp_ava_post"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.25"
-                            android:orientation="vertical">
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text=""
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
 
-                            <TextView
-                                android:id="@+id/tv_dp_use_post"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text=""
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="14dp" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text="Used"
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="11dp" />
-                        </LinearLayout>
-
-                        <View
-                            android:layout_gravity="center"
-                            android:layout_width="1dp"
-                            android:layout_height="20dp"
-                            android:background="#E3E3E3"/>
-
-                        <LinearLayout
-                            android:padding="5dp"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.25"
-                            android:orientation="vertical">
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text="Available"
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="11dp" />
+                    </LinearLayout>
 
-                            <TextView
-                                android:id="@+id/tv_dp_exp_post"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text=""
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="14dp" />
+                    <View
+                        android:layout_gravity="center"
+                        android:layout_width="1dp"
+                        android:layout_height="20dp"
+                        android:background="#E3E3E3"/>
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center"
-                                android:text="Expired"
-                                android:textAllCaps="false"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@color/black"
-                                android:textSize="11dp" />
-                        </LinearLayout>
+                    <LinearLayout
+                        android:padding="5dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.25"
+                        android:orientation="vertical">
 
+                        <TextView
+                            android:id="@+id/tv_wp_use_post"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text=""
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text="Used"
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="11dp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_gravity="center"
+                        android:layout_width="1dp"
+                        android:layout_height="20dp"
+                        android:background="#E3E3E3"/>
+
+                    <LinearLayout
+                        android:padding="5dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.25"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_wp_exp_post"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text=""
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center"
+                            android:text="Expired"
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="11dp" />
                     </LinearLayout>
 
                 </LinearLayout>
+
+            </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -1076,22 +1091,23 @@
         android:orientation="horizontal"
         android:layout_alignParentBottom="true">
         <Button
+            android:id="@+id/btn_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="History"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:fontFamily="@font/roboto_regular"
+            android:background="@drawable/left_button_theme"/>
+        <Button
             android:id="@+id/btn_plans"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="View Plans and Upgrade"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:fontFamily="@font/roboto_regular"
-            android:background="@drawable/right_button_theme"/>
-        <Button
-            android:visibility="gone"
-            android:id="@+id/btn_upgrade"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Upgrade"
-            android:layout_weight="1"
+            android:maxLines="1"
+            android:text="View Plans"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:fontFamily="@font/roboto_regular"

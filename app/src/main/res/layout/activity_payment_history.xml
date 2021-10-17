@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.PaymentHistoryActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        app:theme="@style/AppTheme"
+        android:background="@color/adv_bus_color">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:singleLine="true"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_regular"
+            android:id="@+id/toolbar_title" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tv_no_records"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="No payment history available"
+        android:textColor="#000"
+        android:textSize="16dp"
+        android:fontFamily="@font/roboto_regular"
+        android:visibility="gone" />
+
+    <HorizontalScrollView
+        android:visibility="gone"
+        android:id="@+id/hscrll1"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:background="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/lay_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FEE9F3"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:text="SN"
+                    android:textAllCaps="true"
+                    android:padding="5dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:fontFamily="@font/roboto_regular"
+                    android:layout_width="50dp"
+                    android:textSize="14dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="DATE"
+                    android:textAllCaps="true"
+                    android:padding="5dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:fontFamily="@font/roboto_regular"
+                    android:layout_width="100dp"
+                    android:textSize="14dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="PACKAGE"
+                    android:textAllCaps="true"
+                    android:padding="5dp"
+                    android:textSize="14dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:fontFamily="@font/roboto_regular"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="VALIDITY"
+                    android:textAllCaps="true"
+                    android:padding="5dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:fontFamily="@font/roboto_regular"
+                    android:layout_width="100dp"
+                    android:textSize="14dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="AMOUNT"
+                    android:textAllCaps="true"
+                    android:padding="5dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:fontFamily="@font/roboto_regular"
+                    android:layout_width="100dp"
+                    android:textSize="14dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="STATUS"
+                    android:textAllCaps="true"
+                    android:padding="5dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:fontFamily="@font/roboto_regular"
+                    android:layout_width="100dp"
+                    android:textSize="14dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="DETAILS"
+                    android:textAllCaps="true"
+                    android:padding="5dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:fontFamily="@font/roboto_regular"
+                    android:layout_width="70dp"
+                    android:textSize="14dp"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+
+    </HorizontalScrollView>
+
+</LinearLayout>

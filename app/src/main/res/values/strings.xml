@@ -19,7 +19,7 @@
     <string name="view_map"><u>View Map</u></string>
 
     <string name="sup"><sup>₹ </sup></string>
-    
+
     <string name="user_benefit_1">\nUSER BENEFITS\nThe user will get a discount of</string>
     <string name="user_benefit_2">when he uses your code while subscribing to a new plan. The user needs to enter and apply the code on the payment page.</string>
 
@@ -28,5 +28,9 @@
 \n2. You can send referral (coupon) code to any number of persons.
 \n3. An user can redeem the referral (coupon) code only once (for one successful plan subscription).
 \n4. However, if you want to enjoy the free benefits, you can send your referral (coupon) code to as many persons as you can.
-\n5. The free benefits will be added to you every time when a user buys any subscription plan using your referral (coupon) code.</string>
+\n5. The free benefits will be added to you every time when a user buys any subscription plan using your referral (coupon) code.
+    \n6. All the free benefits will be canceled when you are upgrading to a higher subscription plan.</string>
+
+    <string name="user_t_c">I agree all <u>Terms and Conditions.</u></string>
+    <string name="view_plans"><u>View Plans and Subscribe </u></string>
 </resources>

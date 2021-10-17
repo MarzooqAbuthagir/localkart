@@ -7,6 +7,7 @@ public class BasicDetailsData {
     private String subCategoryId;
     private String logo;
     private String desc;
+    private String indexId;
 
     public BasicDetailsData(String businessType, String businessName, String categoryId, String subCategoryId, String logo, String description) {
         this.businessType = businessType;
@@ -15,6 +16,24 @@ public class BasicDetailsData {
         this.subCategoryId = subCategoryId;
         this.logo = logo;
         this.desc = description;
+    }
+
+    public BasicDetailsData(String businessType, String businessName, String categoryId, String subCategoryId, String logo, String description, String indexId) {
+        this.businessType = businessType;
+        this.businessName = businessName;
+        this.categoryId = categoryId;
+        this.subCategoryId = subCategoryId;
+        this.logo = logo;
+        this.desc = description;
+        this.indexId = indexId;
+    }
+
+    public String getIndexId() {
+        return indexId;
+    }
+
+    public void setIndexId(String indexId) {
+        this.indexId = indexId;
     }
 
     public String getBusinessType() {

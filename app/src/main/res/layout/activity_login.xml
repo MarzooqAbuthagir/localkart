@@ -29,6 +29,49 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
+
+<LinearLayout
+    android:layout_marginBottom="10dp"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/tv_made_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Made with "
+            android:textColor="@color/white"
+            android:textSize="20dp"/>
+
+        <ImageView
+            android:layout_toEndOf="@id/tv_made_in"
+            android:id="@+id/iv_love"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/ic_bell_subscribe"/>
+
+        <TextView
+            android:layout_toEndOf="@id/iv_love"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" in India"
+            android:textColor="@color/white"
+            android:textSize="20dp"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
+
         <LinearLayout
             android:id="@+id/lay_logo"
             android:layout_width="match_parent"
@@ -109,6 +152,32 @@
                             android:fontFamily="@font/roboto_regular"
                             android:textColor="@color/black" />
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <LinearLayout
+                        android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center">
+
+                        <CheckBox
+                            android:id="@+id/checkbox"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:id="@+id/tv_user_tc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/user_t_c"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/black"
+                            android:textSize="18dp"/>
+
+                    </LinearLayout>
 
                     <Button
                         android:id="@+id/btn_login"

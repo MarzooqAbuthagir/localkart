@@ -130,7 +130,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
         spinState = findViewById(R.id.spin_state);
         spinState.setTitle("Select State");
         spinDistrict = findViewById(R.id.spin_district);
-        spinDistrict.setTitle("Select District");
+        spinDistrict.setTitle("Select District / Zone");
 
         getStateList();
 
@@ -147,7 +147,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
                     strStateId = "";
                     DistrictData initDistrictData = new DistrictData();
                     initDistrictData.setDistrictId("-1");
-                    initDistrictData.setDistrictName("District");
+                    initDistrictData.setDistrictName("District / Zone");
                     districtListValue.add(0, initDistrictData);
 
                     districtSpinnerValue.add(districtListValue.get(0).getDistrictName());
@@ -235,7 +235,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
                 }*/ else if (strStateId.equalsIgnoreCase("")) {
                     Toast.makeText(AdvertiseBusinessActivity2.this, "Select state", Toast.LENGTH_SHORT).show();
                 } else if (strDistrictId.equalsIgnoreCase("")) {
-                    Toast.makeText(AdvertiseBusinessActivity2.this, "Select district", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdvertiseBusinessActivity2.this, "Select district / zone", Toast.LENGTH_SHORT).show();
                 } else if (strPinCode.isEmpty()) {
                     etPinCode.requestFocus();
                     Toast.makeText(AdvertiseBusinessActivity2.this, "Enter pin code", Toast.LENGTH_SHORT).show();
@@ -299,7 +299,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
 
                             DistrictData initDistrictData = new DistrictData();
                             initDistrictData.setDistrictId("-1");
-                            initDistrictData.setDistrictName("District");
+                            initDistrictData.setDistrictName("District / Zone");
                             districtListValue.add(0, initDistrictData);
 
                             districtSpinnerValue.clear();

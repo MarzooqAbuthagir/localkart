@@ -186,7 +186,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(DealsMoreDetailsActivity.this);
                     String state = Integer.parseInt(strIsSubscribed) == 0 ? "Subscribe" : "UnSubscribe";
                     builder.setTitle("Confirmation")
-                            .setMessage("Are you sure want to " + state + " the shop?")
+                            .setMessage("You'll receive notifications when "+ strShopName +" posts new Deals and Offers. Are you sure want to " + state + "?")
                             .setPositiveButton(DealsMoreDetailsActivity.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int which) {
@@ -589,6 +589,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
                     case "Phone":
                     case "Mobile":
                     case "Alternate Number":
+                    case "COD":
                         String telPhone = "tel:" + accessValue;
                         Intent callIntent = new Intent(Intent.ACTION_DIAL);
                         callIntent.setData(Uri.parse(telPhone));

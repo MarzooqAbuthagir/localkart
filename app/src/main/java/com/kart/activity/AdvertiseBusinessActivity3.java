@@ -28,7 +28,7 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
     ActionBar actionBar = null;
 
     String keyIntent = "", strBusinessId = "";
-    String strPhoneNo = "", strMobileNo = "", strAltNo = "", strWhatsAppNo = "", strEmailId = "", strWebsite = "", strFacebook = "", strVcard = "";
+    String strPhoneNo = "", strMobileNo = "", strAltNo = "", strWhatsAppNo = "", strEmailId = "", strWebsite = "", strFacebook = "", strVcard = "", strCod = "";
 
     EditText etPhoneNo;
     EditText etMobileNo;
@@ -38,6 +38,7 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
     EditText etWebsite;
     EditText etFacebook;
     EditText etVcard;
+    EditText etCod;
     boolean isAllFieldsChecked = false;
 
     @Override
@@ -95,6 +96,7 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
         etWebsite = findViewById(R.id.et_website);
         etFacebook = findViewById(R.id.et_facebook);
         etVcard = findViewById(R.id.et_vcard);
+        etCod = findViewById(R.id.et_cod);
 
         Button btnPrevious = findViewById(R.id.btn_previous);
         btnPrevious.setOnClickListener(new View.OnClickListener() {
@@ -123,6 +125,7 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
             etWebsite.setText(cd.getWebsite());
             etFacebook.setText(cd.getFacebook());
             etVcard.setText(cd.getVcard());
+            etCod.setText(cd.getCod());
         }
 
         Button btnNext = findViewById(R.id.btn_next);
@@ -137,6 +140,7 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
                 strWebsite = etWebsite.getText().toString().trim();
                 strFacebook = etFacebook.getText().toString().trim();
                 strVcard = etVcard.getText().toString().trim();
+                strCod = etCod.getText().toString().trim();
 
                 isAllFieldsChecked = validateString();
 
@@ -149,7 +153,8 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
                             strEmailId,
                             strWebsite,
                             strFacebook,
-                            strVcard
+                            strVcard,
+                            strCod
                     );
                     Utilis.saveContactDetails(contactDetailsData);
                     Intent intent = new Intent(AdvertiseBusinessActivity3.this, AdvertiseBusinessActivity4.class);
@@ -179,12 +184,17 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
             Toast.makeText(AdvertiseBusinessActivity3.this, "Enter 10 digit alternate number", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (strWhatsAppNo.isEmpty()) {
-            etWhatsAppNo.requestFocus();
-            Toast.makeText(AdvertiseBusinessActivity3.this, "Enter whatsApp number", Toast.LENGTH_SHORT).show();
+//        if (strWhatsAppNo.isEmpty()) {
+//            etWhatsAppNo.requestFocus();
+//            Toast.makeText(AdvertiseBusinessActivity3.this, "Enter whatsApp number", Toast.LENGTH_SHORT).show();
+//            return false;
+//        }
+        if (strCod.length() > 0 && strCod.length() < 10) {
+            etCod.requestFocus();
+            Toast.makeText(AdvertiseBusinessActivity3.this, "Enter 10 digit cod number", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (strWhatsAppNo.length() < 10) {
+        if (strWhatsAppNo.length() > 0 && strWhatsAppNo.length() < 10) {
             etWhatsAppNo.requestFocus();
             Toast.makeText(AdvertiseBusinessActivity3.this, "Enter 10 digit whatsApp number", Toast.LENGTH_SHORT).show();
             return false;
@@ -227,6 +237,7 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
         strWebsite = etWebsite.getText().toString().trim();
         strFacebook = etFacebook.getText().toString().trim();
         strVcard = etVcard.getText().toString().trim();
+        strCod = etCod.getText().toString().trim();
         ContactDetailsData contactDetailsData = new ContactDetailsData(
                 strPhoneNo,
                 strMobileNo,
@@ -235,7 +246,8 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
                 strEmailId,
                 strWebsite,
                 strFacebook,
-                strVcard
+                strVcard,
+                strCod
         );
         Utilis.saveContactDetails(contactDetailsData);
         finish();

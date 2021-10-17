@@ -1,9 +1,19 @@
 package com.kart.activity;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -15,10 +25,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -45,15 +59,22 @@ import com.kart.model.UserDetail;
 import com.kart.support.RegBusinessTypeSharedPreference;
 import com.kart.support.Utilis;
 import com.kart.support.VolleySingleton;
+import com.theartofdev.edmodo.cropper.CropImage;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class MyBusinessActivity extends AppCompatActivity {
@@ -71,11 +92,24 @@ public class MyBusinessActivity extends AppCompatActivity {
     SearchableSpinner spinCategory;
     SearchableSpinner spinSubCategory;
 
-    private List<String> businessTypeSpinnerValue = new ArrayList<>();
-    private List<String> categorySpinnerValue = new ArrayList<>();
-    private List<String> subCategorySpinnerValue = new ArrayList<>();
+    private final List<String> businessTypeSpinnerValue = new ArrayList<>();
+    private final List<String> categorySpinnerValue = new ArrayList<>();
+    private final List<String> subCategorySpinnerValue = new ArrayList<>();
 
     ImageView ivLogo;
+    String base64img = "";
+
+    File photoFile = null;
+    String mCurrentPhotoPath;
+    Uri photoURI;
+
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 101;
+
+    int CAPTURE_IMAGE_REQUEST = 1;
+    int SELECT_IMAGE_REQUEST = 2;
+
+    EditText etDesc;
+    String strDesc = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,14 +165,183 @@ public class MyBusinessActivity extends AppCompatActivity {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MyBusinessActivity.this, MyBusinessActivity2.class);
-                intent.putExtra("key", keyIntent);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                strDesc = etDesc.getText().toString().trim();
+                int descCount = strDesc.isEmpty() ? 0 : strDesc.split("\\s+").length;
+                if (strDesc.isEmpty()) {
+                    Toast.makeText(MyBusinessActivity.this, "Enter about business", Toast.LENGTH_SHORT).show();
+                } else if (descCount > 30) {
+                    Toast.makeText(MyBusinessActivity.this, "About not exceeding 30 words", Toast.LENGTH_SHORT).show();
+                } else {
+//                    BasicDetailsData basicDetailsData = new BasicDetailsData(
+//                            strBusiness,
+//                            strBusinessName,
+//                            strCategoryId,
+//                            strSubCategoryId,
+//                            base64img,
+//                            strDesc
+//                    );
+//                    Utilis.saveBasicDetails(basicDetailsData);
+//                    Intent intent = new Intent(MyBusinessActivity.this, MyBusinessActivity2.class);
+//                    intent.putExtra("key", keyIntent);
+//                    intent.putExtra("businessType", strBusinessId);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    startActivity(intent);
+                }
+//                Intent intent = new Intent(MyBusinessActivity.this, MyBusinessActivity2.class);
+//                intent.putExtra("key", keyIntent);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                startActivity(intent);
             }
         });
 
         getMyBusinessData();
+
+        Button btnSelectLogo = findViewById(R.id.btn_logo);
+        btnSelectLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkAndRequestPermissions(MyBusinessActivity.this)) {
+                    chooseImage(MyBusinessActivity.this);
+                }
+            }
+        });
+    }
+
+    public static boolean checkAndRequestPermissions(final Activity context) {
+        int WExtstorePermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int cameraPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.CAMERA);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+        if (WExtstorePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded
+                    .add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(context, listPermissionsNeeded
+                            .toArray(new String[listPermissionsNeeded.size()]),
+                    REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_ID_MULTIPLE_PERMISSIONS) {
+            if (ContextCompat.checkSelfPermission(MyBusinessActivity.this,
+                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getApplicationContext(),
+                        "Permission Requires to Access Camera.", Toast.LENGTH_SHORT)
+                        .show();
+            } else if (ContextCompat.checkSelfPermission(MyBusinessActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getApplicationContext(),
+                        "Permission Requires to Access Your Storage.",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                chooseImage(MyBusinessActivity.this);
+            }
+        }
+    }
+
+    private void chooseImage(Context context) {
+        final CharSequence[] optionsMenu = {"Take Photo", "Choose from Gallery", "Cancel"}; // create a menuOption Array
+        // create a dialog for showing the optionsMenu
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        // set the items in builder
+        builder.setItems(optionsMenu, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (optionsMenu[i].equals("Take Photo")) {
+
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                        try {
+                            photoFile = createImageFile();
+
+                            photoURI = FileProvider.getUriForFile(
+                                    MyBusinessActivity.this,
+                                    "com.kart.fileprovider",
+                                    photoFile
+                            );
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                            startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
+
+                        } catch (IOException ex) {
+                            // Error occurred while creating the File
+                        }
+                    }
+
+                } else if (optionsMenu[i].equals("Choose from Gallery")) {
+                    // choose from  external storage
+                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(pickPhoto, SELECT_IMAGE_REQUEST);
+                } else if (optionsMenu[i].equals("Exit")) {
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp =
+                new SimpleDateFormat("yyyyMMdd_HHmmss",
+                        Locale.getDefault()).format(new Date());
+        String imageFileName = "IMG_" + timeStamp + "_";
+        File storageDir =
+                getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAPTURE_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(1, 1).setRequestedSize(300, 300).start(MyBusinessActivity.this);
+        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            Uri resultUri = result.getUri();
+            onSelectFromGalleryResult(resultUri);
+        } else if (requestCode == SELECT_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+            photoURI = data.getData();
+            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(1, 1).setRequestedSize(300, 300).start(MyBusinessActivity.this);
+        }
+    }
+
+    private void onSelectFromGalleryResult(Uri data) {
+        Bitmap bm = null;
+        if (data != null) {
+            try {
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+//        ivLogo.setImageBitmap(bm);
+        Glide.with(MyBusinessActivity.this).asBitmap().load(bm)
+//                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                .diskCacheStrategy(DiskCacheStrategy.ALL).into(ivLogo);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        assert bm != null;
+        bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        base64img = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        System.out.println("Gallery image " + base64img);
+
     }
 
     String str_result = "", str_message = "";
@@ -174,7 +377,8 @@ public class MyBusinessActivity extends AppCompatActivity {
                                     basicDetail.getString("category"),
                                     basicDetail.getString("subCategory"),
                                     basicDetail.getString("shopLogo"),
-                                    basicDetail.getString("description")
+                                    basicDetail.getString("description"),
+                                    basicDetail.getString("indexId")
                             );
                             Utilis.saveBasicDetails(basicDetailsData);
 
@@ -200,7 +404,8 @@ public class MyBusinessActivity extends AppCompatActivity {
                                     contactDetail.getString("emailAddress"),
                                     contactDetail.getString("website"),
                                     contactDetail.getString("facebook"),
-                                    contactDetail.getString("digitalVcard")
+                                    contactDetail.getString("digitalVcard"),
+                                    contactDetail.getString("cod")
                             );
                             Utilis.saveContactDetails(contactDetailsData);
 
@@ -218,6 +423,7 @@ public class MyBusinessActivity extends AppCompatActivity {
                                 JSONObject object = jsonArray.getJSONObject(i);
                                 UploadImages uploadImages = new UploadImages();
                                 uploadImages.setImage(object.getString("imageUrl"));
+                                uploadImages.setImageIndexId(object.getString("imageIndexId"));
                                 uploadImagesList.add(uploadImages);
                             }
                             Utilis.clearImageList(MyBusinessActivity.this);
@@ -296,7 +502,7 @@ public class MyBusinessActivity extends AppCompatActivity {
 
     private void setViews() {
         final EditText etBusinessName = findViewById(R.id.et_business_name);
-        final EditText etDesc = findViewById(R.id.et_desc);
+        etDesc = findViewById(R.id.et_desc);
 
         spinBusinessType = findViewById(R.id.spin_business_type);
         spinBusinessType.setTitle("Select Business Type");
@@ -321,7 +527,7 @@ public class MyBusinessActivity extends AppCompatActivity {
 
         Glide.with(MyBusinessActivity.this).load(prefBasicDetail.getLogo())
                 .placeholder(R.mipmap.ic_launcher_round)
-                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+//                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(ivLogo);
 
         businessTypeSpinnerValue.add(prefBasicDetail.getBusinessType());

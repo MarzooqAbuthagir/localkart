@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 public class UploadImages {
     private String image;
     private Bitmap bitmap;
+    private String imageIndexId;
 
     public UploadImages() {
     }
@@ -30,4 +31,11 @@ public class UploadImages {
         this.bitmap = bitmap;
     }
 
+    public String getImageIndexId() {
+        return imageIndexId;
+    }
+
+    public void setImageIndexId(String imageIndexId) {
+        this.imageIndexId = imageIndexId;
+    }
 }

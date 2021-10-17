@@ -415,6 +415,7 @@ public class ViewHistoryActivity extends AppCompatActivity {
                     case "Phone":
                     case "Mobile":
                     case "Alternate Number":
+                    case "COD":
                         String telPhone = "tel:" + accessValue;
                         Intent callIntent = new Intent(Intent.ACTION_DIAL);
                         callIntent.setData(Uri.parse(telPhone));

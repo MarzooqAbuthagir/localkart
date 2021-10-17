@@ -1,18 +1,20 @@
 package com.kart.activity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
@@ -29,7 +31,7 @@ public class PayWebViewActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "", planId = "", webUrl = "";
+    String keyIntent = "", planId = "", webUrl = "", amount = "", planName = "";
 
     WebView webView;
     ProgressDialog pDialog;
@@ -44,6 +46,8 @@ public class PayWebViewActivity extends AppCompatActivity {
         keyIntent = intent.getStringExtra("key");
         planId = intent.getStringExtra("planId");
         webUrl = intent.getStringExtra("webUrl");
+        amount = intent.getStringExtra("amount");
+        planName = intent.getStringExtra("planName");
 
         Window window = getWindow();
 
@@ -117,7 +121,7 @@ public class PayWebViewActivity extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             System.out.println("url" + url);
-            String paySuccess = Utilis.Api+Utilis.paysuccess;
+            String paySuccess = Utilis.Api + Utilis.paysuccess;
             if (url.contains(paySuccess)) {
                 reDirectToApp(context);
                 return true;
@@ -140,23 +144,47 @@ public class PayWebViewActivity extends AppCompatActivity {
 
     private void reDirectToApp(Context context) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("Payment Successful!")
-                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//        builder.setMessage("Payment Successful!")
+//                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+//
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//
+//                        Intent intent = new Intent(PayWebViewActivity.this, PlanActivity.class);
+//                        intent.putExtra("key", keyIntent);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        startActivity(intent);
+//                        finish();
+//                    }
+//                });
+//
+//
+//        AlertDialog alert = builder.create();
+//        alert.show();
 
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(PayWebViewActivity.this, R.style.CustomAlertDialog);
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from(PayWebViewActivity.this).inflate(R.layout.alert_payment_successful, viewGroup, false);
+        TextView tvContent = dialogView.findViewById(R.id.tv_content);
+        String textContent = "An amount of <b> Rs. " + amount + "</b> has been paid successfully towards subscription charges for the plan <b>" + planName + "</b> and is active now.";
+        tvContent.setText(Html.fromHtml(textContent));
+        Button btnOk = dialogView.findViewById(R.id.btn_ok);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+        final android.app.AlertDialog alertDialog = builder.create();
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                Intent intent = new Intent(PayWebViewActivity.this, PlanActivity.class);
+                intent.putExtra("key", keyIntent);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
 
-                        Intent intent = new Intent(PayWebViewActivity.this, PlanActivity.class);
-                        intent.putExtra("key", keyIntent);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-
-
-        AlertDialog alert = builder.create();
-        alert.show();
+        alertDialog.show();
     }
 }

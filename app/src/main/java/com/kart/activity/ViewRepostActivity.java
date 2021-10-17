@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
@@ -56,8 +57,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ViewRepostActivity extends AppCompatActivity {
     private String Tag = "ViewRepostActivity";
@@ -65,7 +64,7 @@ public class ViewRepostActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "", strFromDate = "", strToDate = "", strAccessOption = "", strLati = "", strLongi = "", strPostType = "", strFestivalName = "", strShopIndexId = "", strShopType = "";
+    String keyIntent = "", strFromDate = "", strToDate = "", strAccessOption = "", strLati = "", strLongi = "", strPostType = "", strFestivalName = "", strShopIndexId = "", strShopType = "", strFDate="", strTDate ="";
     RecyclerView recyclerView;
     List<OfferData> offerDataList;
     ReOfferAdapter offerAdapter;
@@ -74,7 +73,7 @@ public class ViewRepostActivity extends AppCompatActivity {
     private static ViewPager mPager;
     LinearLayout sliderDotspanel;
     private static int currentPage = 0;
-//    Timer swipeTimer;
+    //    Timer swipeTimer;
 //    final long DELAY_MS = 1000;//delay in milliseconds before task is to be executed
 //    final long PERIOD_MS = 4500; // time in milliseconds between successive task executions.
     Handler handler = new Handler();
@@ -116,6 +115,8 @@ public class ViewRepostActivity extends AppCompatActivity {
         offerDataList = Utilis.getReOfferList("offerList");
         strShopIndexId = intent.getStringExtra("shopIndexId");
         strShopType = intent.getStringExtra("shopType");
+        strFDate = intent.getStringExtra("fDate");
+        strTDate = intent.getStringExtra("tDate");
 
         if (offerDataList != null) {
             System.out.println("array list contains images");
@@ -200,86 +201,113 @@ public class ViewRepostActivity extends AppCompatActivity {
     }
 
     private void postValidation() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(ViewRepostActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewRepostActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.postvalidation, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
+        builder.setMessage("Post details cannot be changed once saved. Are you sure you want to save and show this post to customer?")
+                .setPositiveButton(ViewRepostActivity.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
-                    try {
-                        //converting response to json object
-                        JSONObject obj = new JSONObject(response);
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing but close the dialog
+                        dialog.dismiss();
+                        if (Utilis.isInternetOn()) {
+                            Utilis.showProgress(ViewRepostActivity.this);
 
-                        System.out.println(Tag + " postValidation response - " + response);
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.postvalidation, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
 
-                        Utilis.dismissProgress();
+                                    try {
+                                        //converting response to json object
+                                        JSONObject obj = new JSONObject(response);
 
-                        str_result = obj.getString("errorCode");
-                        System.out.print(Tag + " postValidation result " + str_result);
+                                        System.out.println(Tag + " postValidation response - " + response);
 
-                        if (Integer.parseInt(str_result) == 0) {
+                                        Utilis.dismissProgress();
 
-                            str_message = obj.getString("Message");
+                                        str_result = obj.getString("errorCode");
+                                        System.out.print(Tag + " postValidation result " + str_result);
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ViewRepostActivity.this);
-                            builder.setMessage(str_message)
-                                    .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
+                                        if (Integer.parseInt(str_result) == 0) {
+
+                                            str_message = obj.getString("Message");
+
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(ViewRepostActivity.this);
+                                            builder.setMessage(str_message)
+                                                    .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.dismiss();
+                                                        }
+                                                    });
+                                            AlertDialog alert = builder.create();
+                                            alert.show();
+                                        } else if (Integer.parseInt(str_result) == 1) {
+                                            str_message = obj.getString("Message");
+                                            sendPost();
                                         }
-                                    });
-                            AlertDialog alert = builder.create();
-                            alert.show();
-                        } else if (Integer.parseInt(str_result) == 1) {
-                            str_message = obj.getString("Message");
-                            sendPost();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+
+                                    Utilis.dismissProgress();
+                                    Toast.makeText(ViewRepostActivity.this, ViewRepostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                                    if (error instanceof NoConnectionError) {
+                                        System.out.println("NoConnectionError");
+                                    } else if (error instanceof TimeoutError) {
+                                        System.out.println("TimeoutError");
+
+                                    } else if (error instanceof ServerError) {
+                                        System.out.println("ServerError");
+
+                                    } else if (error instanceof AuthFailureError) {
+                                        System.out.println("AuthFailureError");
+
+                                    } else if (error instanceof NetworkError) {
+                                        System.out.println("NetworkError");
+                                    }
+                                }
+                            }) {
+                                @Override
+                                protected Map<String, String> getParams() throws AuthFailureError {
+                                    Map<String, String> params = new HashMap<>();
+                                    params.put("userIndexId", obj.getId());
+                                    params.put("typeId", strPostType);
+                                    params.put("fromDate", strFDate);
+                                    params.put("toDate", strTDate);
+                                    params.put("count", String.valueOf(offerDataList.size()));
+                                    System.out.println(Tag + " postValidation inputs " + params);
+                                    return params;
+                                }
+                            };
+
+                            stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                            VolleySingleton.getInstance(ViewRepostActivity.this).addToRequestQueue(stringRequest);
+                        } else {
+                            Toast.makeText(ViewRepostActivity.this, ViewRepostActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
+                })
+                .setNegativeButton(ViewRepostActivity.this.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
 
-                    Utilis.dismissProgress();
-                    Toast.makeText(ViewRepostActivity.this, ViewRepostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
-
-                    if (error instanceof NoConnectionError) {
-                        System.out.println("NoConnectionError");
-                    } else if (error instanceof TimeoutError) {
-                        System.out.println("TimeoutError");
-
-                    } else if (error instanceof ServerError) {
-                        System.out.println("ServerError");
-
-                    } else if (error instanceof AuthFailureError) {
-                        System.out.println("AuthFailureError");
-
-                    } else if (error instanceof NetworkError) {
-                        System.out.println("NetworkError");
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing
+                        dialog.dismiss();
                     }
-                }
-            }) {
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("userIndexId", obj.getId());
-                    params.put("typeId", strPostType);
-                    params.put("fromDate", strFromDate);
-                    params.put("toDate", strToDate);
-                    params.put("count", String.valueOf(offerDataList.size()));
-                    System.out.println(Tag + " postValidation inputs " + params);
-                    return params;
-                }
-            };
+                });
 
-            stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
-        } else {
-            Toast.makeText(this, ViewRepostActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
-        }
+        AlertDialog alert = builder.create();
+        alert.show();
+
+        Button btn_yes = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+        Button btn_no = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+        btn_no.setTextColor(Color.parseColor("#000000"));
+        btn_yes.setTextColor(Color.parseColor("#000000"));
     }
 
     private void getPostDetails() {
@@ -388,7 +416,7 @@ public class ViewRepostActivity extends AppCompatActivity {
 
     private void setViews(ViewOfferData viewOfferData) {
         tvShopName.setText(viewOfferData.getName());
-        tvDirection.setText(viewOfferData.getDistance()+" • Map");
+        tvDirection.setText(viewOfferData.getDistance() + " • Map");
         tvAccessKey.setText(viewOfferData.getAccessOptions().getKey());
         tvAccessValue.setText(viewOfferData.getAccessOptions().getValue());
 
@@ -543,8 +571,8 @@ public class ViewRepostActivity extends AppCompatActivity {
                     Map<String, String> params = new HashMap<>();
                     params.put("userIndexId", obj.getId());
                     params.put("typeId", strPostType);
-                    params.put("fromDate", strFromDate);
-                    params.put("toDate", strToDate);
+                    params.put("fromDate", strFDate);
+                    params.put("toDate", strTDate);
                     params.put("accessOptions", strAccessOption);
                     params.put("festivalName", strFestivalName);
                     System.out.println(Tag + " sendPost inputs " + params);
@@ -586,7 +614,16 @@ public class ViewRepostActivity extends AppCompatActivity {
                                         app.notifyToUsers(str_post_index_id, strShopIndexId, strShopType);
                                     }
                                     Utilis.dismissProgress();
-                                    back();
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ViewRepostActivity.this);
+                                    builder.setMessage("Your post has been successfully saved.")
+                                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    back();
+                                                }
+                                            });
+                                    AlertDialog alert = builder.create();
+                                    alert.show();
                                 }
 
                             } else if (Integer.parseInt(str_result) == 2) {

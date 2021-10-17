@@ -75,6 +75,7 @@ public class AccessOptionAdapter extends RecyclerView.Adapter<AccessOptionAdapte
                     case "Phone":
                     case "Mobile":
                     case "Alternate Number":
+                    case "COD":
                         String telPhone = "tel:" + arrayList.get(position).getValue();
                         Intent callIntent = new Intent(Intent.ACTION_DIAL);
                         callIntent.setData(Uri.parse(telPhone));

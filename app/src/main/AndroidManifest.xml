@@ -13,7 +13,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
-        <activity android:name=".activity.ReferralActivity"></activity>
+        <activity android:name=".activity.BusinessTCActivity"></activity>
+        <activity android:name=".activity.UserTCActivity" />
+        <activity android:name=".activity.PaymentHistoryActivity" />
+        <activity android:name=".activity.ReferralActivity" />
         <activity android:name=".activity.NotificationPostActivity" />
         <activity android:name=".activity.NotificationActivity" />
         <activity android:name=".activity.ProfileActivity" />
@@ -71,6 +74,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCAdZwm8yXwsIX-V5aZtXc64Q2xpEbHWio" />
+        <meta-data
+            android:name="com.onesignal.NotificationAccentColor.DEFAULT"
+            android:value="#FFE63E89" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -90,8 +96,6 @@
                 <action android:name="com.onesignal.NotificationExtender" />
             </intent-filter>
         </service>
-
-        <meta-data android:name="com.onesignal.NotificationAccentColor.DEFAULT" android:value="#FFE63E89"/>
 
         <uses-library
             android:name="org.apache.http.legacy"

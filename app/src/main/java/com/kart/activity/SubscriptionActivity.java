@@ -127,6 +127,30 @@ public class SubscriptionActivity extends AppCompatActivity {
             }
         });
 
+        TextView tvViewPlans = findViewById(R.id.tv_view_plan);
+        tvViewPlans.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SubscriptionActivity.this, PlanActivity.class);
+                intent.putExtra("key", keyIntent);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        Button btnPayHistory = findViewById(R.id.btn_history);
+        btnPayHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SubscriptionActivity.this, PaymentHistoryActivity.class);
+                intent.putExtra("key", keyIntent);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         layPackage = findViewById(R.id.lay_package);
         layNoPackage = findViewById(R.id.lay_no_package);
 

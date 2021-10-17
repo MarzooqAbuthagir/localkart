@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -174,6 +175,15 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
             }
         });
 
+        final CheckBox checkBox = findViewById(R.id.checkbox);
+        TextView tvBusTC = findViewById(R.id.tv_bus_tc);
+        tvBusTC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(AdvertiseBusinessActivity6.this, BusinessTCActivity.class));
+            }
+        });
+
         Button btnPrevious = findViewById(R.id.btn_previous);
         btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,7 +198,9 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
             public void onClick(View view) {
                 if (listOfService.size() == 0) {
                     Toast.makeText(AdvertiseBusinessActivity6.this, "Add service", Toast.LENGTH_SHORT).show();
-                } else {
+                } else if (!checkBox.isChecked()) {
+                    Toast.makeText(AdvertiseBusinessActivity6.this, "Please accept Terms and Conditions", Toast.LENGTH_SHORT).show();
+                }else {
                     StringBuilder stringBuilder = new StringBuilder();
 
                     for (String str : listOfService) {
@@ -198,7 +210,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
                         stringBuilder.append(str);
                     }
                     String strService = stringBuilder.toString();
-                    registerBusiness(strService);
+                    registerBusiness(strService, view);
                 }
             }
         });
@@ -206,7 +218,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
 
     String str_result = "", str_message = "";
 
-    private void registerBusiness(final String strService) {
+    private void registerBusiness(final String strService, final View view) {
         if (Utilis.isInternetOn()) {
             Utilis.showProgress(AdvertiseBusinessActivity6.this);
 
@@ -229,7 +241,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
 
                             str_message = obj.getString("message");
                             String str_index_id = obj.getString("indexId");
-                            uploadImages(str_index_id);
+                            uploadImages(str_index_id, view);
 
                         } else if (Integer.parseInt(str_result) == 2) {
                             str_message = obj.getString("message");
@@ -288,6 +300,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
                     params.put("website", contactDetailsData.getWebsite());
                     params.put("facebook", contactDetailsData.getFacebook());
                     params.put("digitalVcard", contactDetailsData.getVcard());
+                    params.put("cod", contactDetailsData.getCod());
                     params.put("latitude", locationData.getLatitude());
                     params.put("longitude", locationData.getLongitude());
                     params.put("address", locationData.getAddress());
@@ -307,7 +320,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
 
     ProgressDialog progressDialog;
 
-    private void uploadImages(final String str_index_id) {
+    private void uploadImages(final String str_index_id, final View view) {
         progressDialog = ProgressDialog.show(AdvertiseBusinessActivity6.this, "Uploading Images",
                 "Please wait...", true);
 
@@ -322,18 +335,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
                         System.out.println("on upload " + currentPos + " array size " + uploadImagesArrayList.size());
                         progressDialog.dismiss();
 
-                        Utilis.clearRegPref(AdvertiseBusinessActivity6.this);
-
-                        RegBusinessSharedPrefrence.setMenuFlag(AdvertiseBusinessActivity6.this, "1");
-
-                        RegBusinessTypeSharedPreference.setBusinessType(AdvertiseBusinessActivity6.this, "Services");
-                        RegBusinessIdSharedPreference.setBusinessId(AdvertiseBusinessActivity6.this, str_index_id);
-
-                        Intent intent = new Intent(AdvertiseBusinessActivity6.this, MainActivity.class);
-                        intent.putExtra("key", keyIntent);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
+                        successfulRegister(view, str_index_id);
                     }
                 }
             }, new Response.ErrorListener() {
@@ -358,6 +360,37 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
             rQueue.add(request);
 
         }
+    }
+
+    private void successfulRegister(View view, final String str_index_id) {
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(AdvertiseBusinessActivity6.this, R.style.CustomAlertDialog);
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from(view.getContext()).inflate(R.layout.alert_business_register, viewGroup, false);
+        Button btnManageMyBusiness = dialogView.findViewById(R.id.btn_manage_my_business);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+        final android.app.AlertDialog alertDialog = builder.create();
+        btnManageMyBusiness.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+
+                Utilis.clearRegPref(AdvertiseBusinessActivity6.this);
+
+                RegBusinessSharedPrefrence.setMenuFlag(AdvertiseBusinessActivity6.this, "1");
+
+                RegBusinessTypeSharedPreference.setBusinessType(AdvertiseBusinessActivity6.this, "Services");
+                RegBusinessIdSharedPreference.setBusinessId(AdvertiseBusinessActivity6.this, str_index_id);
+
+                Intent intent = new Intent(AdvertiseBusinessActivity6.this, ManageBusinessActivity.class);
+                intent.putExtra("key", keyIntent);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        alertDialog.show();
     }
 
     private void addServiceDialog(View view) {
