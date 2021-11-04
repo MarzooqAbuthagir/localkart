@@ -103,7 +103,7 @@
             android:scaleType="fitXY"
             android:id="@+id/iv_img"
             android:layout_gravity="center"
-            android:src="@drawable/upload_image"/>
+            android:src="@drawable/click_upload_image"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="15dp"/>

@@ -270,11 +270,10 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
                     shareIntent.setType("text/plain");
 //                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
                     if (arrayList.get(position).getOfferCount().equalsIgnoreCase("1"))
-                        shareMessage = arrayList.get(position).getName() + " \n\n" + arrayList.get(position).getOfferHeading() + " \n\n" + arrayList.get(position).getOffferDesc() + " \n\nDownload Local Kart App Now ";
-                    else
-                    {
+                        shareMessage = "Valid From " + arrayList.get(position).getFromDate() + " To " + arrayList.get(position).getToDate() + "\n\n" + arrayList.get(position).getName() + " \n\n" + arrayList.get(position).getOfferHeading() + " \n\n" + arrayList.get(position).getOffferDesc() + " \n\nDownload Local Kart App Now ";
+                    else {
                         int count = Integer.parseInt(arrayList.get(position).getOfferCount()) - 1;
-                        shareMessage = arrayList.get(position).getName() + " \n\n" + arrayList.get(position).getOfferHeading() + " \n\n" + arrayList.get(position).getOffferDesc() + "\n\nand " + count + " more deals" + " \n\nDownload Local Kart App Now ";
+                        shareMessage = "Valid From " + arrayList.get(position).getFromDate() + " To " + arrayList.get(position).getToDate() + "\n\n" + arrayList.get(position).getName() + " \n\n" + arrayList.get(position).getOfferHeading() + " \n\n" + arrayList.get(position).getOffferDesc() + "\n\nand " + count + " more deals" + " \n\nDownload Local Kart App Now ";
                     }
                     shareMessage = shareMessage + Utilis.shareUrl;
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);

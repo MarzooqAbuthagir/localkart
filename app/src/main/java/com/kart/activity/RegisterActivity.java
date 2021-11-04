@@ -276,7 +276,7 @@ public class RegisterActivity extends AppCompatActivity {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
 
-        Toast.makeText(this, str_otp, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, str_otp, Toast.LENGTH_SHORT).show();
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);

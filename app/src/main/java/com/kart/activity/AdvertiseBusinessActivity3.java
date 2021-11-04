@@ -181,7 +181,7 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
         }
         if (strAltNo.length() > 0 && strAltNo.length() < 10) {
             etAltNo.requestFocus();
-            Toast.makeText(AdvertiseBusinessActivity3.this, "Enter 10 digit alternate number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AdvertiseBusinessActivity3.this, "Enter 10 digit alternate / appointment number", Toast.LENGTH_SHORT).show();
             return false;
         }
 //        if (strWhatsAppNo.isEmpty()) {
@@ -196,7 +196,7 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
         }
         if (strWhatsAppNo.length() > 0 && strWhatsAppNo.length() < 10) {
             etWhatsAppNo.requestFocus();
-            Toast.makeText(AdvertiseBusinessActivity3.this, "Enter 10 digit whatsApp number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AdvertiseBusinessActivity3.this, "Enter 10 digit WhatsApp number", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (strEmailId.length() > 0 && !Utilis.eMailValidation(strEmailId)) {
@@ -206,12 +206,12 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
         }
         if (strWebsite.length() > 0 && !Utilis.webURLValidation(strWebsite)) {
             etWebsite.requestFocus();
-            Toast.makeText(AdvertiseBusinessActivity3.this, "Enter valid website", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AdvertiseBusinessActivity3.this, "Enter valid website address", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (strFacebook.length() > 0 && !Utilis.webURLValidation(strFacebook)) {
             etFacebook.requestFocus();
-            Toast.makeText(AdvertiseBusinessActivity3.this, "Enter valid facebook", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AdvertiseBusinessActivity3.this, "Enter valid facebook URL", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (strVcard.length() > 0 && !Utilis.webURLValidation(strVcard)) {

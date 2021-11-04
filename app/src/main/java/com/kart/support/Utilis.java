@@ -37,7 +37,7 @@ public class Utilis {
     public static SharedPreferences sharedPreferences;
 
     // Base Url
-    public static String Api = "https://miyacloud.in/localkart/demo/api/";
+    public static String Api = "https://www.localkart.app/portal/api/"; //"https://miyacloud.in/localkart/demo/api/";
     public static String stateList = "state";
     public static String districtList = "district";
     public static String sendotp = "sendotp";
@@ -84,12 +84,16 @@ public class Utilis {
     public static String amountcalculation = "amountcalculation";
     public static String paymenthistory = "paymenthistory";
     public static String paymenthistorydetails = "paymenthistorydetails";
+    public static String savereports = "savereports";
+    public static String deletebusinessbanner = "deletebusinessbanner";
+    public static String businessupdate = "businessupdate";
+    public static String appversion = "appversion";
 
     // Help and Support Url
     public static String helpUrl = "https://localkart.app/app/help-and-support.php";
     public static String aboutUs = "https://localkart.app/app/about-us.php";
     public static String becomeFranchise = "https://localkart.app/app/become-a-franchise.php";
-    public static String shareUrl = "https://localkart.app/app/download.php";
+    public static String shareUrl = "https://bit.ly/3Bo6WNb";//"https://localkart.app/app/download.php";
     public static String rateUsUrl = "https://localkart.app/app/rate-us.php";
     public static String privacyPolicyUrl = "https://localkart.app/app/privacy-policy.php";
     public static String userTCUrl = "https://localkart.app/user-terms-and-conditions.php";
@@ -255,24 +259,6 @@ public class Utilis {
     public static String getChips(Context con) {
         sharedPreferences = con.getSharedPreferences("CHIPS", MODE_PRIVATE);
         return sharedPreferences.getString("chips", "");
-    }
-
-    public static void saveTagList(List<String> tags) {
-        sharedPreferences = con.getSharedPreferences("TAGS", MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(tags);
-        prefsEditor.putString("tags", json);
-        prefsEditor.apply();
-    }
-
-    public static List<String> getTagList(Context con) {
-        sharedPreferences = con.getSharedPreferences("TAGS", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("tags", null);
-        Type type = new TypeToken<ArrayList<String>>() {
-        }.getType();
-        return gson.fromJson(json, type);
     }
 
     public static void saveServiceList(List<String> services) {

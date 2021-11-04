@@ -58,7 +58,7 @@ public class MyBusinessActivity4 extends AppCompatActivity implements OnMapReady
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "";
+    String keyIntent = "", strBusinessId = "";
 
     View mapView;
     public static GoogleMap mMap;
@@ -88,6 +88,7 @@ public class MyBusinessActivity4 extends AppCompatActivity implements OnMapReady
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
+        strBusinessId = intent.getStringExtra("businessType");
 
         Window window = getWindow();
 
@@ -182,10 +183,23 @@ public class MyBusinessActivity4 extends AppCompatActivity implements OnMapReady
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MyBusinessActivity4.this, MyBusinessActivity5.class);
-                intent.putExtra("key", keyIntent);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                if (tvAddress.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(MyBusinessActivity4.this, "Address not found", Toast.LENGTH_SHORT).show();
+                } else if (latitude == 0.0 || longitude == 0.0) {
+                    Toast.makeText(MyBusinessActivity4.this, "Gps issue, try again", Toast.LENGTH_SHORT).show();
+                } else {
+                    LocationData locationData = new LocationData(
+                            tvAddress.getText().toString().trim(),
+                            String.valueOf(latitude),
+                            String.valueOf(longitude)
+                    );
+                    Utilis.saveLocDetails(locationData);
+                    Intent intent = new Intent(MyBusinessActivity4.this, MyBusinessActivity5.class);
+                    intent.putExtra("key", keyIntent);
+                    intent.putExtra("businessType", strBusinessId);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
             }
         });
     }

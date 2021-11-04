@@ -8,17 +8,11 @@ public class BasicDetailsData {
     private String logo;
     private String desc;
     private String indexId;
+    private String category;
+    private String subCategory;
+    private String logoUrl;
 
-    public BasicDetailsData(String businessType, String businessName, String categoryId, String subCategoryId, String logo, String description) {
-        this.businessType = businessType;
-        this.businessName = businessName;
-        this.categoryId = categoryId;
-        this.subCategoryId = subCategoryId;
-        this.logo = logo;
-        this.desc = description;
-    }
-
-    public BasicDetailsData(String businessType, String businessName, String categoryId, String subCategoryId, String logo, String description, String indexId) {
+    public BasicDetailsData(String businessType, String businessName, String categoryId, String subCategoryId, String logo, String description, String indexId, String category, String subCategory, String url) {
         this.businessType = businessType;
         this.businessName = businessName;
         this.categoryId = categoryId;
@@ -26,6 +20,33 @@ public class BasicDetailsData {
         this.logo = logo;
         this.desc = description;
         this.indexId = indexId;
+        this.category = category;
+        this.subCategory = subCategory;
+        this.logoUrl = url;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(String subCategory) {
+        this.subCategory = subCategory;
     }
 
     public String getIndexId() {

@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,6 +30,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -62,6 +64,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +77,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "", strShopIndexId = "", strShopType = "", strLatitude = "", strLongitude = "", strIsSubscribed = "", strConstPostType = "";
+    String keyIntent = "", strShopIndexId = "", strShopType = "", strLatitude = "", strLongitude = "", strIsSubscribed = "", strConstPostType = "", strShareUrl = "";
     String str_result = "", str_message = "";
 
     DirectoryMoreDetailsData detailsData;
@@ -114,6 +117,8 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
     UserDetail userDetail;
     static SharedPreferences mPrefs;
 
+    TextView tvReport;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +139,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
         strLongitude = intent.getStringExtra("longitude");
         strIsSubscribed = intent.getStringExtra("isSubscribed");
         strConstPostType = intent.getStringExtra("constPostType");
+        strShareUrl = intent.getStringExtra("shareUrl");
 
         Window window = getWindow();
 
@@ -166,6 +172,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
 //        tvWebsite = findViewById(R.id.tv_website);
         tvDirection = findViewById(R.id.tv_direction);
         tvAddress = findViewById(R.id.tv_address);
+        tvReport = findViewById(R.id.tv_report);
 
         mPager = findViewById(R.id.view_pager);
         sliderDotspanel = findViewById(R.id.slider_dots);
@@ -209,8 +216,8 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(DirectoryMoreDetailsActivity.this);
                     String state = Integer.parseInt(strIsSubscribed) == 0 ? "Subscribe" : "UnSubscribe";
-                    builder.setTitle("Confirmation")
-                            .setMessage("You'll receive notifications when "+ detailsData.getShopName() +" posts new Deals and Offers. Are you sure want to " + state + "?")
+                    builder.setTitle(state)
+                            .setMessage(Html.fromHtml("You'll receive notifications when <b>" + detailsData.getShopName() + "</b> posts new Deals and Offers. Are you sure want to " + state + "?"))
                             .setPositiveButton(DirectoryMoreDetailsActivity.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int which) {
@@ -251,17 +258,43 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
         layShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.setType("image/*");
-                i.putExtra(Intent.EXTRA_STREAM, getImageUri(getBitmapFromView(layMain)));
-                String shareMessage = "Download Local Kart App Now ";
-                shareMessage = shareMessage + Utilis.shareUrl;
-                i.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                try {
-                    startActivity(Intent.createChooser(i, "My Profile ..."));
-                } catch (android.content.ActivityNotFoundException ex) {
-                    ex.printStackTrace();
-                }
+                final CharSequence[] optionsMenu = {"Text", "Image", "Cancel"}; // create a menuOption Array
+                // create a dialog for showing the optionsMenu
+                AlertDialog.Builder builder = new AlertDialog.Builder(DirectoryMoreDetailsActivity.this);
+                // set the items in builder
+                builder.setTitle("Share Via");
+                builder.setItems(optionsMenu, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (optionsMenu[i].equals("Text")) {
+                            try {
+                                String shareMessage = detailsData.getShopName() + "\n\nHere is my Digital vCard " + strShareUrl.replaceAll("(?<!(http:|https:))/+", "/");
+                                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                                shareIntent.setType("text/plain");
+//                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
+                                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                                startActivity(Intent.createChooser(shareIntent, "choose one"));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else if (optionsMenu[i].equals("Image")) {
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("image/*");
+                            intent.putExtra(Intent.EXTRA_STREAM, getImageUri(getBitmapFromView(layMain)));
+                            String shareMessage = "Download Local Kart App Now ";
+                            shareMessage = shareMessage + Utilis.shareUrl;
+                            intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                            try {
+                                startActivity(Intent.createChooser(intent, "My Profile ..."));
+                            } catch (android.content.ActivityNotFoundException ex) {
+                                ex.printStackTrace();
+                            }
+                        } else if (optionsMenu[i].equals("Exit")) {
+                            dialogInterface.dismiss();
+                        }
+                    }
+                });
+                builder.show();
             }
         });
     }
@@ -649,8 +682,11 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
             adapter = new ServiceOfferedAdapter(this, serviceList);
             recyclerView.setAdapter(adapter);
 
+            tvReport.setText(Html.fromHtml("<u>Report This Service</u>"));
+
         } else {
             layService.setVisibility(View.GONE);
+            tvReport.setText(Html.fromHtml("<u>Report This Shop</u>"));
         }
 
         rvAccessOption = findViewById(R.id.rv_access_option);
@@ -661,6 +697,20 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
 
         accessOptionAdapter = new AccessOptionAdapter(this, accessOptionsList);
         rvAccessOption.setAdapter(accessOptionAdapter);
+
+        tvReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DirectoryMoreDetailsActivity.this, ReportActivity.class);
+                intent.putExtra("key", keyIntent);
+                intent.putExtra("title", tvReport.getText().toString().trim());
+                intent.putExtra("shopIndexId", strShopIndexId);
+                intent.putExtra("postIndexId", "");
+                intent.putExtra("type", strShopType);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
     }
 
     private void openLocation() {

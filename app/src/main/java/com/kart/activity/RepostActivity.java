@@ -1171,6 +1171,8 @@ public class RepostActivity extends AppCompatActivity {
                                                     });
                                             AlertDialog alert = builder.create();
                                             alert.show();
+                                            Button btnOk = alert.getButton(DialogInterface.BUTTON_NEUTRAL);
+                                            btnOk.setTextColor(Color.parseColor("#000000"));
                                         } else if (Integer.parseInt(str_result) == 1) {
                                             str_message = obj.getString("Message");
                                             sendPost();
@@ -1356,6 +1358,8 @@ public class RepostActivity extends AppCompatActivity {
                                             });
                                     AlertDialog alert = builder.create();
                                     alert.show();
+                                    Button btnOk = alert.getButton(DialogInterface.BUTTON_NEUTRAL);
+                                    btnOk.setTextColor(Color.parseColor("#000000"));
                                 }
 
                             } else if (Integer.parseInt(str_result) == 2) {

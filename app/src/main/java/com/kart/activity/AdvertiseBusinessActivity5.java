@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -227,6 +228,9 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
                             });
                     AlertDialog alert = builder.create();
                     alert.show();
+
+                    Button btnOk = alert.getButton(DialogInterface.BUTTON_NEUTRAL);
+                    btnOk.setTextColor(Color.parseColor("#000000"));
                 }
             }
         });
@@ -285,7 +289,7 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
                     Toast.makeText(AdvertiseBusinessActivity5.this, "Enter keyword", Toast.LENGTH_SHORT).show();
                 } else if (arrayList.size() == 0) {
                     Toast.makeText(AdvertiseBusinessActivity5.this, "Select photo", Toast.LENGTH_SHORT).show();
-                }  else {
+                } else {
                     if (strBusinessId.equalsIgnoreCase("1")) {
                         if (!checkBox.isChecked()) {
                             Toast.makeText(AdvertiseBusinessActivity5.this, "Please accept Terms and Conditions", Toast.LENGTH_SHORT).show();
@@ -687,7 +691,8 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
 
         UploadImages uploadImages = new UploadImages(
                 base64img,
-                bm
+                bm,
+                ""
         );
         arrayList.add(0, uploadImages);
 

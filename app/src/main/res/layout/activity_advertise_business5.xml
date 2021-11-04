@@ -75,18 +75,18 @@
                     android:background="@drawable/grey_curve_box">
 
                     <EditText
-                        android:layout_centerInParent="true"
-                       android:fontFamily="@font/roboto_regular"
-                        android:textSize="16dp"
-                        android:textColor="@color/black"
-                        android:hint="Enter Keyword"
+                        android:id="@+id/et_keyword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:inputType="textCapWords"
+                        android:layout_centerInParent="true"
                         android:layout_toLeftOf="@+id/btn_add_tags"
-                        android:id="@+id/et_keyword"
-                        android:background="@android:color/transparent"/>
+                        android:background="@android:color/transparent"
+                        android:fontFamily="@font/roboto_regular"
+                        android:hint="Enter Keyword (used for search)"
+                        android:inputType="textCapWords"
+                        android:padding="12dp"
+                        android:textColor="@color/black"
+                        android:textSize="16dp" />
 
                     <Button
                         android:layout_centerInParent="true"
@@ -235,7 +235,7 @@
                     android:text="@string/user_t_c"
                     android:fontFamily="@font/roboto_regular"
                     android:textColor="@color/black"
-                    android:textSize="18dp"/>
+                    android:textSize="16dp"/>
 
             </LinearLayout>
 

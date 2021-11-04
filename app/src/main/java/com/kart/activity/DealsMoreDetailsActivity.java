@@ -10,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -71,7 +72,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
     String strShopLati = "", strShopLongi = "";
 
     LinearLayout layMain;
-    TextView tvShopName, tvDate, tvDirection, tvAccessKey, tvAccessValue;
+    TextView tvShopName, tvDate, tvDirection, tvAccessKey, tvAccessValue, tvReportPost;
 
     private static ViewPager mPager;
     LinearLayout sliderDotspanel;
@@ -97,7 +98,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
     UserDetail userDetail;
     static SharedPreferences mPrefs;
 
-    String strShopName = "";
+    String strShopName = "", strFromDate ="", strToDate = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +150,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
         tvDirection = findViewById(R.id.tv_direction);
         tvAccessKey = findViewById(R.id.tv_access_key);
         tvAccessValue = findViewById(R.id.tv_acccess_value);
+        tvReportPost = findViewById(R.id.tv_report_post);
 
         mPager = findViewById(R.id.view_pager);
         sliderDotspanel = findViewById(R.id.slider_dots);
@@ -185,8 +187,8 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(DealsMoreDetailsActivity.this);
                     String state = Integer.parseInt(strIsSubscribed) == 0 ? "Subscribe" : "UnSubscribe";
-                    builder.setTitle("Confirmation")
-                            .setMessage("You'll receive notifications when "+ strShopName +" posts new Deals and Offers. Are you sure want to " + state + "?")
+                    builder.setTitle(state)
+                            .setMessage(Html.fromHtml("You'll receive notifications when <b>" + strShopName + "</b> posts new Deals and Offers. Are you sure want to " + state + "?"))
                             .setPositiveButton(DealsMoreDetailsActivity.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int which) {
@@ -233,10 +235,10 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
                     shareIntent.setType("text/plain");
 //                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
                     if (offerDataList.size() == 1)
-                        shareMessage = strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + " \n\nDownload Local Kart App Now ";
+                        shareMessage = "Valid From " + strFromDate + " To " + strToDate + "\n\n" + strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + " \n\nDownload Local Kart App Now ";
                     else {
                         int count = offerDataList.size() - 1;
-                        shareMessage = strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + "\n\nand " + count + " more deals" + " \n\nDownload Local Kart App Now ";
+                        shareMessage = "Valid From " + strFromDate + " To " + strToDate + "\n\n" + strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + "\n\nand " + count + " more deals" + " \n\nDownload Local Kart App Now ";
                     }
                     shareMessage = shareMessage + Utilis.shareUrl;
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
@@ -247,6 +249,19 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
             }
         });
 
+        tvReportPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DealsMoreDetailsActivity.this, ReportActivity.class);
+                intent.putExtra("key", keyIntent);
+                intent.putExtra("title", tvReportPost.getText().toString().trim());
+                intent.putExtra("shopIndexId", strShopIndexId);
+                intent.putExtra("postIndexId", strPostIndexId);
+                intent.putExtra("type", strType);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
     }
 
     private void unsubscribeShop() {
@@ -429,6 +444,8 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
                             tvShopName.setText(json.getString("shopName"));
                             tvDate.setText(json.getString("fromDate") + " To " + json.getString("toDate"));
                             tvDirection.setText(json.getString("distance") + " • Map");
+                            strFromDate = json.getString("fromDate");
+                            strToDate = json.getString("toDate");
 
                             JSONObject js = json.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(

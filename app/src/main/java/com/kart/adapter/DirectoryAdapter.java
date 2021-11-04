@@ -21,6 +21,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kart.R;
 import com.kart.activity.DirectoryMoreDetailsActivity;
 import com.kart.model.DirectoryData;
+import com.kart.support.Utilis;
 import com.kart.support.tooltip.SimpleTooltip;
 
 import java.util.List;
@@ -86,6 +87,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
                 intent.putExtra("longitude", String.valueOf(longitude));
                 intent.putExtra("isSubscribed", arrayList.get(position).getIsSubscribed());
                 intent.putExtra("constPostType", "DIRECTORY");
+                intent.putExtra("shareUrl", arrayList.get(position).getShareUrl());
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 con.startActivity(intent);
             }
@@ -138,6 +140,22 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
                 }
             }
         });
+
+        holder.layShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    String shareMessage = arrayList.get(position).getName() + "\n\nHere is my Digital vCard " + arrayList.get(position).getShareUrl().replaceAll("(?<!(http:|https:))/+", "/");
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+//                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    con.startActivity(Intent.createChooser(shareIntent, "choose one"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -153,6 +171,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
         TextView tvDistance;
         TextView tvCall;
         LinearLayout layCall;
+        LinearLayout layShare;
         LinearLayout layMoreDetails;
         LinearLayout layDirection;
         LinearLayout layNotify;
@@ -170,6 +189,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
             layDirection = itemView.findViewById(R.id.lay_direction);
             ivNotify = itemView.findViewById(R.id.iv_notify);
             layNotify = itemView.findViewById(R.id.lay_notify);
+            layShare = itemView.findViewById(R.id.lay_share);
         }
     }
 

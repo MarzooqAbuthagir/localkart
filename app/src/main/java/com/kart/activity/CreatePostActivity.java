@@ -306,11 +306,11 @@ public class CreatePostActivity extends AppCompatActivity {
                 if (strPostType.isEmpty()) {
                     Toast.makeText(CreatePostActivity.this, "Select post type", Toast.LENGTH_SHORT).show();
                 } else if (strFromDate.isEmpty()) {
-                    Toast.makeText(CreatePostActivity.this, "Select from date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreatePostActivity.this, "Select From Date", Toast.LENGTH_SHORT).show();
                 } else if (strToDate.isEmpty()) {
-                    Toast.makeText(CreatePostActivity.this, "Select to date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreatePostActivity.this, "Select To Date", Toast.LENGTH_SHORT).show();
                 } else if (!checkDates()) {
-                    Toast.makeText(CreatePostActivity.this, "Check from and to date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreatePostActivity.this, "Check From and To Date", Toast.LENGTH_SHORT).show();
                 } else {
                     if (strPostType.equalsIgnoreCase("2")) {
                         SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -326,7 +326,7 @@ public class CreatePostActivity extends AppCompatActivity {
                             } else if (strAccessOption.isEmpty()) {
                                 Toast.makeText(CreatePostActivity.this, "Select access option", Toast.LENGTH_SHORT).show();
                             } else if (listOfOffer.size() == 0) {
-                                Toast.makeText(CreatePostActivity.this, "Add offer", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CreatePostActivity.this, "Add Deal / Offer", Toast.LENGTH_SHORT).show();
                             } else {
                                 fetchLastLocation();
                             }
@@ -340,14 +340,14 @@ public class CreatePostActivity extends AppCompatActivity {
                             } else if (strAccessOption.isEmpty()) {
                                 Toast.makeText(CreatePostActivity.this, "Select access option", Toast.LENGTH_SHORT).show();
                             } else if (listOfOffer.size() == 0) {
-                                Toast.makeText(CreatePostActivity.this, "Add offer", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CreatePostActivity.this, "Add Deal / Offer", Toast.LENGTH_SHORT).show();
                             } else {
                                 fetchLastLocation();
                             }
                         } else if (strAccessOption.isEmpty()) {
                             Toast.makeText(CreatePostActivity.this, "Select access option", Toast.LENGTH_SHORT).show();
                         } else if (listOfOffer.size() == 0) {
-                            Toast.makeText(CreatePostActivity.this, "Add offer", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CreatePostActivity.this, "Add Deal / Offer", Toast.LENGTH_SHORT).show();
                         } else {
                             fetchLastLocation();
                         }
@@ -363,11 +363,11 @@ public class CreatePostActivity extends AppCompatActivity {
                 if (strPostType.isEmpty()) {
                     Toast.makeText(CreatePostActivity.this, "Select post type", Toast.LENGTH_SHORT).show();
                 } else if (strFromDate.isEmpty()) {
-                    Toast.makeText(CreatePostActivity.this, "Select from date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreatePostActivity.this, "Select From Date", Toast.LENGTH_SHORT).show();
                 } else if (strToDate.isEmpty()) {
-                    Toast.makeText(CreatePostActivity.this, "Select to date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreatePostActivity.this, "Select To Date", Toast.LENGTH_SHORT).show();
                 } else if (!checkDates()) {
-                    Toast.makeText(CreatePostActivity.this, "Check from and to date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreatePostActivity.this, "Check From and To Date", Toast.LENGTH_SHORT).show();
                 } else {
                     if (strPostType.equalsIgnoreCase("2")) {
                         SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -383,7 +383,7 @@ public class CreatePostActivity extends AppCompatActivity {
                             } else if (strAccessOption.isEmpty()) {
                                 Toast.makeText(CreatePostActivity.this, "Select access option", Toast.LENGTH_SHORT).show();
                             } else if (listOfOffer.size() == 0) {
-                                Toast.makeText(CreatePostActivity.this, "Add offer", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CreatePostActivity.this, "Add Deal / Offer", Toast.LENGTH_SHORT).show();
                             } else {
                                 postValidation();
                             }
@@ -397,14 +397,14 @@ public class CreatePostActivity extends AppCompatActivity {
                             } else if (strAccessOption.isEmpty()) {
                                 Toast.makeText(CreatePostActivity.this, "Select access option", Toast.LENGTH_SHORT).show();
                             } else if (listOfOffer.size() == 0) {
-                                Toast.makeText(CreatePostActivity.this, "Add offer", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CreatePostActivity.this, "Add Deal / Offer", Toast.LENGTH_SHORT).show();
                             } else {
                                 postValidation();
                             }
                         } else if (strAccessOption.isEmpty()) {
                             Toast.makeText(CreatePostActivity.this, "Select access option", Toast.LENGTH_SHORT).show();
                         } else if (listOfOffer.size() == 0) {
-                            Toast.makeText(CreatePostActivity.this, "Add offer", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CreatePostActivity.this, "Add Deal / Offer", Toast.LENGTH_SHORT).show();
                         } else {
                             postValidation();
                         }
@@ -488,6 +488,8 @@ public class CreatePostActivity extends AppCompatActivity {
                                                     });
                                             AlertDialog alert = builder.create();
                                             alert.show();
+                                            Button btnOk = alert.getButton(DialogInterface.BUTTON_NEUTRAL);
+                                            btnOk.setTextColor(Color.parseColor("#000000"));
                                         } else if (Integer.parseInt(str_result) == 1) {
                                             str_message = obj.getString("Message");
                                             sendPost();
@@ -675,6 +677,8 @@ public class CreatePostActivity extends AppCompatActivity {
                                             });
                                     AlertDialog alert = builder.create();
                                     alert.show();
+                                    Button btnOk = alert.getButton(DialogInterface.BUTTON_NEUTRAL);
+                                    btnOk.setTextColor(Color.parseColor("#000000"));
                                 }
 
                             } else if (Integer.parseInt(str_result) == 2) {

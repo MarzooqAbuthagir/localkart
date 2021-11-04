@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,7 +32,7 @@ public class MyBusinessActivity2 extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "";
+    String keyIntent = "", strBusinessId = "";
     AddressDetailsData addressDetailsData;
 
     EditText etDoorNo;
@@ -44,6 +45,8 @@ public class MyBusinessActivity2 extends AppCompatActivity {
     private List<String> stateSpinnerValue = new ArrayList<>();
     private List<String> districtSpinnerValue = new ArrayList<>();
 
+    private String strDoorNo = "", strLocality = "", strArea = "", strPost = "", strLandmark = "", strPinCode = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +56,7 @@ public class MyBusinessActivity2 extends AppCompatActivity {
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
+        strBusinessId = intent.getStringExtra("businessType");
         addressDetailsData = Utilis.getAddressDetails(MyBusinessActivity2.this);
 
         Window window = getWindow();
@@ -90,24 +94,6 @@ public class MyBusinessActivity2 extends AppCompatActivity {
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(350, 10);
         progressView.setLayoutParams(lp);
 
-        Button btnPrevious = findViewById(R.id.btn_previous);
-        btnPrevious.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                back();
-            }
-        });
-
-        Button btnNext = findViewById(R.id.btn_next);
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MyBusinessActivity2.this, MyBusinessActivity3.class);
-                intent.putExtra("key", keyIntent);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-        });
 
         etDoorNo = findViewById(R.id.et_door_no);
         etLocality = findViewById(R.id.et_locality);
@@ -132,19 +118,79 @@ public class MyBusinessActivity2 extends AppCompatActivity {
         etPinCode.setText(addressDetailsData.getPinCode());
 
 
-        stateSpinnerValue.add(addressDetailsData.getStateId());
+        stateSpinnerValue.add(addressDetailsData.getState());
         ArrayAdapter arrayAdapter1 = new ArrayAdapter(MyBusinessActivity2.this, R.layout.spinner_item, stateSpinnerValue);
         arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //Setting the ArrayAdapter data on the Spinner
         spinState.setAdapter(arrayAdapter1);
         spinState.setSelection(0);
 
-        districtSpinnerValue.add(addressDetailsData.getDistrictId());
+        districtSpinnerValue.add(addressDetailsData.getDistrict());
         ArrayAdapter arrayAdapter2 = new ArrayAdapter(MyBusinessActivity2.this, R.layout.spinner_item, districtSpinnerValue);
         arrayAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //Setting the ArrayAdapter data on the Spinner
         spinDistrict.setAdapter(arrayAdapter2);
         spinDistrict.setSelection(0);
+
+        Button btnPrevious = findViewById(R.id.btn_previous);
+        btnPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                back();
+            }
+        });
+
+        Button btnNext = findViewById(R.id.btn_next);
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                strDoorNo = etDoorNo.getText().toString().trim();
+                strLocality = etLocality.getText().toString().trim();
+                strArea = etArea.getText().toString().trim();
+                strPost = etPost.getText().toString().trim();
+                strLandmark = etLandmark.getText().toString().trim();
+                strPinCode = etPinCode.getText().toString().trim();
+                if (strDoorNo.equalsIgnoreCase("")) {
+                    etDoorNo.requestFocus();
+                    Toast.makeText(MyBusinessActivity2.this, "Enter door no / flat no / building no", Toast.LENGTH_SHORT).show();
+                } else if (strLocality.isEmpty()) {
+                    etLocality.requestFocus();
+                    Toast.makeText(MyBusinessActivity2.this, "Enter locality", Toast.LENGTH_SHORT).show();
+                } else if (strArea.isEmpty()) {
+                    etArea.requestFocus();
+                    Toast.makeText(MyBusinessActivity2.this, "Enter area", Toast.LENGTH_SHORT).show();
+                } else if (strPost.isEmpty()) {
+                    etPost.requestFocus();
+                    Toast.makeText(MyBusinessActivity2.this, "Enter block / taluk / post", Toast.LENGTH_SHORT).show();
+                } else if (strPinCode.isEmpty()) {
+                    etPinCode.requestFocus();
+                    Toast.makeText(MyBusinessActivity2.this, "Enter PIN code", Toast.LENGTH_SHORT).show();
+                } else if (strPinCode.length() < 6) {
+                    etPinCode.requestFocus();
+                    Toast.makeText(MyBusinessActivity2.this, "Enter Valid PIN code", Toast.LENGTH_SHORT).show();
+                } else {
+                    AddressDetailsData ad = Utilis.getAddressDetails(MyBusinessActivity2.this);
+                    AddressDetailsData addressDetailsData = new AddressDetailsData(
+                            strDoorNo,
+                            strLocality,
+                            strArea,
+                            strPost,
+                            strLandmark,
+                            strPinCode,
+                            ad.getStateId(),
+                            ad.getDistrictId(),
+                            ad.getState(),
+                            ad.getDistrict()
+                    );
+                    Utilis.saveAddressDetails(addressDetailsData);
+                    Intent intent = new Intent(MyBusinessActivity2.this, MyBusinessActivity3.class);
+                    intent.putExtra("key", keyIntent);
+                    intent.putExtra("businessType", strBusinessId);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     @Override
@@ -154,6 +200,26 @@ public class MyBusinessActivity2 extends AppCompatActivity {
     }
 
     private void back() {
+        strDoorNo = etDoorNo.getText().toString().trim();
+        strLocality = etLocality.getText().toString().trim();
+        strArea = etArea.getText().toString().trim();
+        strPost = etPost.getText().toString().trim();
+        strLandmark = etLandmark.getText().toString().trim();
+        strPinCode = etPinCode.getText().toString().trim();
+        AddressDetailsData ad = Utilis.getAddressDetails(MyBusinessActivity2.this);
+        AddressDetailsData addressDetailsData = new AddressDetailsData(
+                strDoorNo,
+                strLocality,
+                strArea,
+                strPost,
+                strLandmark,
+                strPinCode,
+                ad.getStateId(),
+                ad.getDistrictId(),
+                ad.getState(),
+                ad.getDistrict()
+        );
+        Utilis.saveAddressDetails(addressDetailsData);
         finish();
     }
 }

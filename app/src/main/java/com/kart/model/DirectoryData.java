@@ -11,6 +11,7 @@ public class DirectoryData {
     private String latitude;
     private String longitude;
     private String isSubscribed;
+    private String shareUrl;
 
     public DirectoryData() {
     }
@@ -93,5 +94,13 @@ public class DirectoryData {
 
     public void setIsSubscribed(String isSubscribed) {
         this.isSubscribed = isSubscribed;
+    }
+
+    public String getShareUrl() {
+        return shareUrl;
+    }
+
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
     }
 }

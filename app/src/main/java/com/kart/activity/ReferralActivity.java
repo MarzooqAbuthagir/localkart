@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -211,7 +212,9 @@ public class ReferralActivity extends AppCompatActivity {
                             strValidity = json.getString("validity");
 
                             tvReferralCode.setText(strReferralCode);
-                            tvDiscountAmount.setText(getResources().getString(R.string.user_benefit_1) + " Rs." + strAmount + " " + getResources().getString(R.string.user_benefit_2));
+                            String userBenefit = "\n<b>User Benefits</b>\n" + getResources().getString(R.string.user_benefit_1) + " Rs." + strAmount + " " + getResources().getString(R.string.user_benefit_2);
+                            userBenefit = userBenefit.replace("\n", "<br>");
+                            tvDiscountAmount.setText(Html.fromHtml(userBenefit));
                             tvDailyPost.setText(strDailyPost);
                             tvWeeklyPost.setText(strWeeklyPost);
                             tvFestivalPost.setText(strFestivalPost);

@@ -56,11 +56,12 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
 
         if (imgShow == 1)
             holder.imageView.setImageBitmap(arrayList.get(position).getBitmap());
-        else
+        else {
+            holder.imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             Glide.with(con).load(arrayList.get(position).getImage())
                     .placeholder(R.mipmap.ic_launcher_round)
                     .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.imageView);
-
+        }
         holder.layMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

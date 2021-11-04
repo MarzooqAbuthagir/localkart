@@ -89,12 +89,12 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
     SearchableSpinner spinCategory;
     private ArrayList<CategoryData> categoryListValue = new ArrayList<CategoryData>();
     private List<String> categorySpinnerValue = new ArrayList<>();
-    String strCategoryId = "";
+    String strCategoryId = "", strCategory ="";
 
     SearchableSpinner spinSubCategory;
     private ArrayList<SubCategoryData> subCategoryListValue = new ArrayList<SubCategoryData>();
     private List<String> subCategorySpinnerValue = new ArrayList<>();
-    String strSubCategoryId = "";
+    String strSubCategoryId = "", strSubCategory = "";
 
     String str_result = "", str_message = "", strBusinessName = "", strDesc = "";
 
@@ -189,7 +189,9 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
                     strBusinessId = "";
                     strBusiness = "";
                     strCategoryId = "";
+                    strCategory = "";
                     strSubCategoryId = "";
+                    strSubCategory = "";
                     setCategoryData();
                     setSubCategoryData();
                 }
@@ -206,6 +208,7 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i != 0) {
                     strCategoryId = categoryListValue.get(i).getCategoryId();
+                    strCategory = categoryListValue.get(i).getCategoryName();
                     spinSubCategory.setEnabled(true);
                     if (strBusinessId.equalsIgnoreCase("1")) {
                         getSubCategoryData(Utilis.shopsubcat);
@@ -214,7 +217,9 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
                     }
                 } else {
                     strCategoryId = "";
+                    strCategory = "";
                     strSubCategoryId = "";
+                    strSubCategory = "";
                     spinSubCategory.setEnabled(false);
                     setSubCategoryData();
                 }
@@ -231,8 +236,10 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i != 0) {
                     strSubCategoryId = subCategoryListValue.get(i).getSubCategoryId();
+                    strSubCategory = subCategoryListValue.get(i).getSubCategoryName();
                 } else {
                     strSubCategoryId = "";
+                    strSubCategory = "";
                 }
             }
 
@@ -288,7 +295,11 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
                             strCategoryId,
                             strSubCategoryId,
                             base64img,
-                            strDesc
+                            strDesc,
+                            "0",
+                            strCategory,
+                            strSubCategory,
+                            ""
                     );
                     Utilis.saveBasicDetails(basicDetailsData);
                     Intent intent = new Intent(AdvertiseBusinessActivity.this, AdvertiseBusinessActivity2.class);

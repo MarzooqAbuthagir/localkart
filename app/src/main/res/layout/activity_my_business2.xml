@@ -167,7 +167,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="District"
+                    android:text="District / Zone"
                     android:textSize="12dp"
                     android:paddingStart="12dp"
                     android:fontFamily="@font/roboto_regular"

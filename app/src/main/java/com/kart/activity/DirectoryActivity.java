@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -264,7 +265,7 @@ public class DirectoryActivity extends Fragment {
         spinDistrict = dialogView.findViewById(R.id.spin_district);
 
         spinState.setTitle("Select State");
-        spinDistrict.setTitle("Select District");
+        spinDistrict.setTitle("Select District / Zone");
 
         getStateList();
 
@@ -281,7 +282,7 @@ public class DirectoryActivity extends Fragment {
                     strStateId = "";
                     DistrictData initDistrictData = new DistrictData();
                     initDistrictData.setDistrictId("-1");
-                    initDistrictData.setDistrictName("District");
+                    initDistrictData.setDistrictName("District / Zone");
                     districtListValue.add(0, initDistrictData);
 
                     districtSpinnerValue.add(districtListValue.get(0).getDistrictName());
@@ -333,7 +334,7 @@ public class DirectoryActivity extends Fragment {
                 if (strStateId.isEmpty()) {
                     Toast.makeText(getActivity(), "Select state", Toast.LENGTH_SHORT).show();
                 } else if (strDistrictId.isEmpty()) {
-                    Toast.makeText(getActivity(), "Select district", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Select district / zone", Toast.LENGTH_SHORT).show();
                 } else {
                     if (Utilis.isInternetOn()) {
                         Utilis.saveStateFilter(strStateId);
@@ -385,7 +386,7 @@ public class DirectoryActivity extends Fragment {
 
                             DistrictData initDistrictData = new DistrictData();
                             initDistrictData.setDistrictId("-1");
-                            initDistrictData.setDistrictName("District");
+                            initDistrictData.setDistrictName("District / Zone");
                             districtListValue.add(0, initDistrictData);
 
                             districtSpinnerValue.clear();
@@ -627,6 +628,7 @@ public class DirectoryActivity extends Fragment {
                             directoryData.setLatitude(jsonObject.getString("latitude"));
                             directoryData.setLongitude(jsonObject.getString("longitude"));
                             directoryData.setIsSubscribed(jsonObject.getString("isSubscribed"));
+                            directoryData.setShareUrl(jsonObject.getString("shareUrl"));
 
                             JSONObject js = jsonObject.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(
@@ -647,8 +649,8 @@ public class DirectoryActivity extends Fragment {
                                 if (Utilis.isInternetOn()) {
                                     String state = Integer.parseInt(directoryDataList.get(position).getIsSubscribed()) == 0 ? "Subscribe" : "UnSubscribe";
                                     androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
-                                    builder.setTitle("Confirmation")
-                                            .setMessage("You'll receive notifications when "+ directoryDataList.get(position).getName() +" posts new Deals and Offers. Are you sure want to " + state + "?")
+                                    builder.setTitle(state)
+                                            .setMessage(Html.fromHtml("You'll receive notifications when <b>"+ directoryDataList.get(position).getName() +"</b> posts new Deals and Offers. Are you sure want to " + state + "?"))
                                             .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
                                                 public void onClick(DialogInterface dialog, int which) {
@@ -692,7 +694,7 @@ public class DirectoryActivity extends Fragment {
 
                     } else if (Integer.parseInt(str_result) == 1) {
                         str_message = obj.getString("message");
-                        Toast.makeText(getActivity(), str_message, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getActivity(), str_message, Toast.LENGTH_SHORT).show();
                         recyclerView.setVisibility(View.GONE);
                         tvNoRecords.setVisibility(View.VISIBLE);
                     }

@@ -64,8 +64,8 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
     private String str_result = "";
     private String str_message = "";
     private String strDoorNo = "", strLocality = "", strArea = "", strPost = "", strLandmark = "", strPinCode = "";
-    private String strStateId = "";
-    private String strDistrictId = "";
+    private String strStateId = "", strState = "";
+    private String strDistrictId = "", strDistrict = "";
 
     EditText etDoorNo;
     EditText etLocality;
@@ -74,6 +74,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
     EditText etLandmark;
     EditText etPinCode;
     AddressDetailsData ad;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,11 +141,13 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
                 if (i != 0) {
                     spinDistrict.setEnabled(true);
                     strStateId = stateListValue.get(i).getStateId();
+                    strState = stateListValue.get(i).getStateName();
                     getDistrictList();
                 } else {
                     districtListValue.clear();
                     spinDistrict.setEnabled(false);
                     strStateId = "";
+                    strState = "";
                     DistrictData initDistrictData = new DistrictData();
                     initDistrictData.setDistrictId("-1");
                     initDistrictData.setDistrictName("District / Zone");
@@ -171,8 +174,10 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i != 0) {
                     strDistrictId = districtListValue.get(i).getDistrictId();
+                    strDistrict = districtListValue.get(i).getDistrictName();
                 } else {
                     strDistrictId = "";
+                    strDistrict = "";
                 }
             }
 
@@ -238,10 +243,10 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
                     Toast.makeText(AdvertiseBusinessActivity2.this, "Select district / zone", Toast.LENGTH_SHORT).show();
                 } else if (strPinCode.isEmpty()) {
                     etPinCode.requestFocus();
-                    Toast.makeText(AdvertiseBusinessActivity2.this, "Enter pin code", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdvertiseBusinessActivity2.this, "Enter PIN code", Toast.LENGTH_SHORT).show();
                 } else if (strPinCode.length() < 6) {
                     etPinCode.requestFocus();
-                    Toast.makeText(AdvertiseBusinessActivity2.this, "Enter valid pin code", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdvertiseBusinessActivity2.this, "Enter Valid PIN code", Toast.LENGTH_SHORT).show();
                 } else {
                     AddressDetailsData addressDetailsData = new AddressDetailsData(
                             strDoorNo,
@@ -251,7 +256,9 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
                             strLandmark,
                             strPinCode,
                             strStateId,
-                            strDistrictId
+                            strDistrictId,
+                            strState,
+                            strDistrict
                     );
                     Utilis.saveAddressDetails(addressDetailsData);
                     Intent intent = new Intent(AdvertiseBusinessActivity2.this, AdvertiseBusinessActivity3.class);
@@ -314,7 +321,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
                             spinDistrict.setSelection(0);
 
                             if (ad != null) {
-                                for (int i =0; i<districtListValue.size(); i++) {
+                                for (int i = 0; i < districtListValue.size(); i++) {
                                     if (districtListValue.get(i).getDistrictId().equalsIgnoreCase(ad.getDistrictId())) {
                                         spinDistrict.setSelection(i);
                                     }
@@ -421,7 +428,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
                             spinState.setSelection(0);
 
                             if (ad != null) {
-                                for (int i =0; i<stateListValue.size(); i++) {
+                                for (int i = 0; i < stateListValue.size(); i++) {
                                     if (stateListValue.get(i).getStateId().equalsIgnoreCase(ad.getStateId())) {
                                         spinState.setSelection(i);
                                     }
@@ -496,7 +503,9 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
                 strLandmark,
                 strPinCode,
                 strStateId,
-                strDistrictId
+                strDistrictId,
+                strState,
+                strDistrict
         );
         Utilis.saveAddressDetails(addressDetailsData);
         finish();

@@ -105,9 +105,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp"/>
 
-            <View
+            <TextView
+                android:layout_margin="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please add the service list related to your service category only. Services added here cannot be changed later."
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/red"
+                android:visibility="gone"
+                android:textSize="15dp"/>
+
+            <LinearLayout
+                android:layout_marginBottom="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="10dp"/>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center">
+
+                <CheckBox
+                    android:id="@+id/checkbox"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:enabled="false"
+                    android:checked="true"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tv_bus_tc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_t_c"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"/>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -127,7 +161,7 @@
                     android:id="@+id/btn_register"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Ok"
+                    android:text="Update"
                     android:layout_weight="1"
                     android:textAllCaps="false"
                     android:textColor="@color/white"

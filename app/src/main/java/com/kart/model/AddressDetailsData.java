@@ -9,8 +9,10 @@ public class AddressDetailsData {
     private String pinCode = "";
     private String stateId = "";
     private String districtId = "";
+    private String state = "";
+    private String district = "";
 
-    public AddressDetailsData(String doorNo, String locality, String area, String post, String landmark, String pinCode, String stateId, String districtId) {
+    public AddressDetailsData(String doorNo, String locality, String area, String post, String landmark, String pinCode, String stateId, String districtId, String state, String district) {
         this.doorNo = doorNo;
         this.locality = locality;
         this.area = area;
@@ -19,6 +21,24 @@ public class AddressDetailsData {
         this.pinCode = pinCode;
         this.stateId = stateId;
         this.districtId = districtId;
+        this.state = state;
+        this.district = district;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
     }
 
     public String getDoorNo() {

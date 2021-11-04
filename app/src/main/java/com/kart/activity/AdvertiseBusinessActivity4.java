@@ -190,7 +190,6 @@ public class AdvertiseBusinessActivity4 extends AppCompatActivity implements OnM
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("onnext click");
                 System.out.println(tvAddress.getText().toString().trim());
                 System.out.println(latitude);
                 System.out.println(longitude);

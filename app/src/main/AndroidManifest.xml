@@ -3,6 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.kart">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:name=".support.App"
         android:allowBackup="false"
@@ -13,7 +26,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
-        <activity android:name=".activity.BusinessTCActivity"></activity>
+        <activity
+            android:name=".activity.ReportActivity"
+            android:exported="true" />
+        <activity android:name=".activity.BusinessTCActivity" />
         <activity android:name=".activity.UserTCActivity" />
         <activity android:name=".activity.PaymentHistoryActivity" />
         <activity android:name=".activity.ReferralActivity" />
@@ -101,18 +117,5 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
     </application>
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
-
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <uses-permission android:name="android.permission.CAMERA" />
 
 </manifest>

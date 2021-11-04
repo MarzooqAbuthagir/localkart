@@ -61,7 +61,7 @@ public class PreviewOfferActivity extends AppCompatActivity {
     ViewPagerOfferListAdapter viewPagerAdapter;
 
     LinearLayout layMain, layLeft, layRight, layBtm;
-    TextView tvOfferTitle, tvOfferDesc;
+    TextView tvOfferTitle, tvOfferDesc, tvDate;
     List<AddOfferData> offerDataList = new ArrayList<>();
     int dealOffer;
 
@@ -122,6 +122,7 @@ public class PreviewOfferActivity extends AppCompatActivity {
 
         tvOfferTitle = findViewById(R.id.tv_offer_title);
         tvOfferDesc = findViewById(R.id.tv_offer_desc);
+        tvDate = findViewById(R.id.tv_date);
 
         Button btnBack = findViewById(R.id.btn_back);
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +140,7 @@ public class PreviewOfferActivity extends AppCompatActivity {
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
 //                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                    String shareMessage = strShopName + " \n\n" + offerDataList.get(dealOffer).getHeading() + " \n\n" + offerDataList.get(dealOffer).getDesc() + " \n\nDownload Local Kart App Now ";
+                    String shareMessage = "Valid From " + offerDataList.get(dealOffer).getFromDate() + " To " + offerDataList.get(dealOffer).getToDate() + "\n\n" + strShopName + " \n\n" + offerDataList.get(dealOffer).getHeading() + " \n\n" + offerDataList.get(dealOffer).getDesc() + " \n\nDownload Local Kart App Now ";
                     shareMessage = shareMessage + Utilis.shareUrl;
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                     startActivity(Intent.createChooser(shareIntent, "choose one"));
@@ -188,7 +189,9 @@ public class PreviewOfferActivity extends AppCompatActivity {
                                 AddOfferData offerData = new AddOfferData(
                                         object.getString("heading"),
                                         object.getString("description"),
-                                        object.getString("offerImage")
+                                        object.getString("offerImage"),
+                                        object.getString("fromDate"),
+                                        object.getString("toDate")
                                 );
                                 offerDataList.add(offerData);
                             }
@@ -297,6 +300,7 @@ public class PreviewOfferActivity extends AppCompatActivity {
     private void setView(int dealOffer) {
         tvOfferTitle.setText(offerDataList.get(dealOffer).getHeading());
         tvOfferDesc.setText(offerDataList.get(dealOffer).getDesc());
+        tvDate.setText(offerDataList.get(dealOffer).getFromDate() + " To " + offerDataList.get(dealOffer).getToDate());
 
         viewPagerAdapter = new ViewPagerOfferListAdapter(offerDataList, PreviewOfferActivity.this);
         mPager.setAdapter(viewPagerAdapter);

@@ -10,9 +10,10 @@ public class UploadImages {
     public UploadImages() {
     }
 
-    public UploadImages(String image, Bitmap bm) {
+    public UploadImages(String image, Bitmap bm, String imageId) {
         this.image = image;
         this.bitmap = bm;
+        this.imageIndexId = imageId;
     }
 
     public String getImage() {

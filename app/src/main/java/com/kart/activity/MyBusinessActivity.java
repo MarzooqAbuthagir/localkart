@@ -48,6 +48,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.chip.Chip;
 import com.google.gson.Gson;
 import com.kart.R;
 import com.kart.model.AddressDetailsData;
@@ -109,7 +110,7 @@ public class MyBusinessActivity extends AppCompatActivity {
     int SELECT_IMAGE_REQUEST = 2;
 
     EditText etDesc;
-    String strDesc = "";
+    String strDesc = "", strBusinessId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +162,8 @@ public class MyBusinessActivity extends AppCompatActivity {
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(200, 10);
         progressView.setLayoutParams(lp);
 
+        getMyBusinessData();
+
         Button btnNext = findViewById(R.id.btn_next);
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,29 +175,29 @@ public class MyBusinessActivity extends AppCompatActivity {
                 } else if (descCount > 30) {
                     Toast.makeText(MyBusinessActivity.this, "About not exceeding 30 words", Toast.LENGTH_SHORT).show();
                 } else {
-//                    BasicDetailsData basicDetailsData = new BasicDetailsData(
-//                            strBusiness,
-//                            strBusinessName,
-//                            strCategoryId,
-//                            strSubCategoryId,
-//                            base64img,
-//                            strDesc
-//                    );
-//                    Utilis.saveBasicDetails(basicDetailsData);
-//                    Intent intent = new Intent(MyBusinessActivity.this, MyBusinessActivity2.class);
-//                    intent.putExtra("key", keyIntent);
-//                    intent.putExtra("businessType", strBusinessId);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivity(intent);
+                    BasicDetailsData bd = Utilis.getBasicDetails(MyBusinessActivity.this);
+                    strBusinessId = bd.getBusinessType().equalsIgnoreCase("Shopping") ? "1" : "2";
+                    BasicDetailsData basicDetailsData = new BasicDetailsData(
+                            bd.getBusinessType(),
+                            bd.getBusinessName(),
+                            bd.getCategoryId(),
+                            bd.getSubCategoryId(),
+                            base64img,
+                            strDesc,
+                            bd.getIndexId(),
+                            bd.getCategory(),
+                            bd.getSubCategory(),
+                            bd.getLogoUrl()
+                    );
+                    Utilis.saveBasicDetails(basicDetailsData);
+                    Intent intent = new Intent(MyBusinessActivity.this, MyBusinessActivity2.class);
+                    intent.putExtra("key", keyIntent);
+                    intent.putExtra("businessType", strBusinessId);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }
-//                Intent intent = new Intent(MyBusinessActivity.this, MyBusinessActivity2.class);
-//                intent.putExtra("key", keyIntent);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(intent);
             }
         });
-
-        getMyBusinessData();
 
         Button btnSelectLogo = findViewById(R.id.btn_logo);
         btnSelectLogo.setOnClickListener(new View.OnClickListener() {
@@ -345,6 +348,7 @@ public class MyBusinessActivity extends AppCompatActivity {
     }
 
     String str_result = "", str_message = "";
+
     private void getMyBusinessData() {
         if (Utilis.isInternetOn()) {
             Utilis.showProgress(MyBusinessActivity.this);
@@ -374,11 +378,14 @@ public class MyBusinessActivity extends AppCompatActivity {
                             BasicDetailsData basicDetailsData = new BasicDetailsData(
                                     basicDetail.getString("businessType"),
                                     basicDetail.getString("businessName"),
+                                    basicDetail.getString("categoryId"),
+                                    basicDetail.getString("subCategoryId"),
+                                    base64img,
+                                    basicDetail.getString("description"),
+                                    basicDetail.getString("indexId"),
                                     basicDetail.getString("category"),
                                     basicDetail.getString("subCategory"),
-                                    basicDetail.getString("shopLogo"),
-                                    basicDetail.getString("description"),
-                                    basicDetail.getString("indexId")
+                                    basicDetail.getString("shopLogo")
                             );
                             Utilis.saveBasicDetails(basicDetailsData);
 
@@ -390,6 +397,8 @@ public class MyBusinessActivity extends AppCompatActivity {
                                     addressDetail.getString("taulk"),
                                     addressDetail.getString("landMark"),
                                     addressDetail.getString("pincode"),
+                                    addressDetail.getString("stateId"),
+                                    addressDetail.getString("districtId"),
                                     addressDetail.getString("state"),
                                     addressDetail.getString("district")
                             );
@@ -435,7 +444,17 @@ public class MyBusinessActivity extends AppCompatActivity {
                                 JSONObject object = jsonArray1.getJSONObject(i);
                                 tagList.add(object.getString("tagName"));
                             }
-                            Utilis.saveTagList(tagList);
+                            String strChip = "";
+                            for (int i = 0; i < tagList.size(); i++) {
+
+                                if (strChip.isEmpty()) {
+                                    strChip = tagList.get(i);
+                                } else {
+                                    strChip += ", " + tagList.get(i);
+                                }
+                            }
+
+                            Utilis.saveChip(strChip);
 
                             if (RegBusinessTypeSharedPreference.getBusinessType(MyBusinessActivity.this).equalsIgnoreCase("Services")) {
                                 List<String> serviceList = new ArrayList<>();
@@ -525,10 +544,17 @@ public class MyBusinessActivity extends AppCompatActivity {
         etBusinessName.setText(prefBasicDetail.getBusinessName());
         etDesc.setText(prefBasicDetail.getDesc());
 
-        Glide.with(MyBusinessActivity.this).load(prefBasicDetail.getLogo())
-                .placeholder(R.mipmap.ic_launcher_round)
+
+        if(prefBasicDetail.getLogo().isEmpty()) {
+            Glide.with(MyBusinessActivity.this).load(prefBasicDetail.getLogoUrl())
+                    .placeholder(R.mipmap.ic_launcher_round)
 //                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                .diskCacheStrategy(DiskCacheStrategy.ALL).into(ivLogo);
+                    .diskCacheStrategy(DiskCacheStrategy.ALL).into(ivLogo);
+        } else {
+            Glide.with(MyBusinessActivity.this).asBitmap().load(base64img)
+//                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL).into(ivLogo);
+        }
 
         businessTypeSpinnerValue.add(prefBasicDetail.getBusinessType());
         ArrayAdapter arrayAdapter = new ArrayAdapter(MyBusinessActivity.this, R.layout.spinner_item, businessTypeSpinnerValue);
@@ -537,14 +563,14 @@ public class MyBusinessActivity extends AppCompatActivity {
         spinBusinessType.setAdapter(arrayAdapter);
         spinBusinessType.setSelection(0);
 
-        categorySpinnerValue.add(prefBasicDetail.getCategoryId());
+        categorySpinnerValue.add(prefBasicDetail.getCategory());
         ArrayAdapter arrayAdapter1 = new ArrayAdapter(MyBusinessActivity.this, R.layout.spinner_item, categorySpinnerValue);
         arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //Setting the ArrayAdapter data on the Spinner
         spinCategory.setAdapter(arrayAdapter1);
         spinCategory.setSelection(0);
 
-        subCategorySpinnerValue.add(prefBasicDetail.getSubCategoryId());
+        subCategorySpinnerValue.add(prefBasicDetail.getSubCategory());
         ArrayAdapter arrayAdapter2 = new ArrayAdapter(MyBusinessActivity.this, R.layout.spinner_item, subCategorySpinnerValue);
         arrayAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //Setting the ArrayAdapter data on the Spinner

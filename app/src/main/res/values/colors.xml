@@ -26,4 +26,6 @@
 
     <color name="apply">#1f802f</color>
     <color name="remove">#ff0000</color>
+
+    <color name="red">#ff0000</color>
 </resources>

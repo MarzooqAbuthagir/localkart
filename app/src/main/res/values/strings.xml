@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Local Kart</string>
+    <string name="app_name">LocalKart</string>
 
     <string name="progresstitle">Loading... Please Wait</string>
     <string name="somethingwentwrong">Something went wrong</string>
@@ -20,10 +20,19 @@
 
     <string name="sup"><sup>₹ </sup></string>
 
-    <string name="user_benefit_1">\nUSER BENEFITS\nThe user will get a discount of</string>
+    <string name="user_benefit_1">The user will get a discount of</string>
     <string name="user_benefit_2">when he uses your code while subscribing to a new plan. The user needs to enter and apply the code on the payment page.</string>
 
-    <string name="note">\nNOTE
+    <string name="user_benefit">
+        \n<b>User Benefits</b>\nThe user will get discount when he uses your code while subscribing to a new plan. The user needs to enter and apply the code on the payment page.
+    </string>
+    <string name="your_benefit">
+        \n<b>Your Benefits</b>\nWhen a user completes the subscription purchase by using your referral (coupon) code, then you will get the following free benefits which includes additional Daily, Weekly, and Festival Posts along with validity.
+    </string>
+    <string name="your_benefits">
+        \n<b>Your Benefits</b>\nWhen a user completes the subscription purchase by using your referral (coupon) code, then you will get the following free benefits.\n
+    </string>
+    <string name="note">\n<b>Note</b>
 \n1. You can not use your own referral (coupon) code.
 \n2. You can send referral (coupon) code to any number of persons.
 \n3. An user can redeem the referral (coupon) code only once (for one successful plan subscription).
@@ -32,5 +41,6 @@
     \n6. All the free benefits will be canceled when you are upgrading to a higher subscription plan.</string>
 
     <string name="user_t_c">I agree all <u>Terms and Conditions.</u></string>
-    <string name="view_plans"><u>View Plans and Subscribe </u></string>
+    <string name="view_plans"><u>View Plans and Subscribe</u></string>
+    <string name="report_post"><u>Report This Post</u></string>
 </resources>

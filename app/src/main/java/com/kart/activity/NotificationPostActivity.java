@@ -79,6 +79,8 @@ public class NotificationPostActivity extends AppCompatActivity {
     List<AddOfferData> offerDataList = new ArrayList<>();
     OfferAdapter offerAdapter;
 
+    String strShopName = "", strFromDate = "", strToDate = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,6 +135,30 @@ public class NotificationPostActivity extends AppCompatActivity {
         toolBarTitle.setText("Notification Details");
 
         getApiCall();
+
+        LinearLayout layShare = findViewById(R.id.lay_share);
+        layShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    String shareMessage = "";
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+//                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
+                    if (offerDataList.size() == 1)
+                        shareMessage = "Valid From " + strFromDate + " To " + strToDate + "\n\n" + strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + " \n\nDownload Local Kart App Now ";
+                    else {
+                        int count = offerDataList.size() - 1;
+                        shareMessage = "Valid From " + strFromDate + " To " + strToDate + "\n\n" + strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + "\n\nand " + count + " more deals" + " \n\nDownload Local Kart App Now ";
+                    }
+                    shareMessage = shareMessage + Utilis.shareUrl;
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    startActivity(Intent.createChooser(shareIntent, "choose one"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 
@@ -165,6 +191,9 @@ public class NotificationPostActivity extends AppCompatActivity {
 
                             tvShopName.setText(json.getString("shopName"));
                             tvDate.setText(json.getString("fromDate") + " To " + json.getString("toDate"));
+                            strShopName = json.getString("shopName");
+                            strFromDate = json.getString("fromDate");
+                            strToDate = json.getString("toDate");
 
                             JSONObject js = json.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(
@@ -259,7 +288,7 @@ public class NotificationPostActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(NotificationPostActivity.this);
         recyclerView.setLayoutManager(layoutManager);
 
-        offerAdapter = new OfferAdapter(this, offerDataList, 0, false, keyIntent, strPostIndexId, strShopIndexId, strType);
+        offerAdapter = new OfferAdapter(this, offerDataList, 0, true, keyIntent, strPostIndexId, strShopIndexId, strType);
         recyclerView.setAdapter(offerAdapter);
 
         TextView tvOfferTitle = findViewById(R.id.tv_offer_title);

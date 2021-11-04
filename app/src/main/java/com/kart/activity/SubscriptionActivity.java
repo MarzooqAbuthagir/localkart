@@ -127,8 +127,8 @@ public class SubscriptionActivity extends AppCompatActivity {
             }
         });
 
-        TextView tvViewPlans = findViewById(R.id.tv_view_plan);
-        tvViewPlans.setOnClickListener(new View.OnClickListener() {
+        LinearLayout layViewPlans = findViewById(R.id.lay_view_plan);
+        layViewPlans.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SubscriptionActivity.this, PlanActivity.class);
@@ -257,7 +257,6 @@ public class SubscriptionActivity extends AppCompatActivity {
 
                             SubcriptionAdapter adapter = new SubcriptionAdapter(SubscriptionActivity.this, accessOptionListValue);
                             gridView.setAdapter(adapter);
-
                         } else if (Integer.parseInt(str_result) == 2) {
                             str_message = obj.getString("message");
                             Toast.makeText(SubscriptionActivity.this, str_message, Toast.LENGTH_SHORT).show();

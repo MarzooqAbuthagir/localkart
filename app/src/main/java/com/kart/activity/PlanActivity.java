@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -541,6 +542,8 @@ public class PlanActivity extends AppCompatActivity {
                                     });
                             AlertDialog alert = builder.create();
                             alert.show();
+                            Button btnOk = alert.getButton(DialogInterface.BUTTON_NEUTRAL);
+                            btnOk.setTextColor(Color.parseColor("#000000"));
 
                         } else if (Integer.parseInt(str_result) == 1) {
                             str_message = obj.getString("message");
@@ -712,6 +715,8 @@ public class PlanActivity extends AppCompatActivity {
                                 });
                         AlertDialog alert = builder.create();
                         alert.show();
+                        Button btnOk = alert.getButton(DialogInterface.BUTTON_NEUTRAL);
+                        btnOk.setTextColor(Color.parseColor("#000000"));
                     } else {
                         getAmountCalculationFromApi(view, finalI);
 //                        showCodeDialog(view, finalI);
@@ -761,6 +766,8 @@ public class PlanActivity extends AppCompatActivity {
                                         });
                                 AlertDialog alert = builder.create();
                                 alert.show();
+                                Button btnOk = alert.getButton(DialogInterface.BUTTON_NEUTRAL);
+                                btnOk.setTextColor(Color.parseColor("#000000"));
                             } else {
                                 showCodeDialog(view, position);
                             }

@@ -54,9 +54,13 @@ public class ImageAdapter extends ArrayAdapter<UploadImages> {
             ivDelete.setVisibility(View.VISIBLE);
             ivImage.setImageBitmap(uploadImages.getBitmap());
         } else if (state == 1) {
-            ivDelete.setVisibility(View.GONE);
-            Glide.with(con).load(uploadImages.getImage())
-                    .diskCacheStrategy(DiskCacheStrategy.ALL).into(ivImage);
+            ivDelete.setVisibility(View.VISIBLE);
+            if (uploadImages.getImageIndexId().isEmpty()) {
+                ivImage.setImageBitmap(uploadImages.getBitmap());
+            } else {
+                Glide.with(con).load(uploadImages.getImage())
+                        .diskCacheStrategy(DiskCacheStrategy.ALL).into(ivImage);
+            }
         }
 
         ivDelete.setOnClickListener(new View.OnClickListener() {
