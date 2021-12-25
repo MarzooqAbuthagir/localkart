@@ -50,31 +50,30 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
-                    android:layout_above="@+id/lay_upgrade"
                     android:nestedScrollingEnabled="true"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <LinearLayout
-                    android:visibility="gone"
-                    android:id="@+id/lay_upgrade"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:orientation="horizontal"
-                    android:layout_alignParentBottom="true">
+<!--                <LinearLayout-->
+<!--                    android:visibility="gone"-->
+<!--                    android:id="@+id/lay_upgrade"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:layout_marginStart="5dp"-->
+<!--                    android:layout_marginEnd="5dp"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:layout_alignParentBottom="true">-->
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycler_view_plan"
-                        android:nestedScrollingEnabled="true"
-                        android:scrollbars="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+<!--                    <androidx.recyclerview.widget.RecyclerView-->
+<!--                        android:id="@+id/recycler_view_plan"-->
+<!--                        android:nestedScrollingEnabled="true"-->
+<!--                        android:scrollbars="horizontal"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent" />-->
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
             </RelativeLayout>
             </androidx.core.widget.NestedScrollView>

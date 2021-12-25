@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.kart">
+    package="com.localkartmarketing.localkart">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -26,6 +26,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
+        <activity
+            android:name=".activity.DigitalVCardActivity"
+            android:exported="true" />
         <activity
             android:name=".activity.ReportActivity"
             android:exported="true" />
@@ -85,18 +88,19 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat" />
-
+            android:theme="@style/Base.Theme.AppCompat" /> <!-- <meta-data -->
+        <!-- android:name="com.google.android.geo.API_KEY" -->
+        <!-- android:value="AIzaSyCAdZwm8yXwsIX-V5aZtXc64Q2xpEbHWio" /> -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCAdZwm8yXwsIX-V5aZtXc64Q2xpEbHWio" />
+            android:value="AIzaSyCv9weX5m5_OpT-SjTqtjHAw7LOhmHaBCo" />
         <meta-data
             android:name="com.onesignal.NotificationAccentColor.DEFAULT"
             android:value="#FFE63E89" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.kart.fileprovider"
+            android:authorities="com.localkartmarketing.localkart.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

@@ -28,9 +28,14 @@
             android:title="Manage My Business" />
 
         <item
+            android:id="@+id/nav_how_it_works"
+            android:icon="@drawable/ic_how_it_works"
+            android:title="How It Works" />
+
+        <item
             android:id="@+id/nav_franchise"
             android:icon="@drawable/ic_become_a_franchise"
-            android:title="Become a Franchise" />
+            android:title="Become A Franchise" />
 
         <item
             android:id="@+id/nav_refer"

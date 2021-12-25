@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LocalKart</string>
+    <string name="app_name">LocalKart - Shop Nearby</string>
 
     <string name="progresstitle">Loading... Please Wait</string>
     <string name="somethingwentwrong">Something went wrong</string>

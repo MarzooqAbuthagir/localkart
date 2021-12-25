@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "348847903390",
-    "project_id": "localkart-onesignal",
-    "storage_bucket": "localkart-onesignal.appspot.com"
+    "project_number": "638057148704",
+    "project_id": "localkartmarketing-onesignal",
+    "storage_bucket": "localkartmarketing-onesignal.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:348847903390:android:c2bb43e431e62f955be18f",
+        "mobilesdk_app_id": "1:638057148704:android:f89ad83defe29929842745",
         "android_client_info": {
-          "package_name": "com.kart"
+          "package_name": "com.localkartmarketing.localkart"
         }
       },
       "oauth_client": [
         {
-          "client_id": "348847903390-kjqn3jnv9fv4hvetp3tbfipqu130095m.apps.googleusercontent.com",
+          "client_id": "638057148704-859obnqtn6p9bi8e8dcoj070tkd72996.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBW1GbGX33RdU8TYIZwvMRfTvBSM-DuNFs"
+          "current_key": "AIzaSyA1tZuMZZIvc6_-0yaobsCzsmX8ccPgIgA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "348847903390-kjqn3jnv9fv4hvetp3tbfipqu130095m.apps.googleusercontent.com",
+              "client_id": "638057148704-859obnqtn6p9bi8e8dcoj070tkd72996.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
