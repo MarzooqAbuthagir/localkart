@@ -621,4 +621,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onPause();
         handler.removeCallbacks(runnable);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.ic_search) {
+            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+            intent.putExtra("key", keyIntent);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
