@@ -1,14 +1,18 @@
 package com.localkartmarketing.localkart.activity;
 
+import static androidx.core.content.FileProvider.getUriForFile;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -16,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,10 +70,11 @@ import com.localkartmarketing.localkart.model.UserDetail;
 import com.localkartmarketing.localkart.support.App;
 import com.localkartmarketing.localkart.support.LocationTrack;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
+import com.yalantis.ucrop.UCrop;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,7 +97,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RepostActivity extends AppCompatActivity {
     private String Tag = "RepostActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -138,12 +144,14 @@ public class RepostActivity extends AppCompatActivity {
 
     App app;
 
+    public static String fileName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repost);
 
-        utilis = new Utilis(RepostActivity.this);
+        utils = new Utils(RepostActivity.this);
 
         app = (App) getApplication();
 
@@ -468,10 +476,10 @@ public class RepostActivity extends AppCompatActivity {
     }
 
     private void getApiCall() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(RepostActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(RepostActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.listarray, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.listarray, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -481,7 +489,7 @@ public class RepostActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getApiCall response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getApiCall result " + str_result);
@@ -559,7 +567,7 @@ public class RepostActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(RepostActivity.this, RepostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -596,10 +604,10 @@ public class RepostActivity extends AppCompatActivity {
     }
 
     private void getPostDetails() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(RepostActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(RepostActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.getrepost, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.getrepost, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -609,7 +617,7 @@ public class RepostActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getPostDetails response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getPostDetails result " + str_result);
@@ -708,7 +716,7 @@ public class RepostActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(RepostActivity.this, RepostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -947,22 +955,29 @@ public class RepostActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (optionsMenu[i].equals("Take Photo")) {
 
+//                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//                        try {
+//                            photoFile = createImageFile();
+//
+//                            photoURI = FileProvider.getUriForFile(
+//                                    RepostActivity.this,
+//                                    "com.localkartmarketing.localkart.fileprovider",
+//                                    photoFile
+//                            );
+//                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                            startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
+//
+//                        } catch (IOException ex) {
+//                            // Error occurred while creating the File
+//                        }
+//                    }
+
+                    fileName = System.currentTimeMillis() + ".jpg";
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, getCacheImagePath(fileName));
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        try {
-                            photoFile = createImageFile();
-
-                            photoURI = FileProvider.getUriForFile(
-                                    RepostActivity.this,
-                                    "com.localkartmarketing.localkart.fileprovider",
-                                    photoFile
-                            );
-                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                            startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
-
-                        } catch (IOException ex) {
-                            // Error occurred while creating the File
-                        }
+                        startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
                     }
 
                 } else if (optionsMenu[i].equals("Choose from Gallery")) {
@@ -975,6 +990,13 @@ public class RepostActivity extends AppCompatActivity {
             }
         });
         builder.show();
+    }
+
+    private Uri getCacheImagePath(String fileName) {
+        File path = new File(getExternalCacheDir(), "camera");
+        if (!path.exists()) path.mkdirs();
+        File image = new File(path, fileName);
+        return getUriForFile(RepostActivity.this, getPackageName() + ".provider", image);
     }
 
     private File createImageFile() throws IOException {
@@ -1011,7 +1033,7 @@ public class RepostActivity extends AppCompatActivity {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         assert bm != null;
-        bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+        bm.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         base64img = Base64.encodeToString(byteArray, Base64.DEFAULT);
         System.out.println("Gallery image " + base64img);
@@ -1037,7 +1059,7 @@ public class RepostActivity extends AppCompatActivity {
         } else if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 System.out.println("Permission Granted");
-                if (Utilis.isGpsOn()) {
+                if (Utils.isGpsOn()) {
                     fetchLastLocation();
                 }
             }
@@ -1048,15 +1070,48 @@ public class RepostActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAPTURE_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
-            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(16, 9).setRequestedSize(400, 600).start(RepostActivity.this);
-        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            Uri resultUri = result.getUri();
+//            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(16, 9).setRequestedSize(400, 600).start(RepostActivity.this);
+            cropImage(getCacheImagePath(fileName));
+//        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == UCrop.REQUEST_CROP && resultCode == Activity.RESULT_OK) {
+//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+//            Uri resultUri = result.getUri();
+            Uri resultUri = UCrop.getOutput(data);
             onSelectFromGalleryResult(resultUri);
         } else if (requestCode == SELECT_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
             photoURI = data.getData();
-            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(16, 9).setRequestedSize(400, 600).start(RepostActivity.this);
+//            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(16, 9).setRequestedSize(400, 600).start(RepostActivity.this);
+            cropImage(photoURI);
         }
+    }
+
+    private void cropImage(Uri sourceUri) {
+        int IMAGE_COMPRESSION = 100;
+        Uri destinationUri = Uri.fromFile(new File(getCacheDir(), queryName(getContentResolver(), sourceUri)));
+        UCrop.Options options = new UCrop.Options();
+        options.setCompressionQuality(IMAGE_COMPRESSION);
+        options.setHideBottomControls(true);
+        options.withAspectRatio(16, 9);
+
+        options.setToolbarTitle("Crop Photo");
+        options.setToolbarColor(ContextCompat.getColor(this, R.color.adv_bus_color));
+        options.setStatusBarColor(ContextCompat.getColor(this, R.color.adv_bus_color));
+        options.setActiveWidgetColor(ContextCompat.getColor(this, R.color.adv_bus_color));
+
+        UCrop.of(sourceUri, destinationUri)
+                .withOptions(options)
+                .start(this);
+    }
+
+    private static String queryName(ContentResolver resolver, Uri uri) {
+        Cursor returnCursor =
+                resolver.query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
     }
 
     @Override
@@ -1079,7 +1134,7 @@ public class RepostActivity extends AppCompatActivity {
             return;
         }
 
-        if (Utilis.isGpsOn()) {
+        if (Utils.isGpsOn()) {
             currentLocation = new LocationTrack(RepostActivity.this);
 
             if (currentLocation.canGetLocation()) {
@@ -1112,8 +1167,8 @@ public class RepostActivity extends AppCompatActivity {
     }
 
     private void previewPost() {
-        Utilis.clearReOfferList(RepostActivity.this);
-        Utilis.setReOfferList("offerList", listOfOffer, RepostActivity.this);
+        Utils.clearReOfferList(RepostActivity.this);
+        Utils.setReOfferList("offerList", listOfOffer, RepostActivity.this);
         Intent intent = new Intent(RepostActivity.this, ViewRepostActivity.class);
         intent.putExtra("key", keyIntent);
         intent.putExtra("fromDate", etFromDate.getText().toString().trim());
@@ -1140,10 +1195,10 @@ public class RepostActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing but close the dialog
                         dialog.dismiss();
-                        if (Utilis.isInternetOn()) {
-                            Utilis.showProgress(RepostActivity.this);
+                        if (Utils.isInternetOn()) {
+                            Utils.showProgress(RepostActivity.this);
 
-                            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.postvalidation, new Response.Listener<String>() {
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.postvalidation, new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
 
@@ -1153,7 +1208,7 @@ public class RepostActivity extends AppCompatActivity {
 
                                         System.out.println(Tag + " postValidation response - " + response);
 
-                                        Utilis.dismissProgress();
+                                        Utils.dismissProgress();
 
                                         str_result = obj.getString("errorCode");
                                         System.out.print(Tag + " postValidation result " + str_result);
@@ -1185,7 +1240,7 @@ public class RepostActivity extends AppCompatActivity {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
 
-                                    Utilis.dismissProgress();
+                                    Utils.dismissProgress();
                                     Toast.makeText(RepostActivity.this, RepostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                                     if (error instanceof NoConnectionError) {
@@ -1244,10 +1299,10 @@ public class RepostActivity extends AppCompatActivity {
     }
 
     private void sendPost() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(RepostActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(RepostActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.createpost, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.createpost, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -1257,7 +1312,7 @@ public class RepostActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " sendPost response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " sendPost result " + str_result);
@@ -1281,7 +1336,7 @@ public class RepostActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(RepostActivity.this, RepostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -1322,13 +1377,13 @@ public class RepostActivity extends AppCompatActivity {
     }
 
     private void sendOffer(final String str_post_index_id, final String isBoost) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(RepostActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(RepostActivity.this);
 
             for (int i = 0; i < listOfOffer.size(); i++) {
 
                 final int currentPos = i;
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.createrepostoffers, new Response.Listener<String>() {
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.createrepostoffers, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
@@ -1347,7 +1402,7 @@ public class RepostActivity extends AppCompatActivity {
                                     if (isBoost.equalsIgnoreCase("Yes")) {
                                         app.notifyToUsers(str_post_index_id, strShopIndexId, strShopType);
                                     }
-                                    Utilis.dismissProgress();
+                                    Utils.dismissProgress();
                                     AlertDialog.Builder builder = new AlertDialog.Builder(RepostActivity.this);
                                     builder.setMessage("Your post has been successfully saved.")
                                             .setNeutralButton("OK", new DialogInterface.OnClickListener() {
@@ -1363,7 +1418,7 @@ public class RepostActivity extends AppCompatActivity {
                                 }
 
                             } else if (Integer.parseInt(str_result) == 2) {
-                                Utilis.dismissProgress();
+                                Utils.dismissProgress();
                                 str_message = obj.getString("message");
                                 Toast.makeText(RepostActivity.this, str_message, Toast.LENGTH_SHORT).show();
                             }
@@ -1375,7 +1430,7 @@ public class RepostActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
                         Toast.makeText(RepostActivity.this, RepostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                         if (error instanceof NoConnectionError) {

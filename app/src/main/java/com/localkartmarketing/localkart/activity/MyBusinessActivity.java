@@ -1,18 +1,23 @@
 package com.localkartmarketing.localkart.activity;
 
+import static androidx.core.content.FileProvider.getUriForFile;
+
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.util.Base64;
 import android.view.View;
 import android.view.Window;
@@ -55,10 +60,11 @@ import com.localkartmarketing.localkart.model.LocationData;
 import com.localkartmarketing.localkart.model.UploadImages;
 import com.localkartmarketing.localkart.model.UserDetail;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
+import com.yalantis.ucrop.UCrop;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,7 +83,7 @@ import java.util.Map;
 
 public class MyBusinessActivity extends AppCompatActivity {
     private String Tag = "MyBusinessActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -109,12 +115,14 @@ public class MyBusinessActivity extends AppCompatActivity {
     EditText etDesc;
     String strDesc = "", strBusinessId = "";
 
+    public static String fileName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_business);
 
-        utilis = new Utilis(MyBusinessActivity.this);
+        utils = new Utils(MyBusinessActivity.this);
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -172,7 +180,7 @@ public class MyBusinessActivity extends AppCompatActivity {
                 } else if (descCount > 30) {
                     Toast.makeText(MyBusinessActivity.this, "About not exceeding 30 words", Toast.LENGTH_SHORT).show();
                 } else {
-                    BasicDetailsData bd = Utilis.getBasicDetails(MyBusinessActivity.this);
+                    BasicDetailsData bd = Utils.getBasicDetails(MyBusinessActivity.this);
                     strBusinessId = bd.getBusinessType().equalsIgnoreCase("Shopping") ? "1" : "2";
                     BasicDetailsData basicDetailsData = new BasicDetailsData(
                             bd.getBusinessType(),
@@ -186,7 +194,7 @@ public class MyBusinessActivity extends AppCompatActivity {
                             bd.getSubCategory(),
                             bd.getLogoUrl()
                     );
-                    Utilis.saveBasicDetails(basicDetailsData);
+                    Utils.saveBasicDetails(basicDetailsData);
                     Intent intent = new Intent(MyBusinessActivity.this, MyBusinessActivity2.class);
                     intent.putExtra("key", keyIntent);
                     intent.putExtra("businessType", strBusinessId);
@@ -258,22 +266,29 @@ public class MyBusinessActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (optionsMenu[i].equals("Take Photo")) {
 
+//                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//                        try {
+//                            photoFile = createImageFile();
+//
+//                            photoURI = FileProvider.getUriForFile(
+//                                    MyBusinessActivity.this,
+//                                    "com.localkartmarketing.localkart.fileprovider",
+//                                    photoFile
+//                            );
+//                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                            startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
+//
+//                        } catch (IOException ex) {
+//                            // Error occurred while creating the File
+//                        }
+//                    }
+
+                    fileName = System.currentTimeMillis() + ".jpg";
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, getCacheImagePath(fileName));
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        try {
-                            photoFile = createImageFile();
-
-                            photoURI = FileProvider.getUriForFile(
-                                    MyBusinessActivity.this,
-                                    "com.localkartmarketing.localkart.fileprovider",
-                                    photoFile
-                            );
-                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                            startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
-
-                        } catch (IOException ex) {
-                            // Error occurred while creating the File
-                        }
+                        startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
                     }
 
                 } else if (optionsMenu[i].equals("Choose from Gallery")) {
@@ -286,6 +301,13 @@ public class MyBusinessActivity extends AppCompatActivity {
             }
         });
         builder.show();
+    }
+
+    private Uri getCacheImagePath(String fileName) {
+        File path = new File(getExternalCacheDir(), "camera");
+        if (!path.exists()) path.mkdirs();
+        File image = new File(path, fileName);
+        return getUriForFile(MyBusinessActivity.this, getPackageName() + ".provider", image);
     }
 
     private File createImageFile() throws IOException {
@@ -309,15 +331,49 @@ public class MyBusinessActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAPTURE_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
-            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(1, 1).setRequestedSize(300, 300).start(MyBusinessActivity.this);
-        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            Uri resultUri = result.getUri();
+//            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(1, 1).setRequestedSize(300, 300).start(MyBusinessActivity.this);
+            cropImage(getCacheImagePath(fileName));
+//        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == UCrop.REQUEST_CROP && resultCode == Activity.RESULT_OK) {
+//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+//            Uri resultUri = result.getUri();
+            Uri resultUri = UCrop.getOutput(data);
             onSelectFromGalleryResult(resultUri);
         } else if (requestCode == SELECT_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
             photoURI = data.getData();
-            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(1, 1).setRequestedSize(300, 300).start(MyBusinessActivity.this);
+//            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(1, 1).setRequestedSize(300, 300).start(MyBusinessActivity.this);
+            cropImage(photoURI);
         }
+    }
+
+
+    private void cropImage(Uri sourceUri) {
+        int IMAGE_COMPRESSION = 100;
+        Uri destinationUri = Uri.fromFile(new File(getCacheDir(), queryName(getContentResolver(), sourceUri)));
+        UCrop.Options options = new UCrop.Options();
+        options.setCompressionQuality(IMAGE_COMPRESSION);
+        options.setHideBottomControls(true);
+        options.withAspectRatio(1, 1);
+
+        options.setToolbarTitle("Crop Photo");
+        options.setToolbarColor(ContextCompat.getColor(this, R.color.adv_bus_color));
+        options.setStatusBarColor(ContextCompat.getColor(this, R.color.adv_bus_color));
+        options.setActiveWidgetColor(ContextCompat.getColor(this, R.color.adv_bus_color));
+
+        UCrop.of(sourceUri, destinationUri)
+                .withOptions(options)
+                .start(this);
+    }
+
+    private static String queryName(ContentResolver resolver, Uri uri) {
+        Cursor returnCursor =
+                resolver.query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
     }
 
     private void onSelectFromGalleryResult(Uri data) {
@@ -337,7 +393,7 @@ public class MyBusinessActivity extends AppCompatActivity {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         assert bm != null;
-        bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+        bm.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         base64img = Base64.encodeToString(byteArray, Base64.DEFAULT);
         System.out.println("Gallery image " + base64img);
@@ -347,10 +403,10 @@ public class MyBusinessActivity extends AppCompatActivity {
     String str_result = "", str_message = "";
 
     private void getMyBusinessData() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(MyBusinessActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(MyBusinessActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.editbusiness, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.editbusiness, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -360,7 +416,7 @@ public class MyBusinessActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getApiCall response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getApiCall result " + str_result);
@@ -384,7 +440,7 @@ public class MyBusinessActivity extends AppCompatActivity {
                                     basicDetail.getString("subCategory"),
                                     basicDetail.getString("shopLogo")
                             );
-                            Utilis.saveBasicDetails(basicDetailsData);
+                            Utils.saveBasicDetails(basicDetailsData);
 
                             JSONObject addressDetail = json.getJSONObject("addressDetails");
                             AddressDetailsData addressDetailsData = new AddressDetailsData(
@@ -399,7 +455,7 @@ public class MyBusinessActivity extends AppCompatActivity {
                                     addressDetail.getString("state"),
                                     addressDetail.getString("district")
                             );
-                            Utilis.saveAddressDetails(addressDetailsData);
+                            Utils.saveAddressDetails(addressDetailsData);
 
                             JSONObject contactDetail = json.getJSONObject("contactDetails");
                             ContactDetailsData contactDetailsData = new ContactDetailsData(
@@ -413,7 +469,7 @@ public class MyBusinessActivity extends AppCompatActivity {
                                     contactDetail.getString("digitalVcard"),
                                     contactDetail.getString("cod")
                             );
-                            Utilis.saveContactDetails(contactDetailsData);
+                            Utils.saveContactDetails(contactDetailsData);
 
                             JSONObject locationData = json.getJSONObject("locationDetails");
                             LocationData locationDetailsData = new LocationData(
@@ -421,7 +477,7 @@ public class MyBusinessActivity extends AppCompatActivity {
                                     locationData.getString("latitude"),
                                     locationData.getString("longitude")
                             );
-                            Utilis.saveLocDetails(locationDetailsData);
+                            Utils.saveLocDetails(locationDetailsData);
 
                             List<UploadImages> uploadImagesList = new ArrayList<>();
                             JSONArray jsonArray = json.getJSONArray("imageDetails");
@@ -432,8 +488,8 @@ public class MyBusinessActivity extends AppCompatActivity {
                                 uploadImages.setImageIndexId(object.getString("imageIndexId"));
                                 uploadImagesList.add(uploadImages);
                             }
-                            Utilis.clearImageList(MyBusinessActivity.this);
-                            Utilis.setImageList("imageList", uploadImagesList, MyBusinessActivity.this);
+                            Utils.clearImageList(MyBusinessActivity.this);
+                            Utils.setImageList("imageList", uploadImagesList, MyBusinessActivity.this);
 
                             List<String> tagList = new ArrayList<>();
                             JSONArray jsonArray1 = json.getJSONArray("tags");
@@ -451,7 +507,7 @@ public class MyBusinessActivity extends AppCompatActivity {
                                 }
                             }
 
-                            Utilis.saveChip(strChip);
+                            Utils.saveChip(strChip);
 
                             if (RegBusinessTypeSharedPreference.getBusinessType(MyBusinessActivity.this).equalsIgnoreCase("Services")) {
                                 List<String> serviceList = new ArrayList<>();
@@ -460,7 +516,7 @@ public class MyBusinessActivity extends AppCompatActivity {
                                     JSONObject object = jsonArray2.getJSONObject(i);
                                     serviceList.add(object.getString("serviceName"));
                                 }
-                                Utilis.saveServiceList(serviceList);
+                                Utils.saveServiceList(serviceList);
                             }
 
                             setViews();
@@ -480,7 +536,7 @@ public class MyBusinessActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(MyBusinessActivity.this, MyBusinessActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -537,7 +593,7 @@ public class MyBusinessActivity extends AppCompatActivity {
 
         ivLogo = findViewById(R.id.iv_logo);
 
-        BasicDetailsData prefBasicDetail = Utilis.getBasicDetails(MyBusinessActivity.this);
+        BasicDetailsData prefBasicDetail = Utils.getBasicDetails(MyBusinessActivity.this);
         etBusinessName.setText(prefBasicDetail.getBusinessName());
         etDesc.setText(prefBasicDetail.getDesc());
 

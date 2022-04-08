@@ -1,13 +1,17 @@
 package com.localkartmarketing.localkart.activity;
 
+import static androidx.core.content.FileProvider.getUriForFile;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -15,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,9 +71,10 @@ import com.localkartmarketing.localkart.support.MyGridView;
 import com.localkartmarketing.localkart.support.RegBusinessIdSharedPreference;
 import com.localkartmarketing.localkart.support.RegBusinessSharedPrefrence;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.yalantis.ucrop.UCrop;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,7 +92,7 @@ import java.util.Map;
 
 public class MyBusinessActivity5 extends AppCompatActivity {
     private String Tag = "MyBusinessActivity5";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -121,12 +127,14 @@ public class MyBusinessActivity5 extends AppCompatActivity {
     ContactDetailsData contactDetailsData;
     LocationData locationData;
 
+    public static String fileName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_business5);
 
-        utilis = new Utilis(MyBusinessActivity5.this);
+        utils = new Utils(MyBusinessActivity5.this);
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -136,10 +144,10 @@ public class MyBusinessActivity5 extends AppCompatActivity {
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
         strBusinessId = intent.getStringExtra("businessType");
-        basicDetailsData = Utilis.getBasicDetails(MyBusinessActivity5.this);
-        addressDetailsData = Utilis.getAddressDetails(MyBusinessActivity5.this);
-        contactDetailsData = Utilis.getContactDetails(MyBusinessActivity5.this);
-        locationData = Utilis.getLocDetails(MyBusinessActivity5.this);
+        basicDetailsData = Utils.getBasicDetails(MyBusinessActivity5.this);
+        addressDetailsData = Utils.getAddressDetails(MyBusinessActivity5.this);
+        contactDetailsData = Utils.getContactDetails(MyBusinessActivity5.this);
+        locationData = Utils.getLocDetails(MyBusinessActivity5.this);
 
         Window window = getWindow();
 
@@ -173,7 +181,7 @@ public class MyBusinessActivity5 extends AppCompatActivity {
         toolBarTitle.setText("My Business");
 
         View progressView = findViewById(R.id.progress_view);
-        final BasicDetailsData basicDetailsData = Utilis.getBasicDetails(MyBusinessActivity5.this);
+        final BasicDetailsData basicDetailsData = Utils.getBasicDetails(MyBusinessActivity5.this);
         if (strBusinessId.equalsIgnoreCase("1")) {
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 10);
             progressView.setLayoutParams(lp);
@@ -196,7 +204,7 @@ public class MyBusinessActivity5 extends AppCompatActivity {
 //        nestedScrollView = findViewById(R.id.nested_scroll_view);
         layGrid = findViewById(R.id.lay_grid);
         arrayList = new ArrayList<>();
-        arrayList = Utilis.getImageList("imageList");
+        arrayList = Utils.getImageList("imageList");
         if (arrayList != null) {
             System.out.println("array list contains images");
         } else {
@@ -306,9 +314,9 @@ public class MyBusinessActivity5 extends AppCompatActivity {
                             updateBusiness(view);
                         }
                     } else {
-                        Utilis.saveChip(strChip);
-                        Utilis.clearImageList(MyBusinessActivity5.this);
-                        Utilis.setImageList("imageList", arrayList, MyBusinessActivity5.this);
+                        Utils.saveChip(strChip);
+                        Utils.clearImageList(MyBusinessActivity5.this);
+                        Utils.setImageList("imageList", arrayList, MyBusinessActivity5.this);
                         Intent intent = new Intent(MyBusinessActivity5.this, MyBusinessActivity6.class);
                         intent.putExtra("key", keyIntent);
                         intent.putExtra("businessType", strBusinessId);
@@ -324,10 +332,10 @@ public class MyBusinessActivity5 extends AppCompatActivity {
     }
 
     private void updateBusiness(final View view) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(MyBusinessActivity5.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(MyBusinessActivity5.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.businessupdate, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.businessupdate, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -337,7 +345,7 @@ public class MyBusinessActivity5 extends AppCompatActivity {
 
                         System.out.println(Tag + " updateBusiness response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " updateBusiness result " + str_result);
@@ -360,7 +368,7 @@ public class MyBusinessActivity5 extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(MyBusinessActivity5.this, MyBusinessActivity5.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -440,7 +448,7 @@ public class MyBusinessActivity5 extends AppCompatActivity {
             for (int i = 0; i < list.size(); i++) {
 
                 final int currentPos = i;
-                StringRequest request = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.uploadimage, new Response.Listener<String>() {
+                StringRequest request = new StringRequest(Request.Method.POST, Utils.Api + Utils.uploadimage, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
 
@@ -498,7 +506,7 @@ public class MyBusinessActivity5 extends AppCompatActivity {
                 RegBusinessTypeSharedPreference.setBusinessType(MyBusinessActivity5.this, "Shopping");
                 RegBusinessIdSharedPreference.setBusinessId(MyBusinessActivity5.this, str_index_id);
 
-                Utilis.clearRegPref(MyBusinessActivity5.this);
+                Utils.clearRegPref(MyBusinessActivity5.this);
 
                 Intent intent = new Intent(MyBusinessActivity5.this, ManageBusinessActivity.class);
                 intent.putExtra("key", keyIntent);
@@ -534,10 +542,10 @@ public class MyBusinessActivity5 extends AppCompatActivity {
                                 layGrid.setVisibility(View.GONE);
                             }
                         } else {
-                            if (Utilis.isInternetOn()) {
-                                Utilis.showProgress(MyBusinessActivity5.this);
+                            if (Utils.isInternetOn()) {
+                                Utils.showProgress(MyBusinessActivity5.this);
 
-                                StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.deletebusinessbanner, new Response.Listener<String>() {
+                                StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.deletebusinessbanner, new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
 
@@ -547,7 +555,7 @@ public class MyBusinessActivity5 extends AppCompatActivity {
 
                                             System.out.println(Tag + " deletebusinessbanner response - " + response);
 
-                                            Utilis.dismissProgress();
+                                            Utils.dismissProgress();
 
                                             str_result = obj.getString("errorCode");
                                             System.out.print(Tag + " deletebusinessbanner result " + str_result);
@@ -581,7 +589,7 @@ public class MyBusinessActivity5 extends AppCompatActivity {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
 
-                                        Utilis.dismissProgress();
+                                        Utils.dismissProgress();
                                         Toast.makeText(MyBusinessActivity5.this, MyBusinessActivity5.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                                         if (error instanceof NoConnectionError) {
@@ -726,22 +734,29 @@ public class MyBusinessActivity5 extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (optionsMenu[i].equals("Take Photo")) {
 
+//                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//                        try {
+//                            photoFile = createImageFile();
+//
+//                            photoURI = FileProvider.getUriForFile(
+//                                    MyBusinessActivity5.this,
+//                                    "com.localkartmarketing.localkart.fileprovider",
+//                                    photoFile
+//                            );
+//                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                            startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
+//
+//                        } catch (IOException ex) {
+//                            // Error occurred while creating the File
+//                        }
+//                    }
+
+                    fileName = System.currentTimeMillis() + ".jpg";
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, getCacheImagePath(fileName));
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        try {
-                            photoFile = createImageFile();
-
-                            photoURI = FileProvider.getUriForFile(
-                                    MyBusinessActivity5.this,
-                                    "com.localkartmarketing.localkart.fileprovider",
-                                    photoFile
-                            );
-                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                            startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
-
-                        } catch (IOException ex) {
-                            // Error occurred while creating the File
-                        }
+                        startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
                     }
 
                 } else if (optionsMenu[i].equals("Choose from Gallery")) {
@@ -754,6 +769,13 @@ public class MyBusinessActivity5 extends AppCompatActivity {
             }
         });
         builder.show();
+    }
+
+    private Uri getCacheImagePath(String fileName) {
+        File path = new File(getExternalCacheDir(), "camera");
+        if (!path.exists()) path.mkdirs();
+        File image = new File(path, fileName);
+        return getUriForFile(MyBusinessActivity5.this, getPackageName() + ".provider", image);
     }
 
     private File createImageFile() throws IOException {
@@ -777,15 +799,49 @@ public class MyBusinessActivity5 extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAPTURE_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
-            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(16, 9).setRequestedSize(400, 600).start(MyBusinessActivity5.this);
-        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            Uri resultUri = result.getUri();
+//            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(16, 9).setRequestedSize(400, 600).start(MyBusinessActivity5.this);
+            cropImage(getCacheImagePath(fileName));
+//        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == UCrop.REQUEST_CROP && resultCode == Activity.RESULT_OK) {
+//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+//            Uri resultUri = result.getUri();
+            Uri resultUri = UCrop.getOutput(data);
             onSelectFromGalleryResult(resultUri);
         } else if (requestCode == SELECT_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
             photoURI = data.getData();
-            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(16, 9).setRequestedSize(400, 600).start(MyBusinessActivity5.this);
+//            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(16, 9).setRequestedSize(400, 600).start(MyBusinessActivity5.this);
+            cropImage(photoURI);
         }
+    }
+
+
+    private void cropImage(Uri sourceUri) {
+        int IMAGE_COMPRESSION = 100;
+        Uri destinationUri = Uri.fromFile(new File(getCacheDir(), queryName(getContentResolver(), sourceUri)));
+        UCrop.Options options = new UCrop.Options();
+        options.setCompressionQuality(IMAGE_COMPRESSION);
+        options.setHideBottomControls(true);
+        options.withAspectRatio(16, 9);
+
+        options.setToolbarTitle("Crop Photo");
+        options.setToolbarColor(ContextCompat.getColor(this, R.color.adv_bus_color));
+        options.setStatusBarColor(ContextCompat.getColor(this, R.color.adv_bus_color));
+        options.setActiveWidgetColor(ContextCompat.getColor(this, R.color.adv_bus_color));
+
+        UCrop.of(sourceUri, destinationUri)
+                .withOptions(options)
+                .start(this);
+    }
+
+    private static String queryName(ContentResolver resolver, Uri uri) {
+        Cursor returnCursor =
+                resolver.query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
     }
 
     private void onSelectFromGalleryResult(Uri data) {
@@ -800,7 +856,7 @@ public class MyBusinessActivity5 extends AppCompatActivity {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         assert bm != null;
-        bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+        bm.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         String base64img = Base64.encodeToString(byteArray, Base64.DEFAULT);
         System.out.println("Gallery image " + base64img);
@@ -832,7 +888,7 @@ public class MyBusinessActivity5 extends AppCompatActivity {
     }
 
     private void setChip() {
-        String prefChips = Utilis.getChips(MyBusinessActivity5.this);
+        String prefChips = Utils.getChips(MyBusinessActivity5.this);
 
         if (prefChips.isEmpty()) {
             System.out.println("chips are empty");
@@ -884,9 +940,9 @@ public class MyBusinessActivity5 extends AppCompatActivity {
             }
         }
 
-        Utilis.saveChip(strChip);
-        Utilis.clearImageList(MyBusinessActivity5.this);
-        Utilis.setImageList("imageList", arrayList, MyBusinessActivity5.this);
+        Utils.saveChip(strChip);
+        Utils.clearImageList(MyBusinessActivity5.this);
+        Utils.setImageList("imageList", arrayList, MyBusinessActivity5.this);
         finish();
     }
 }

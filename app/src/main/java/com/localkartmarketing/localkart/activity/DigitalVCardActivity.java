@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.text.Html;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -52,7 +51,7 @@ import com.localkartmarketing.localkart.model.DirectoryMoreDetailsData;
 import com.localkartmarketing.localkart.model.ShopBanner;
 import com.localkartmarketing.localkart.support.RegBusinessIdSharedPreference;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONArray;
@@ -61,13 +60,14 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class DigitalVCardActivity extends AppCompatActivity {
     private final String Tag = "DigitalVCardActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -109,7 +109,7 @@ public class DigitalVCardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_digital_vcard);
 
-        utilis = new Utilis(DigitalVCardActivity.this);
+        utils = new Utils(DigitalVCardActivity.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -198,8 +198,8 @@ public class DigitalVCardActivity extends AppCompatActivity {
                             Intent intent = new Intent(Intent.ACTION_SEND);
                             intent.setType("image/*");
                             intent.putExtra(Intent.EXTRA_STREAM, getImageUri(getBitmapFromView(layMain)));
-                            String shareMessage = "Download Local Kart App Now ";
-                            shareMessage = shareMessage + Utilis.shareUrl;
+                            String shareMessage = "Download LocalKart App Now ";
+                            shareMessage = shareMessage + Utils.shareUrl;
                             intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                             try {
                                 startActivity(Intent.createChooser(intent, "My Profile ..."));
@@ -218,9 +218,9 @@ public class DigitalVCardActivity extends AppCompatActivity {
 
     public Uri getImageUri(Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
 
-        String path = MediaStore.Images.Media.insertImage(getContentResolver(), inImage, "Title", null);
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), inImage, "Title_"+ Calendar.getInstance().getTime(), null);
         return Uri.parse(path);
     }
 
@@ -244,10 +244,10 @@ public class DigitalVCardActivity extends AppCompatActivity {
     }
 
     private void getApiCall() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(DigitalVCardActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(DigitalVCardActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.directorymoredetails, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.directorymoredetails, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -257,7 +257,7 @@ public class DigitalVCardActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getApiCall response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         layMain.setVisibility(View.VISIBLE);
 
@@ -340,7 +340,7 @@ public class DigitalVCardActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(DigitalVCardActivity.this, DigitalVCardActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {

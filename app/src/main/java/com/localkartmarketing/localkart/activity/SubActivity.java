@@ -1,6 +1,7 @@
 package com.localkartmarketing.localkart.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,12 +31,14 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.adapter.SubCategoryAdapter;
 import com.localkartmarketing.localkart.adapter.ViewPagerAdapter;
 import com.localkartmarketing.localkart.model.SilderData;
 import com.localkartmarketing.localkart.model.SubCategoryData;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.model.UserDetail;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONArray;
@@ -48,7 +51,7 @@ import java.util.Map;
 
 public class SubActivity extends AppCompatActivity {
     private String Tag = "SubActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -56,7 +59,7 @@ public class SubActivity extends AppCompatActivity {
     LinearLayout sliderDotspanel;
     private ArrayList<SilderData> silders;
     private static int currentPage = 0;
-//    Timer swipeTimer;
+    //    Timer swipeTimer;
 //    final long DELAY_MS = 1000;//delay in milliseconds before task is to be executed
 //    final long PERIOD_MS = 4500; // time in milliseconds between successive task executions.
     Handler handler = new Handler();
@@ -64,7 +67,7 @@ public class SubActivity extends AppCompatActivity {
     int delay = 2000;
 
     ViewPagerAdapter viewPagerAdapter;
-    String str_result ="", str_message = "";
+    String str_result = "", str_message = "";
 
     private ArrayList<SubCategoryData> subCategoryListValue = new ArrayList<SubCategoryData>();
     private GridView gridView;
@@ -73,11 +76,19 @@ public class SubActivity extends AppCompatActivity {
     String categoryId = "";
     String categoryName = "";
 
+    UserDetail userDetail;
+    static SharedPreferences mPrefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sub);
-        utilis = new Utilis(SubActivity.this);
+        utils = new Utils(SubActivity.this);
+
+        mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString("MyObject", "");
+        userDetail = gson.fromJson(json, UserDetail.class);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -127,11 +138,11 @@ public class SubActivity extends AppCompatActivity {
         btnSubCategory.setText(categoryName);
         gridView = findViewById(R.id.grid_category);
 
-        String apiName ="";
+        String apiName = "";
         if (keyIntent.equalsIgnoreCase("Shopping")) {
-            apiName = Utilis.shopsubcat;
+            apiName = Utils.shopsubcat;
         } else {
-            apiName = Utilis.servicesubcat;
+            apiName = Utils.servicesubcat;
         }
         getSubCategoryData(apiName);
     }
@@ -145,10 +156,10 @@ public class SubActivity extends AppCompatActivity {
     }
 
     private void getSubCategoryData(String apiName) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(SubActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(SubActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + apiName, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + apiName, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -158,7 +169,7 @@ public class SubActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getSubCategoryData response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getSubCategoryData result " + str_result);
@@ -195,7 +206,7 @@ public class SubActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(SubActivity.this, SubActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -231,9 +242,9 @@ public class SubActivity extends AppCompatActivity {
     }
 
     private void getBannerImages() {
-        if (Utilis.isInternetOn()) {
+        if (Utils.isInternetOn()) {
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utilis.Api + Utilis.getbanner, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.categoryslider, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -296,7 +307,13 @@ public class SubActivity extends AppCompatActivity {
             }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    return new HashMap<>();
+                    Map<String, String> params = new HashMap<>();
+                    params.put("stateId", userDetail.getStateId());
+                    params.put("districtId", userDetail.getDistrictId());
+                    params.put("categoryId", categoryId);
+                    params.put("type", keyIntent);
+                    System.out.println(Tag + " getBannerImages inputs " + params);
+                    return params;
                 }
             };
 
@@ -368,7 +385,7 @@ public class SubActivity extends AppCompatActivity {
 
         sliderDotspanel.removeAllViews();
 
-        for(int j = 0; j < dotscount; j++){
+        for (int j = 0; j < dotscount; j++) {
 
             dots[j] = new ImageView(SubActivity.this);
             dots[j].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));

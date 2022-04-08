@@ -27,7 +27,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.localkartmarketing.localkart.BuildConfig;
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.support.LoginSharedPreference;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONException;
@@ -56,10 +56,10 @@ public class SplashActivity extends AppCompatActivity {
     String str_result = "", str_message = "";
 
     private void checkAppVersion() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(SplashActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(SplashActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.appversion, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.appversion, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -69,7 +69,7 @@ public class SplashActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " checkAppVersion response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " checkAppVersion result " + str_result);
@@ -100,7 +100,7 @@ public class SplashActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(SplashActivity.this, SplashActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -155,7 +155,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                Uri uri = Uri.parse(Utilis.shareUrl);
+                Uri uri = Uri.parse(Utils.shareUrl);
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
 

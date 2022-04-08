@@ -56,7 +56,7 @@ import com.localkartmarketing.localkart.model.PlanPrices;
 import com.localkartmarketing.localkart.model.PlanResponse;
 import com.localkartmarketing.localkart.model.UserDetail;
 import com.localkartmarketing.localkart.support.DividerItemDecorator;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
@@ -75,7 +75,7 @@ import java.util.Objects;
 
 public class PlanActivity extends AppCompatActivity implements PaymentResultListener {
     private final String Tag = "PlanActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -105,7 +105,7 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan);
-        utilis = new Utilis(PlanActivity.this);
+        utils = new Utils(PlanActivity.this);
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -184,9 +184,9 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
     }
 
     private void getApiCall() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(PlanActivity.this);
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.getpricing, new Response.Listener<String>() {
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(PlanActivity.this);
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.getpricing, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -196,7 +196,7 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
 
                         System.out.println(Tag + " getApiCall response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getApiCall result " + str_result);
@@ -249,7 +249,7 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(PlanActivity.this, PlanActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -289,9 +289,9 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
     private JSONObject jsonObjectHeader = new JSONObject();
 
     private void getPlanList() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(PlanActivity.this);
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.viewplan, new Response.Listener<String>() {
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(PlanActivity.this);
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.viewplan, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -301,7 +301,7 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
 
                         System.out.println(Tag + " getPlanList response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         if (Integer.parseInt(str_result) == 0) {
@@ -362,7 +362,7 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(PlanActivity.this, PlanActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -500,10 +500,10 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
     }
 
     private void applyCode(final String refCode, final String planPrice, final String strAmount) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(PlanActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(PlanActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.applycode, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.applycode, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
@@ -512,7 +512,7 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
 
                         System.out.println(Tag + " applyCode response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " applyCode result " + str_result);
@@ -569,7 +569,7 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(PlanActivity.this, PlanActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -743,10 +743,10 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
     String strAmount = "0", strStaticAmount = "0";
 
     private void getAmountCalculationFromApi(final View view, final int position) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(PlanActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(PlanActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.amountcalculation, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.amountcalculation, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
@@ -755,7 +755,7 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
 
                         System.out.println(Tag + " getAmountCalculationFromApi response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getAmountCalculationFromApi result " + str_result);
@@ -796,7 +796,7 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(PlanActivity.this, PlanActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -833,10 +833,10 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
     }
 
     private void getPaymentApiCall(final String planId, final String amount, final String planName) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(PlanActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(PlanActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.buynow, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.buynow, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
@@ -845,7 +845,7 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
 
                         System.out.println(Tag + " getPaymentApiCall response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getPaymentApiCall result " + str_result);
@@ -872,8 +872,8 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
                             Checkout checkout = new Checkout();
 
                             // set your id as below
-                            checkout.setKeyID(Utilis.razorPayTestKey);
-//                            checkout.setKeyID(Utilis.razorPayLiveKey);
+//                            checkout.setKeyID(Utils.razorPayTestKey);
+                            checkout.setKeyID(Utils.razorPayLiveKey);
 
                             // initialize json object
                             JSONObject object = new JSONObject();
@@ -927,7 +927,7 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(PlanActivity.this, PlanActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -1047,10 +1047,10 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
     }
 
     private void paymentSuccessUpdate(final String paymentId) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(PlanActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(PlanActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.paymentsuccess, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.paymentsuccess, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
@@ -1059,7 +1059,7 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
 
                         System.out.println(Tag + " paymentSuccessUpdate response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " paymentSuccessUpdate result " + str_result);
@@ -1099,7 +1099,7 @@ public class PlanActivity extends AppCompatActivity implements PaymentResultList
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(PlanActivity.this, PlanActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {

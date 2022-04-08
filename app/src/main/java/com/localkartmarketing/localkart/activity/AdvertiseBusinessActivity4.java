@@ -43,7 +43,7 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.model.LocationData;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +53,7 @@ public class AdvertiseBusinessActivity4 extends AppCompatActivity implements OnM
         GoogleMap.OnCameraIdleListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnCameraMoveListener, GoogleMap.OnCameraMoveCanceledListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private String Tag = "AdvertiseBusinessActivity4";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -83,7 +83,7 @@ public class AdvertiseBusinessActivity4 extends AppCompatActivity implements OnM
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advertise_business4);
 
-        utilis = new Utilis(AdvertiseBusinessActivity4.this);
+        utils = new Utils(AdvertiseBusinessActivity4.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -135,7 +135,7 @@ public class AdvertiseBusinessActivity4 extends AppCompatActivity implements OnM
         }
 
 //        fetchLastLocation();
-        if (Utilis.isGpsOn()) {
+        if (Utils.isGpsOn()) {
             getLocation();
         } else {
             Toast.makeText(this, "Enable GPS", Toast.LENGTH_SHORT).show();
@@ -203,7 +203,7 @@ public class AdvertiseBusinessActivity4 extends AppCompatActivity implements OnM
                             String.valueOf(latitude),
                             String.valueOf(longitude)
                     );
-                    Utilis.saveLocDetails(locationData);
+                    Utils.saveLocDetails(locationData);
                     Intent intent = new Intent(AdvertiseBusinessActivity4.this, AdvertiseBusinessActivity5.class);
                     intent.putExtra("key", keyIntent);
                     intent.putExtra("businessType", strBusinessId);
@@ -297,13 +297,13 @@ public class AdvertiseBusinessActivity4 extends AppCompatActivity implements OnM
                 String.valueOf(latitude),
                 String.valueOf(longitude)
         );
-        Utilis.saveLocDetails(locationData);
+        Utils.saveLocDetails(locationData);
         finish();
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (Utilis.isGpsOn()) {
+        if (Utils.isGpsOn()) {
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED
@@ -342,7 +342,7 @@ public class AdvertiseBusinessActivity4 extends AppCompatActivity implements OnM
     }
 
     private void updateUI(Location location) {
-        LocationData locData = Utilis.getLocDetails(AdvertiseBusinessActivity4.this);
+        LocationData locData = Utils.getLocDetails(AdvertiseBusinessActivity4.this);
         if (locData != null) {
             LatLng latLng = new LatLng(Double.parseDouble(locData.getLatitude()), Double.parseDouble(locData.getLongitude()));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
@@ -429,7 +429,7 @@ public class AdvertiseBusinessActivity4 extends AppCompatActivity implements OnM
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
 //            fetchLastLocation();
-            if (Utilis.isGpsOn()) {
+            if (Utils.isGpsOn()) {
                 getLocation();
             } else {
                 Toast.makeText(this, "Enable GPS", Toast.LENGTH_SHORT).show();
@@ -452,7 +452,7 @@ public class AdvertiseBusinessActivity4 extends AppCompatActivity implements OnM
         if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //                fetchLastLocation();
-                if (Utilis.isGpsOn()) {
+                if (Utils.isGpsOn()) {
                     getLocation();
                 } else {
                     Toast.makeText(this, "Enable GPS", Toast.LENGTH_SHORT).show();

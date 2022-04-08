@@ -17,11 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.localkartmarketing.localkart.R;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 
 public class PrivacyPolicyActivity extends AppCompatActivity {
     private String Tag = "PrivacyPolicyActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -31,7 +31,7 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_privacy_policy);
 
-        utilis = new Utilis(PrivacyPolicyActivity.this);
+        utils = new Utils(PrivacyPolicyActivity.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -76,8 +76,8 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
                 return false;
             }
         });
-        if (Utilis.isInternetOn()) {
-            webView.loadUrl(Utilis.privacyPolicyUrl);
+        if (Utils.isInternetOn()) {
+            webView.loadUrl(Utils.privacyPolicyUrl);
         } else {
             Toast.makeText(this, this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
         }

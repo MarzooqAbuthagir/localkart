@@ -20,7 +20,7 @@ import androidx.core.content.ContextCompat;
 
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.model.AddressDetailsData;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.List;
 
 public class MyBusinessActivity2 extends AppCompatActivity {
     private String Tag = "MyBusinessActivity2";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -52,12 +52,12 @@ public class MyBusinessActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_business2);
 
-        utilis = new Utilis(MyBusinessActivity2.this);
+        utils = new Utils(MyBusinessActivity2.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
         strBusinessId = intent.getStringExtra("businessType");
-        addressDetailsData = Utilis.getAddressDetails(MyBusinessActivity2.this);
+        addressDetailsData = Utils.getAddressDetails(MyBusinessActivity2.this);
 
         Window window = getWindow();
 
@@ -169,7 +169,7 @@ public class MyBusinessActivity2 extends AppCompatActivity {
                     etPinCode.requestFocus();
                     Toast.makeText(MyBusinessActivity2.this, "Enter Valid PIN code", Toast.LENGTH_SHORT).show();
                 } else {
-                    AddressDetailsData ad = Utilis.getAddressDetails(MyBusinessActivity2.this);
+                    AddressDetailsData ad = Utils.getAddressDetails(MyBusinessActivity2.this);
                     AddressDetailsData addressDetailsData = new AddressDetailsData(
                             strDoorNo,
                             strLocality,
@@ -182,7 +182,7 @@ public class MyBusinessActivity2 extends AppCompatActivity {
                             ad.getState(),
                             ad.getDistrict()
                     );
-                    Utilis.saveAddressDetails(addressDetailsData);
+                    Utils.saveAddressDetails(addressDetailsData);
                     Intent intent = new Intent(MyBusinessActivity2.this, MyBusinessActivity3.class);
                     intent.putExtra("key", keyIntent);
                     intent.putExtra("businessType", strBusinessId);
@@ -206,7 +206,7 @@ public class MyBusinessActivity2 extends AppCompatActivity {
         strPost = etPost.getText().toString().trim();
         strLandmark = etLandmark.getText().toString().trim();
         strPinCode = etPinCode.getText().toString().trim();
-        AddressDetailsData ad = Utilis.getAddressDetails(MyBusinessActivity2.this);
+        AddressDetailsData ad = Utils.getAddressDetails(MyBusinessActivity2.this);
         AddressDetailsData addressDetailsData = new AddressDetailsData(
                 strDoorNo,
                 strLocality,
@@ -219,7 +219,7 @@ public class MyBusinessActivity2 extends AppCompatActivity {
                 ad.getState(),
                 ad.getDistrict()
         );
-        Utilis.saveAddressDetails(addressDetailsData);
+        Utils.saveAddressDetails(addressDetailsData);
         finish();
     }
 }

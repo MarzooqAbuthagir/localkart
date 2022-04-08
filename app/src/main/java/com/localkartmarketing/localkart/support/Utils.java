@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class Utilis {
+public class Utils {
     @SuppressLint("StaticFieldLeak")
     static Context con;
     // Custom Progress Dialog
@@ -93,6 +93,18 @@ public class Utilis {
     public static String todaylistnearme = "todaylist_nearme";
     public static String festivallistnearme = "festivallist_nearme";
     public static String weeklylistnearme = "weeklylist_nearme";
+    public static String search = "search";
+    public static String searchnearme = "search_nearme";
+    public static String getmegasales = "getmegasales";
+    public static String createmegasalespost = "createmegasalespost";
+    public static String createmegasalesoffers = "createmegasalesoffers";
+    public static String currentmegasales = "currentmegasales";
+    public static String megasaleslist = "megasaleslist";
+    public static String megasaleslistnearme = "megasaleslist_nearme";
+    public static String viewmegasalespostdetails = "viewmegasalespostdetails";
+    public static String viewmegasalesdeals = "viewmegasalesdeals";
+    public static String homeslider = "homeslider";
+    public static String categoryslider = "categoryslider";
 
     // Help and Support Url
     public static String helpUrl = "https://localkart.app/app/help-and-support.php";
@@ -109,10 +121,10 @@ public class Utilis {
     public static String constPostType = "";
 
     public static String razorPayTestKey = "rzp_test_APRjuSYwwwfdnH";//"rzp_test_FPzlMXNvEACWSC";
-    public static String razorPayLiveKey = "rzp_live_pcJLSfZjYmemRL";
+    public static String razorPayLiveKey = "rzp_live_dPU9HUhjVuJg54";//""rzp_live_pcJLSfZjYmemRL";
 
-    public Utilis(Context con) {
-        Utilis.con = con;
+    public Utils(Context con) {
+        Utils.con = con;
     }
 
     public static void showProgress(Context context) {
@@ -154,7 +166,7 @@ public class Utilis {
 
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
         Matcher matcher = pattern.matcher(emailAddress);
-        return matcher.matches();
+        return !matcher.matches();
     }
 
     public static boolean webURLValidation(CharSequence webAddress) {
@@ -162,7 +174,7 @@ public class Utilis {
 
         Pattern pattern = Pattern.compile(WEB_PATTERN);
         Matcher matcher = pattern.matcher(webAddress);
-        return matcher.matches();
+        return !matcher.matches();
     }
 
     public static <T> void setImageList(String key, List<T> list, Context con) {

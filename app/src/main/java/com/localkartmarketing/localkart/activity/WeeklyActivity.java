@@ -47,7 +47,7 @@ import com.localkartmarketing.localkart.model.DistrictData;
 import com.localkartmarketing.localkart.model.StateData;
 import com.localkartmarketing.localkart.model.UserDetail;
 import com.localkartmarketing.localkart.support.LocationTrack;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 import com.xw.repo.BubbleSeekBar;
@@ -64,7 +64,7 @@ import java.util.Map;
 public class WeeklyActivity extends Fragment {
     private String Tag = "WeeklyActivity";
 
-    Utilis utilis;
+    Utils utils;
 
     LocationTrack currentLocation;
     double latitude = 0.0;
@@ -101,7 +101,7 @@ public class WeeklyActivity extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_weekly, container, false);
-        utilis = new Utilis(getActivity());
+        utils = new Utils(getActivity());
 
         mPrefs = getActivity().getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -186,7 +186,7 @@ public class WeeklyActivity extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (Utilis.callResume == 1 && Utilis.constPostType.equalsIgnoreCase("WEEKLY")) {
+        if (Utils.callResume == 1 && Utils.constPostType.equalsIgnoreCase("WEEKLY")) {
             getListData();
         }
     }
@@ -200,7 +200,7 @@ public class WeeklyActivity extends Fragment {
         tvHeading.setText("Show " + strSubCatName + " within radius of Kilometer");
 
         BubbleSeekBar bubbleSeekBar = dialogView.findViewById(R.id.seek_bar);
-        strProgress = Utilis.getNearMeFilter(getActivity());
+        strProgress = Utils.getNearMeFilter(getActivity());
         bubbleSeekBar.setProgress(strProgress);
         bubbleSeekBar.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener() {
             @Override
@@ -231,8 +231,8 @@ public class WeeklyActivity extends Fragment {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Utilis.isInternetOn()) {
-                    Utilis.saveNearMeFilter(strProgress);
+                if (Utils.isInternetOn()) {
+                    Utils.saveNearMeFilter(strProgress);
                     alertDialog.dismiss();
                     getNearMeData();
                 } else {
@@ -244,9 +244,9 @@ public class WeeklyActivity extends Fragment {
     }
 
     private void getNearMeData() {
-        Utilis.showProgress(getActivity());
+        Utils.showProgress(getActivity());
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.weeklylistnearme, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.weeklylistnearme, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -256,7 +256,7 @@ public class WeeklyActivity extends Fragment {
 
                     System.out.println(Tag + " getNearMeData response - " + response);
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
 
                     str_result = obj.getString("errorCode");
                     System.out.print(Tag + " getNearMeData result " + str_result);
@@ -304,7 +304,7 @@ public class WeeklyActivity extends Fragment {
                             @Override
                             public void onItemClick(View view, final int position) {
 
-                                if (Utilis.isInternetOn()) {
+                                if (Utils.isInternetOn()) {
                                     String state = Integer.parseInt(dataList.get(position).getIsSubscribed()) == 0 ? "Subscribe" : "UnSubscribe";
                                     androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
                                     builder.setTitle(state)
@@ -364,7 +364,7 @@ public class WeeklyActivity extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                Utilis.dismissProgress();
+                Utils.dismissProgress();
                 Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                 if (error instanceof NoConnectionError) {
@@ -482,9 +482,9 @@ public class WeeklyActivity extends Fragment {
                 } else if (strDistrictId.isEmpty()) {
                     Toast.makeText(getActivity(), "Select district / zone", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (Utilis.isInternetOn()) {
-                        Utilis.saveStateFilter(strStateId);
-                        Utilis.saveDistrictFilter(strDistrictId);
+                    if (Utils.isInternetOn()) {
+                        Utils.saveStateFilter(strStateId);
+                        Utils.saveDistrictFilter(strDistrictId);
                         alertDialog.dismiss();
                         getListData();
                     } else {
@@ -498,9 +498,9 @@ public class WeeklyActivity extends Fragment {
     }
 
     private void getListData() {
-        Utilis.showProgress(getActivity());
+        Utils.showProgress(getActivity());
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.weeklylist, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.weeklylist, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -510,7 +510,7 @@ public class WeeklyActivity extends Fragment {
 
                     System.out.println(Tag + " getListData response - " + response);
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
 
                     str_result = obj.getString("errorCode");
                     System.out.print(Tag + " getListData result " + str_result);
@@ -558,7 +558,7 @@ public class WeeklyActivity extends Fragment {
                             @Override
                             public void onItemClick(View view, final int position) {
 
-                                if (Utilis.isInternetOn()) {
+                                if (Utils.isInternetOn()) {
                                     String state = Integer.parseInt(dataList.get(position).getIsSubscribed()) == 0 ? "Subscribe" : "UnSubscribe";
                                     androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
                                     builder.setTitle(state)
@@ -618,7 +618,7 @@ public class WeeklyActivity extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                Utilis.dismissProgress();
+                Utils.dismissProgress();
                 Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                 if (error instanceof NoConnectionError) {
@@ -647,8 +647,8 @@ public class WeeklyActivity extends Fragment {
                 params.put("latitude", String.valueOf(latitude));
                 params.put("longitude", String.valueOf(longitude));
                 params.put("radius", "0");//String.valueOf(strProgress));
-                params.put("stateId", Utilis.getStateFilter(getActivity()).isEmpty() ? userDetail.getStateId() : Utilis.getStateFilter(getActivity()));
-                params.put("districtId", Utilis.getDistrictFilter(getActivity()).isEmpty() ? userDetail.getDistrictId() : Utilis.getDistrictFilter(getActivity()));
+                params.put("stateId", Utils.getStateFilter(getActivity()).isEmpty() ? userDetail.getStateId() : Utils.getStateFilter(getActivity()));
+                params.put("districtId", Utils.getDistrictFilter(getActivity()).isEmpty() ? userDetail.getDistrictId() : Utils.getDistrictFilter(getActivity()));
                 System.out.println(Tag + " getListData inputs " + params);
                 return params;
             }
@@ -659,8 +659,8 @@ public class WeeklyActivity extends Fragment {
     }
 
     private void unsubscribeShop(final int position) {
-        Utilis.showProgress(getActivity());
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.unsubscribe, new Response.Listener<String>() {
+        Utils.showProgress(getActivity());
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.unsubscribe, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -670,7 +670,7 @@ public class WeeklyActivity extends Fragment {
 
                     System.out.println(Tag + " unsubscribeShop response - " + response);
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
 
                     String str_result = obj.getString("errorCode");
                     String str_message = "";
@@ -697,7 +697,7 @@ public class WeeklyActivity extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                Utilis.dismissProgress();
+                Utils.dismissProgress();
                 Toast.makeText(getActivity(), getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                 if (error instanceof NoConnectionError) {
@@ -732,8 +732,8 @@ public class WeeklyActivity extends Fragment {
     }
 
     private void subscribeShop(final int position) {
-        Utilis.showProgress(getActivity());
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.savesubscribers, new Response.Listener<String>() {
+        Utils.showProgress(getActivity());
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.savesubscribers, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -743,7 +743,7 @@ public class WeeklyActivity extends Fragment {
 
                     System.out.println(Tag + " subscribeShop response - " + response);
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
 
                     String str_result = obj.getString("errorCode");
                     String str_message = "";
@@ -769,7 +769,7 @@ public class WeeklyActivity extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Utilis.dismissProgress();
+                Utils.dismissProgress();
                 Toast.makeText(getActivity(), getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                 if (error instanceof NoConnectionError) {
@@ -804,10 +804,10 @@ public class WeeklyActivity extends Fragment {
     }
 
     private void getDistrictList() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(getActivity());
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(getActivity());
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.districtList, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.districtList, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -817,7 +817,7 @@ public class WeeklyActivity extends Fragment {
 
                         System.out.println(Tag + " getDistrictList response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getDistrictList result " + str_result);
@@ -846,7 +846,7 @@ public class WeeklyActivity extends Fragment {
                                 districtSpinnerValue.add(districtListValue.get(i).getDistrictName());
                             }
 
-                            String prefDistrictId = Utilis.getDistrictFilter(getActivity()).isEmpty() ? userDetail.getDistrictId() : Utilis.getDistrictFilter(getActivity());
+                            String prefDistrictId = Utils.getDistrictFilter(getActivity()).isEmpty() ? userDetail.getDistrictId() : Utils.getDistrictFilter(getActivity());
                             int prefPos = 0;
                             for (int i = 0; i < districtListValue.size(); i++) {
                                 if (districtListValue.get(i).getDistrictId().equalsIgnoreCase(prefDistrictId)) {
@@ -876,7 +876,7 @@ public class WeeklyActivity extends Fragment {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -912,10 +912,10 @@ public class WeeklyActivity extends Fragment {
     }
 
     private void getStateList() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(getActivity());
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(getActivity());
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utilis.Api + Utilis.stateList, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.stateList, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -925,7 +925,7 @@ public class WeeklyActivity extends Fragment {
 
                         System.out.println(Tag + " getStateList response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getStateList result " + str_result);
@@ -954,7 +954,7 @@ public class WeeklyActivity extends Fragment {
                                 stateSpinnerValue.add(stateListValue.get(i).getStateName());
                             }
 
-                            String prefStateId = Utilis.getStateFilter(getActivity()).isEmpty() ? userDetail.getStateId() : Utilis.getStateFilter(getActivity());
+                            String prefStateId = Utils.getStateFilter(getActivity()).isEmpty() ? userDetail.getStateId() : Utils.getStateFilter(getActivity());
                             int prefPos = 0;
                             for (int i = 0; i < stateListValue.size(); i++) {
                                 if (stateListValue.get(i).getStateId().equalsIgnoreCase(prefStateId)) {
@@ -984,7 +984,7 @@ public class WeeklyActivity extends Fragment {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -1022,7 +1022,7 @@ public class WeeklyActivity extends Fragment {
             return;
         }
 
-        if (Utilis.isGpsOn()) {
+        if (Utils.isGpsOn()) {
             currentLocation = new LocationTrack(getActivity());
 
             if (currentLocation.canGetLocation()) {
@@ -1030,7 +1030,7 @@ public class WeeklyActivity extends Fragment {
                 latitude = currentLocation.getLatitude();
                 System.out.println("latitude " + latitude + " and longitude " + longitude);
 
-                if (Utilis.isInternetOn()) {
+                if (Utils.isInternetOn()) {
                     getListData();
                 } else {
                     Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
@@ -1047,7 +1047,7 @@ public class WeeklyActivity extends Fragment {
         if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 System.out.println("Permission Granted");
-                if (Utilis.isGpsOn()) {
+                if (Utils.isGpsOn()) {
                     fetchLastLocation();
                 }
             }
@@ -1058,7 +1058,7 @@ public class WeeklyActivity extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
-            if (Utilis.isGpsOn()) {
+            if (Utils.isGpsOn()) {
                 fetchLastLocation();
             }
         }

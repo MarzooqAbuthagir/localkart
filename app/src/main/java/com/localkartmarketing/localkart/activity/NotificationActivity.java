@@ -35,7 +35,7 @@ import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.adapter.NotificationAdapter;
 import com.localkartmarketing.localkart.model.NotificationData;
 import com.localkartmarketing.localkart.model.UserDetail;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONArray;
@@ -50,7 +50,7 @@ import java.util.Map;
 public class NotificationActivity extends AppCompatActivity {
     private String Tag = "NotificationActivity";
 
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -70,7 +70,7 @@ public class NotificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
 
-        utilis = new Utilis(NotificationActivity.this);
+        utils = new Utils(NotificationActivity.this);
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -123,10 +123,10 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void getListData() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(NotificationActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(NotificationActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.notificationlist, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.notificationlist, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -136,7 +136,7 @@ public class NotificationActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getListData response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getListData result " + str_result);
@@ -190,7 +190,7 @@ public class NotificationActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(NotificationActivity.this, getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {

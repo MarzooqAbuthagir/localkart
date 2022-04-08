@@ -37,7 +37,7 @@ import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.adapter.HistoryAdapter;
 import com.localkartmarketing.localkart.model.HistoryData;
 import com.localkartmarketing.localkart.model.UserDetail;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONArray;
@@ -50,7 +50,7 @@ import java.util.Map;
 
 public class HistoryActivity extends AppCompatActivity {
     private String Tag = "HistoryActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -73,7 +73,7 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        utilis = new Utilis(HistoryActivity.this);
+        utils = new Utils(HistoryActivity.this);
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -125,10 +125,10 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void getHistory() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(HistoryActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(HistoryActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.posthistory, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.posthistory, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -138,7 +138,7 @@ public class HistoryActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getHistory response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getHistory result " + str_result);
@@ -197,7 +197,7 @@ public class HistoryActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(HistoryActivity.this, HistoryActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {

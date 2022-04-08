@@ -39,7 +39,7 @@ import com.localkartmarketing.localkart.adapter.ViewPagerShopBannerAdapter;
 import com.localkartmarketing.localkart.model.AccessOptions;
 import com.localkartmarketing.localkart.model.AddOfferData;
 import com.localkartmarketing.localkart.model.ShopBanner;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONArray;
@@ -54,7 +54,7 @@ import java.util.Map;
 public class NotificationPostActivity extends AppCompatActivity {
     private String Tag = "NotificationPostActivity";
 
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -86,7 +86,7 @@ public class NotificationPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_post);
 
-        utilis = new Utilis(NotificationPostActivity.this);
+        utils = new Utils(NotificationPostActivity.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -146,12 +146,12 @@ public class NotificationPostActivity extends AppCompatActivity {
                     shareIntent.setType("text/plain");
 //                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
                     if (offerDataList.size() == 1)
-                        shareMessage = "Valid From " + strFromDate + " To " + strToDate + "\n\n" + strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + " \n\nDownload Local Kart App Now ";
+                        shareMessage = "Valid From " + strFromDate + " To " + strToDate + "\n\n" + strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + " \n\nDownload LocalKart App Now ";
                     else {
                         int count = offerDataList.size() - 1;
-                        shareMessage = "Valid From " + strFromDate + " To " + strToDate + "\n\n" + strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + "\n\nand " + count + " more deals" + " \n\nDownload Local Kart App Now ";
+                        shareMessage = "Valid From " + strFromDate + " To " + strToDate + "\n\n" + strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + "\n\nand " + count + " more deals" + " \n\nDownload LocalKart App Now ";
                     }
-                    shareMessage = shareMessage + Utilis.shareUrl;
+                    shareMessage = shareMessage + Utils.shareUrl;
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                     startActivity(Intent.createChooser(shareIntent, "choose one"));
                 } catch (Exception e) {
@@ -163,10 +163,10 @@ public class NotificationPostActivity extends AppCompatActivity {
 
 
     private void getApiCall() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(NotificationPostActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(NotificationPostActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.viewpostdetails, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.viewpostdetails, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -176,7 +176,7 @@ public class NotificationPostActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getApiCall response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         layMain.setVisibility(View.VISIBLE);
 
@@ -243,7 +243,7 @@ public class NotificationPostActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(NotificationPostActivity.this, NotificationPostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -288,7 +288,7 @@ public class NotificationPostActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(NotificationPostActivity.this);
         recyclerView.setLayoutManager(layoutManager);
 
-        offerAdapter = new OfferAdapter(this, offerDataList, 0, true, keyIntent, strPostIndexId, strShopIndexId, strType);
+        offerAdapter = new OfferAdapter(this, offerDataList, 0, true, keyIntent, strPostIndexId, strShopIndexId, strType, "");
         recyclerView.setAdapter(offerAdapter);
 
         TextView tvOfferTitle = findViewById(R.id.tv_offer_title);

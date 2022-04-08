@@ -19,11 +19,11 @@ import androidx.core.content.ContextCompat;
 
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.model.ContactDetailsData;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 
 public class AdvertiseBusinessActivity3 extends AppCompatActivity {
     private String Tag = "AdvertiseBusinessActivity3";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -46,7 +46,7 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advertise_business3);
 
-        utilis = new Utilis(AdvertiseBusinessActivity3.this);
+        utils = new Utils(AdvertiseBusinessActivity3.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -115,7 +115,7 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
 //        etFacebook.setText("www.google.com");
 //        etVcard.setText("www.google.com");
 
-        ContactDetailsData cd = Utilis.getContactDetails(AdvertiseBusinessActivity3.this);
+        ContactDetailsData cd = Utils.getContactDetails(AdvertiseBusinessActivity3.this);
         if (cd != null) {
             etPhoneNo.setText(cd.getPhoneNo());
             etMobileNo.setText(cd.getMobileNo());
@@ -156,7 +156,7 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
                             strVcard,
                             strCod
                     );
-                    Utilis.saveContactDetails(contactDetailsData);
+                    Utils.saveContactDetails(contactDetailsData);
                     Intent intent = new Intent(AdvertiseBusinessActivity3.this, AdvertiseBusinessActivity4.class);
                     intent.putExtra("key", keyIntent);
                     intent.putExtra("businessType", strBusinessId);
@@ -199,22 +199,22 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
             Toast.makeText(AdvertiseBusinessActivity3.this, "Enter 10 digit WhatsApp number", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (strEmailId.length() > 0 && !Utilis.eMailValidation(strEmailId)) {
+        if (strEmailId.length() > 0 && Utils.eMailValidation(strEmailId)) {
             etEmail.requestFocus();
             Toast.makeText(AdvertiseBusinessActivity3.this, "Enter valid email", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (strWebsite.length() > 0 && !Utilis.webURLValidation(strWebsite)) {
+        if (strWebsite.length() > 0 && Utils.webURLValidation(strWebsite)) {
             etWebsite.requestFocus();
             Toast.makeText(AdvertiseBusinessActivity3.this, "Enter valid website address", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (strFacebook.length() > 0 && !Utilis.webURLValidation(strFacebook)) {
+        if (strFacebook.length() > 0 && Utils.webURLValidation(strFacebook)) {
             etFacebook.requestFocus();
             Toast.makeText(AdvertiseBusinessActivity3.this, "Enter valid facebook URL", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (strVcard.length() > 0 && !Utilis.webURLValidation(strVcard)) {
+        if (strVcard.length() > 0 && Utils.webURLValidation(strVcard)) {
             etVcard.requestFocus();
             Toast.makeText(AdvertiseBusinessActivity3.this, "Enter valid digital vcard", Toast.LENGTH_SHORT).show();
             return false;
@@ -249,7 +249,7 @@ public class AdvertiseBusinessActivity3 extends AppCompatActivity {
                 strVcard,
                 strCod
         );
-        Utilis.saveContactDetails(contactDetailsData);
+        Utils.saveContactDetails(contactDetailsData);
         finish();
     }
 }

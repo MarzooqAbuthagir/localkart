@@ -47,7 +47,7 @@ import com.localkartmarketing.localkart.model.ViewOfferData;
 import com.localkartmarketing.localkart.support.App;
 import com.localkartmarketing.localkart.support.RegBusinessIdSharedPreference;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONArray;
@@ -61,7 +61,7 @@ import java.util.Map;
 
 public class ViewPostActivity extends AppCompatActivity {
     private String Tag = "ViewPostActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -95,7 +95,7 @@ public class ViewPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_post);
 
-        utilis = new Utilis(ViewPostActivity.this);
+        utils = new Utils(ViewPostActivity.this);
 
         app = (App) getApplication();
 
@@ -113,7 +113,7 @@ public class ViewPostActivity extends AppCompatActivity {
         strLongi = intent.getStringExtra("longitude");
         strPostType = intent.getStringExtra("postType");
         strFestivalName = intent.getStringExtra("festivalName");
-        offerDataList = Utilis.getOfferList("offerList");
+        offerDataList = Utils.getOfferList("offerList");
         strFDate = intent.getStringExtra("fDate");
         strTDate = intent.getStringExtra("tDate");
 
@@ -170,7 +170,7 @@ public class ViewPostActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ViewPostActivity.this);
         recyclerView.setLayoutManager(layoutManager);
 
-        offerAdapter = new OfferAdapter(this, offerDataList, 1, false, keyIntent, "", "", "");
+        offerAdapter = new OfferAdapter(this, offerDataList, 1, false, keyIntent, "", "", "", "");
         recyclerView.setAdapter(offerAdapter);
 
         TextView tvOfferTitle = findViewById(R.id.tv_offer_title);
@@ -208,10 +208,10 @@ public class ViewPostActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing but close the dialog
                         dialog.dismiss();
-                        if (Utilis.isInternetOn()) {
-                            Utilis.showProgress(ViewPostActivity.this);
+                        if (Utils.isInternetOn()) {
+                            Utils.showProgress(ViewPostActivity.this);
 
-                            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.postvalidation, new Response.Listener<String>() {
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.postvalidation, new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
 
@@ -221,7 +221,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
                                         System.out.println(Tag + " postValidation response - " + response);
 
-                                        Utilis.dismissProgress();
+                                        Utils.dismissProgress();
 
                                         str_result = obj.getString("errorCode");
                                         System.out.print(Tag + " postValidation result " + str_result);
@@ -253,7 +253,7 @@ public class ViewPostActivity extends AppCompatActivity {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
 
-                                    Utilis.dismissProgress();
+                                    Utils.dismissProgress();
                                     Toast.makeText(ViewPostActivity.this, ViewPostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                                     if (error instanceof NoConnectionError) {
@@ -312,10 +312,10 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
     private void sendPost() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(ViewPostActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(ViewPostActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.createpost, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.createpost, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -325,7 +325,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " sendPost response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " sendPost result " + str_result);
@@ -349,7 +349,7 @@ public class ViewPostActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(ViewPostActivity.this, ViewPostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -390,13 +390,13 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
     private void sendOffer(final String str_post_index_id, final String isBoost) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(ViewPostActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(ViewPostActivity.this);
 
             for (int i = 0; i < offerDataList.size(); i++) {
 
                 final int currentPos = i;
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.createoffers, new Response.Listener<String>() {
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.createoffers, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
@@ -417,7 +417,7 @@ public class ViewPostActivity extends AppCompatActivity {
                                                 RegBusinessIdSharedPreference.getBusinessId(ViewPostActivity.this),
                                                 RegBusinessTypeSharedPreference.getBusinessType(ViewPostActivity.this));
                                     }
-                                    Utilis.dismissProgress();
+                                    Utils.dismissProgress();
                                     AlertDialog.Builder builder = new AlertDialog.Builder(ViewPostActivity.this);
                                     builder.setMessage("Your post has been successfully saved.")
                                             .setNeutralButton("OK", new DialogInterface.OnClickListener() {
@@ -437,7 +437,7 @@ public class ViewPostActivity extends AppCompatActivity {
                                 }
 
                             } else if (Integer.parseInt(str_result) == 2) {
-                                Utilis.dismissProgress();
+                                Utils.dismissProgress();
                                 str_message = obj.getString("message");
                                 Toast.makeText(ViewPostActivity.this, str_message, Toast.LENGTH_SHORT).show();
                             }
@@ -449,7 +449,7 @@ public class ViewPostActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
                         Toast.makeText(ViewPostActivity.this, ViewPostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                         if (error instanceof NoConnectionError) {
@@ -491,10 +491,10 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
     private void getPostDetails() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(ViewPostActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(ViewPostActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.viewoffer, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.viewoffer, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -504,7 +504,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getPostDetails response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getPostDetails result " + str_result);
@@ -555,7 +555,7 @@ public class ViewPostActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(ViewPostActivity.this, ViewPostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {

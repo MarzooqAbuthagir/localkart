@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -61,8 +61,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TodayActivity extends Fragment {
-    private String Tag = "TodayActivity";
+public class MegaSalesActivity extends Fragment {
+    private String Tag = "MegaSalesActivity";
 
     Utils utils;
 
@@ -74,18 +74,18 @@ public class TodayActivity extends Fragment {
     RecyclerView recyclerView;
     TextView tvNoRecords;
 
-    String strType = "", strCatId = "", strSubCatId = "", strSubCatName = "";
+    String strType = "", strCatId = "", strSubCatId = "", strSubCatName = "", strMegaSalesIndexId = "", strOfferTitle = "";
     LinearLayout layNearMe, layLocation;
     Button btnNearMe, btnLocation;
     ImageView ivNearMe, ivLocation;
 
     private SearchableSpinner spinState;
-    private ArrayList<StateData> stateListValue = new ArrayList<StateData>();
-    private List<String> stateSpinnerValue = new ArrayList<>();
+    private final ArrayList<StateData> stateListValue = new ArrayList<StateData>();
+    private final List<String> stateSpinnerValue = new ArrayList<>();
 
     private SearchableSpinner spinDistrict;
-    private ArrayList<DistrictData> districtListValue = new ArrayList<DistrictData>();
-    private List<String> districtSpinnerValue = new ArrayList<>();
+    private final ArrayList<DistrictData> districtListValue = new ArrayList<DistrictData>();
+    private final List<String> districtSpinnerValue = new ArrayList<>();
 
     private String strStateId = "";
     private String strDistrictId = "";
@@ -97,10 +97,10 @@ public class TodayActivity extends Fragment {
 
     List<DealsOfferData> dataList = new ArrayList<>();
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_today, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_mega_sales_activity, container, false);
         utils = new Utils(getActivity());
 
         mPrefs = getActivity().getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
@@ -114,6 +114,8 @@ public class TodayActivity extends Fragment {
             strCatId = bundle.getString("catId");
             strSubCatId = bundle.getString("subcatId");
             strSubCatName = bundle.getString("subcatName");
+            strOfferTitle = bundle.getString("offerTitle");
+            strMegaSalesIndexId = bundle.getString("megaSalesIndexId");
         }
 
         recyclerView = rootView.findViewById(R.id.recycler_view);
@@ -175,17 +177,23 @@ public class TodayActivity extends Fragment {
     }
 
     @Override
-    public void setMenuVisibility(boolean menuVisible) {
+    public void setMenuVisibility(final boolean menuVisible) {
         super.setMenuVisibility(menuVisible);
-        if (getView() != null && menuVisible) {
-            fetchLastLocation();
-        }
+        System.out.println(Tag + "MENU VISIBLE " + menuVisible);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getView() != null && menuVisible) {
+                    fetchLastLocation();
+                }
+            }
+        }, 500);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(Utils.callResume == 1 && Utils.constPostType.equalsIgnoreCase("TODAY")) {
+        if (Utils.callResume == 1 && Utils.constPostType.equalsIgnoreCase("MEGASALES")) {
             getListData();
         }
     }
@@ -245,7 +253,7 @@ public class TodayActivity extends Fragment {
     private void getNearMeData() {
         Utils.showProgress(getActivity());
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.todaylistnearme, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.megasaleslistnearme, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -296,7 +304,7 @@ public class TodayActivity extends Fragment {
                             dataList.add(dealsOfferData);
                         }
 
-                        DealsAdapter adapter = new DealsAdapter(getActivity(), dataList, strType, 0, latitude, longitude, "TODAY");
+                        DealsAdapter adapter = new DealsAdapter(getActivity(), dataList, strType, 0, latitude, longitude, "MEGASALES");
                         recyclerView.setAdapter(adapter);
 
                         adapter.setOnItemClickListener(new DealsAdapter.OnItemClickListener() {
@@ -307,7 +315,7 @@ public class TodayActivity extends Fragment {
                                     String state = Integer.parseInt(dataList.get(position).getIsSubscribed()) == 0 ? "Subscribe" : "UnSubscribe";
                                     androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
                                     builder.setTitle(state)
-                                            .setMessage(Html.fromHtml("You'll receive notifications when <b>"+ dataList.get(position).getName() +"</b> posts new Deals and Offers. Are you sure want to " + state + "?"))
+                                            .setMessage(Html.fromHtml("You'll receive notifications when <b>" + dataList.get(position).getName() + "</b> posts new Deals and Offers. Are you sure want to " + state + "?"))
                                             .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
                                                 public void onClick(DialogInterface dialog, int which) {
@@ -386,6 +394,7 @@ public class TodayActivity extends Fragment {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("userIndexId", userDetail.getId());
+                params.put("megasalesIndexId", strMegaSalesIndexId);
                 params.put("type", strType);
                 params.put("catId", strCatId);
                 params.put("subCatId", strSubCatId);
@@ -498,7 +507,7 @@ public class TodayActivity extends Fragment {
     private void getListData() {
         Utils.showProgress(getActivity());
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.todaylist, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.megasaleslist, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -549,7 +558,7 @@ public class TodayActivity extends Fragment {
                             dataList.add(dealsOfferData);
                         }
 
-                        DealsAdapter adapter = new DealsAdapter(getActivity(), dataList, strType, 0, latitude, longitude, "TODAY");
+                        DealsAdapter adapter = new DealsAdapter(getActivity(), dataList, strType, 0, latitude, longitude, "MEGASALES");
                         recyclerView.setAdapter(adapter);
 
                         adapter.setOnItemClickListener(new DealsAdapter.OnItemClickListener() {
@@ -560,7 +569,7 @@ public class TodayActivity extends Fragment {
                                     String state = Integer.parseInt(dataList.get(position).getIsSubscribed()) == 0 ? "Subscribe" : "UnSubscribe";
                                     androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
                                     builder.setTitle(state)
-                                            .setMessage(Html.fromHtml("You'll receive notifications when <b>"+ dataList.get(position).getName() +"</b> posts new Deals and Offers. Are you sure want to " + state + "?"))
+                                            .setMessage(Html.fromHtml("You'll receive notifications when <b>" + dataList.get(position).getName() + "</b> posts new Deals and Offers. Are you sure want to " + state + "?"))
                                             .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
                                                 public void onClick(DialogInterface dialog, int which) {
@@ -639,6 +648,7 @@ public class TodayActivity extends Fragment {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("userIndexId", userDetail.getId());
+                params.put("megasalesIndexId", strMegaSalesIndexId);
                 params.put("type", strType);
                 params.put("catId", strCatId);
                 params.put("subCatId", strSubCatId);

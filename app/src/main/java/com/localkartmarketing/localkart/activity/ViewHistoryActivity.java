@@ -45,7 +45,7 @@ import com.localkartmarketing.localkart.model.AccessOptions;
 import com.localkartmarketing.localkart.model.AddOfferData;
 import com.localkartmarketing.localkart.model.ShopBanner;
 import com.localkartmarketing.localkart.support.LocationTrack;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONArray;
@@ -60,7 +60,7 @@ import java.util.Map;
 public class ViewHistoryActivity extends AppCompatActivity {
     private String Tag = "ViewHistoryActivity";
 
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -98,7 +98,7 @@ public class ViewHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_history);
 
-        utilis = new Utilis(ViewHistoryActivity.this);
+        utils = new Utils(ViewHistoryActivity.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -180,7 +180,7 @@ public class ViewHistoryActivity extends AppCompatActivity {
             return;
         }
 
-        if (Utilis.isGpsOn()) {
+        if (Utils.isGpsOn()) {
             currentLocation = new LocationTrack(ViewHistoryActivity.this);
 
             if (currentLocation.canGetLocation()) {
@@ -188,7 +188,7 @@ public class ViewHistoryActivity extends AppCompatActivity {
                 latitude = currentLocation.getLatitude();
                 System.out.println("latitude " + latitude + " and longitude " + longitude);
 
-                if (Utilis.isInternetOn()) {
+                if (Utils.isInternetOn()) {
                     getApiCall();
                 } else {
                     Toast.makeText(ViewHistoryActivity.this, ViewHistoryActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
@@ -205,7 +205,7 @@ public class ViewHistoryActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 System.out.println("Permission Granted");
-                if (Utilis.isGpsOn()) {
+                if (Utils.isGpsOn()) {
                     getApiCall();
                 }
             }
@@ -216,7 +216,7 @@ public class ViewHistoryActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
-            if (Utilis.isGpsOn()) {
+            if (Utils.isGpsOn()) {
                 getApiCall();
             }
         }
@@ -224,10 +224,10 @@ public class ViewHistoryActivity extends AppCompatActivity {
     }
 
     private void getApiCall() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(ViewHistoryActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(ViewHistoryActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.viewpostdetails, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.viewpostdetails, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -237,7 +237,7 @@ public class ViewHistoryActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getApiCall response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         layMain.setVisibility(View.VISIBLE);
 
@@ -302,7 +302,7 @@ public class ViewHistoryActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(ViewHistoryActivity.this, ViewHistoryActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -349,7 +349,7 @@ public class ViewHistoryActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ViewHistoryActivity.this);
         recyclerView.setLayoutManager(layoutManager);
 
-        offerAdapter = new OfferAdapter(this, offerDataList, 0, false, keyIntent, strPostIndexId, strShopIndexId, strType);
+        offerAdapter = new OfferAdapter(this, offerDataList, 0, false, keyIntent, strPostIndexId, strShopIndexId, strType, "");
         recyclerView.setAdapter(offerAdapter);
 
         TextView tvOfferTitle = findViewById(R.id.tv_offer_title);

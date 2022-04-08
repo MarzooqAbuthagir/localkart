@@ -23,11 +23,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.localkartmarketing.localkart.R;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 
 public class PayWebViewActivity extends AppCompatActivity {
     private String Tag = "PayWebViewActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -40,7 +40,7 @@ public class PayWebViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay_web_view);
-        utilis = new Utilis(PayWebViewActivity.this);
+        utils = new Utils(PayWebViewActivity.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -121,7 +121,7 @@ public class PayWebViewActivity extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             System.out.println("url" + url);
-            String paySuccess = Utilis.Api + Utilis.paysuccess;
+            String paySuccess = Utils.Api + Utils.paysuccess;
             if (url.contains(paySuccess)) {
                 reDirectToApp(context);
                 return true;

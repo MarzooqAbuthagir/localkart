@@ -20,12 +20,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.localkartmarketing.localkart.R;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 
 public class ShopLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
     private String Tag = "ShopLocationActivity";
 
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -38,7 +38,7 @@ public class ShopLocationActivity extends AppCompatActivity implements OnMapRead
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop_location);
 
-        utilis = new Utilis(ShopLocationActivity.this);
+        utils = new Utils(ShopLocationActivity.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");

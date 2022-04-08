@@ -17,11 +17,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.localkartmarketing.localkart.R;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 
 public class UserTCActivity extends AppCompatActivity {
     private String Tag = "UserTCActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -30,7 +30,7 @@ public class UserTCActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_t_c);
 
-        utilis = new Utilis(UserTCActivity.this);
+        utils = new Utils(UserTCActivity.this);
 
         Window window = getWindow();
 
@@ -72,8 +72,8 @@ public class UserTCActivity extends AppCompatActivity {
                 return false;
             }
         });
-        if (Utilis.isInternetOn()) {
-            webView.loadUrl(Utilis.userTCUrl);
+        if (Utils.isInternetOn()) {
+            webView.loadUrl(Utils.userTCUrl);
         } else {
             Toast.makeText(this, this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
         }

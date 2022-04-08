@@ -33,7 +33,7 @@ import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.model.AddressDetailsData;
 import com.localkartmarketing.localkart.model.DistrictData;
 import com.localkartmarketing.localkart.model.StateData;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -48,7 +48,7 @@ import java.util.Map;
 
 public class AdvertiseBusinessActivity2 extends AppCompatActivity {
     private String Tag = "AdvertiseBusinessActivity2";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -79,7 +79,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advertise_business2);
 
-        utilis = new Utilis(AdvertiseBusinessActivity2.this);
+        utils = new Utils(AdvertiseBusinessActivity2.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -201,7 +201,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
 //        etLandmark.setText("Ram Nivas Hotel");
 //        etPinCode.setText("620008");
 
-        ad = Utilis.getAddressDetails(AdvertiseBusinessActivity2.this);
+        ad = Utils.getAddressDetails(AdvertiseBusinessActivity2.this);
         if (ad != null) {
             etDoorNo.setText(ad.getDoorNo());
             etLocality.setText(ad.getLocality());
@@ -259,7 +259,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
                             strState,
                             strDistrict
                     );
-                    Utilis.saveAddressDetails(addressDetailsData);
+                    Utils.saveAddressDetails(addressDetailsData);
                     Intent intent = new Intent(AdvertiseBusinessActivity2.this, AdvertiseBusinessActivity3.class);
                     intent.putExtra("key", keyIntent);
                     intent.putExtra("businessType", strBusinessId);
@@ -271,10 +271,10 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
     }
 
     private void getDistrictList() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(AdvertiseBusinessActivity2.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(AdvertiseBusinessActivity2.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.districtList, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.districtList, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -284,7 +284,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
 
                         System.out.println(Tag + " getDistrictList response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getDistrictList result " + str_result);
@@ -342,7 +342,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(AdvertiseBusinessActivity2.this, AdvertiseBusinessActivity2.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -378,10 +378,10 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
     }
 
     private void getStateList() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(AdvertiseBusinessActivity2.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(AdvertiseBusinessActivity2.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utilis.Api + Utilis.stateList, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.stateList, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -391,7 +391,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
 
                         System.out.println(Tag + " getStateList response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getStateList result " + str_result);
@@ -449,7 +449,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(AdvertiseBusinessActivity2.this, AdvertiseBusinessActivity2.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -506,7 +506,7 @@ public class AdvertiseBusinessActivity2 extends AppCompatActivity {
                 strState,
                 strDistrict
         );
-        Utilis.saveAddressDetails(addressDetailsData);
+        Utils.saveAddressDetails(addressDetailsData);
         finish();
     }
 }

@@ -48,7 +48,7 @@ import com.localkartmarketing.localkart.model.UserDetail;
 import com.localkartmarketing.localkart.support.RegBusinessIdSharedPreference;
 import com.localkartmarketing.localkart.support.RegBusinessSharedPrefrence;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONException;
@@ -61,7 +61,7 @@ import java.util.Map;
 
 public class MyBusinessActivity6 extends AppCompatActivity {
     private String Tag = "MyBusinessActivity6";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -85,7 +85,7 @@ public class MyBusinessActivity6 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_business6);
 
-        utilis = new Utilis(MyBusinessActivity6.this);
+        utils = new Utils(MyBusinessActivity6.this);
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -94,12 +94,12 @@ public class MyBusinessActivity6 extends AppCompatActivity {
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
-        basicDetailsData = Utilis.getBasicDetails(MyBusinessActivity6.this);
-        addressDetailsData = Utilis.getAddressDetails(MyBusinessActivity6.this);
-        contactDetailsData = Utilis.getContactDetails(MyBusinessActivity6.this);
-        locationData = Utilis.getLocDetails(MyBusinessActivity6.this);
+        basicDetailsData = Utils.getBasicDetails(MyBusinessActivity6.this);
+        addressDetailsData = Utils.getAddressDetails(MyBusinessActivity6.this);
+        contactDetailsData = Utils.getContactDetails(MyBusinessActivity6.this);
+        locationData = Utils.getLocDetails(MyBusinessActivity6.this);
         chips = intent.getStringExtra("chips");
-        uploadImagesArrayList = Utilis.getImageList("imageList");
+        uploadImagesArrayList = Utils.getImageList("imageList");
 
         Window window = getWindow();
 
@@ -147,7 +147,7 @@ public class MyBusinessActivity6 extends AppCompatActivity {
         itemDecoration.setDrawable(mDivider);
         recyclerView.addItemDecoration(itemDecoration);
 
-        listOfService = Utilis.getServiceList(MyBusinessActivity6.this);
+        listOfService = Utils.getServiceList(MyBusinessActivity6.this);
 
         addServiceAdapter = new AddServiceAdapter(this, listOfService, 1);
         recyclerView.setAdapter(addServiceAdapter);
@@ -189,10 +189,10 @@ public class MyBusinessActivity6 extends AppCompatActivity {
     String str_result = "", str_message = "";
 
     private void updateBusiness(final String strService, final View view) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(MyBusinessActivity6.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(MyBusinessActivity6.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.businessupdate, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.businessupdate, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -202,7 +202,7 @@ public class MyBusinessActivity6 extends AppCompatActivity {
 
                         System.out.println(Tag + " updateBusiness response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " updateBusiness result " + str_result);
@@ -225,7 +225,7 @@ public class MyBusinessActivity6 extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(MyBusinessActivity6.this, MyBusinessActivity6.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -306,7 +306,7 @@ public class MyBusinessActivity6 extends AppCompatActivity {
             for (int i = 0; i < list.size(); i++) {
 
                 final int currentPos = i;
-                StringRequest request = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.uploadimage, new Response.Listener<String>() {
+                StringRequest request = new StringRequest(Request.Method.POST, Utils.Api + Utils.uploadimage, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
 
@@ -359,7 +359,7 @@ public class MyBusinessActivity6 extends AppCompatActivity {
             public void onClick(View view) {
                 alertDialog.dismiss();
 
-                Utilis.clearRegPref(MyBusinessActivity6.this);
+                Utils.clearRegPref(MyBusinessActivity6.this);
 
                 RegBusinessSharedPrefrence.setMenuFlag(MyBusinessActivity6.this, "1");
 
@@ -384,7 +384,7 @@ public class MyBusinessActivity6 extends AppCompatActivity {
     }
 
     private void back() {
-        Utilis.saveServiceList(listOfService);
+        Utils.saveServiceList(listOfService);
         finish();
     }
 }

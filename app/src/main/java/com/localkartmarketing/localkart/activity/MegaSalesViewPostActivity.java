@@ -37,10 +37,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.localkartmarketing.localkart.R;
-import com.localkartmarketing.localkart.adapter.OfferData;
-import com.localkartmarketing.localkart.adapter.ReOfferAdapter;
+import com.localkartmarketing.localkart.adapter.OfferAdapter;
 import com.localkartmarketing.localkart.adapter.ViewPagerShopBannerAdapter;
 import com.localkartmarketing.localkart.model.AccessOptions;
+import com.localkartmarketing.localkart.model.AddOfferData;
 import com.localkartmarketing.localkart.model.ShopBanner;
 import com.localkartmarketing.localkart.model.UserDetail;
 import com.localkartmarketing.localkart.model.ViewOfferData;
@@ -58,24 +58,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ViewRepostActivity extends AppCompatActivity {
-    private String Tag = "ViewRepostActivity";
+public class MegaSalesViewPostActivity extends AppCompatActivity {
+    private String Tag = "MegaSalesViewPostActivity";
     Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "", strFromDate = "", strToDate = "", strAccessOption = "", strLati = "", strLongi = "", strPostType = "", strFestivalName = "", strShopIndexId = "", strShopType = "", strFDate="", strTDate ="";
+    String keyIntent = "", strFromDate = "", strToDate = "", strAccessOption = "", strLati = "", strLongi = "", strOfferId = "", strOfferTitle = "", strDealCount = "", strFDate="", strTDate="";
+
     RecyclerView recyclerView;
-    List<OfferData> offerDataList;
-    ReOfferAdapter offerAdapter;
+    List<AddOfferData> offerDataList;
+    OfferAdapter offerAdapter;
 
     TextView tvDate, tvShopName, tvDirection, tvAccessKey, tvAccessValue;
     private static ViewPager mPager;
     LinearLayout sliderDotspanel;
     private static int currentPage = 0;
-    //    Timer swipeTimer;
-//    final long DELAY_MS = 1000;//delay in milliseconds before task is to be executed
-//    final long PERIOD_MS = 4500; // time in milliseconds between successive task executions.
+
     Handler handler = new Handler();
     Runnable runnable;
     int delay = 2000;
@@ -92,9 +91,10 @@ public class ViewRepostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_repost);
+        setContentView(R.layout.activity_mega_sales_view_post);
 
-        utils = new Utils(ViewRepostActivity.this);
+
+        utils = new Utils(MegaSalesViewPostActivity.this);
 
         app = (App) getApplication();
 
@@ -107,16 +107,16 @@ public class ViewRepostActivity extends AppCompatActivity {
         keyIntent = intent.getStringExtra("key");
         strFromDate = intent.getStringExtra("fromDate");
         strToDate = intent.getStringExtra("toDate");
+        strFDate = intent.getStringExtra("fDate");
+        strTDate = intent.getStringExtra("tDate");
         strAccessOption = intent.getStringExtra("accessOption");
         strLati = intent.getStringExtra("latitude");
         strLongi = intent.getStringExtra("longitude");
-        strPostType = intent.getStringExtra("postType");
-        strFestivalName = intent.getStringExtra("festivalName");
-        offerDataList = Utils.getReOfferList("offerList");
-        strShopIndexId = intent.getStringExtra("shopIndexId");
-        strShopType = intent.getStringExtra("shopType");
-        strFDate = intent.getStringExtra("fDate");
-        strTDate = intent.getStringExtra("tDate");
+        strOfferId = intent.getStringExtra("megaSalesIndexId");
+        strOfferTitle = intent.getStringExtra("megaSalesTitle");
+        offerDataList = Utils.getOfferList("offerList");
+        strDealCount = intent.getStringExtra("dealCount");
+
 
         if (offerDataList != null) {
             System.out.println("array list contains images");
@@ -132,7 +132,7 @@ public class ViewRepostActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         // finally change the color
-        window.setStatusBarColor(ContextCompat.getColor(ViewRepostActivity.this, R.color.colorPrimaryDark));
+        window.setStatusBarColor(ContextCompat.getColor(MegaSalesViewPostActivity.this, R.color.colorPrimaryDark));
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -154,7 +154,7 @@ public class ViewRepostActivity extends AppCompatActivity {
         toolBarTitle.setText("Post Details");
 
         tvDate = findViewById(R.id.tv_date);
-        tvDate.setText(strFromDate + " To " + strToDate);
+        tvDate.setText(strFDate + " To " + strTDate);
 
         tvShopName = findViewById(R.id.tv_shop_name);
         tvDirection = findViewById(R.id.tv_direction);
@@ -168,10 +168,10 @@ public class ViewRepostActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view);
 
         // setting recyclerView layoutManager
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ViewRepostActivity.this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MegaSalesViewPostActivity.this);
         recyclerView.setLayoutManager(layoutManager);
 
-        offerAdapter = new ReOfferAdapter(this, offerDataList);
+        offerAdapter = new OfferAdapter(this, offerDataList, 1, false, keyIntent, "", "", "", "");
         recyclerView.setAdapter(offerAdapter);
 
         TextView tvOfferTitle = findViewById(R.id.tv_offer_title);
@@ -193,26 +193,26 @@ public class ViewRepostActivity extends AppCompatActivity {
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                postValidation();
+                sendPost();
             }
         });
 
         getPostDetails();
     }
 
-    private void postValidation() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ViewRepostActivity.this);
+    private void sendPost() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MegaSalesViewPostActivity.this);
 
         builder.setMessage("Post details cannot be changed once saved. Are you sure you want to save and show this post to customer?")
-                .setPositiveButton(ViewRepostActivity.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                .setPositiveButton(MegaSalesViewPostActivity.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing but close the dialog
                         dialog.dismiss();
                         if (Utils.isInternetOn()) {
-                            Utils.showProgress(ViewRepostActivity.this);
+                            Utils.showProgress(MegaSalesViewPostActivity.this);
 
-                            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.postvalidation, new Response.Listener<String>() {
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.createmegasalespost, new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
 
@@ -220,31 +220,22 @@ public class ViewRepostActivity extends AppCompatActivity {
                                         //converting response to json object
                                         JSONObject obj = new JSONObject(response);
 
-                                        System.out.println(Tag + " postValidation response - " + response);
+                                        System.out.println(Tag + " sendPost response - " + response);
 
                                         Utils.dismissProgress();
 
                                         str_result = obj.getString("errorCode");
-                                        System.out.print(Tag + " postValidation result " + str_result);
+                                        System.out.print(Tag + " sendPost result " + str_result);
 
                                         if (Integer.parseInt(str_result) == 0) {
 
-                                            str_message = obj.getString("Message");
+                                            str_message = obj.getString("message");
+                                            String str_post_index_id = obj.getString("postIndexId");
+                                            sendOffer(str_post_index_id);
 
-                                            AlertDialog.Builder builder = new AlertDialog.Builder(ViewRepostActivity.this);
-                                            builder.setMessage(str_message)
-                                                    .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            dialog.dismiss();
-                                                        }
-                                                    });
-                                            AlertDialog alert = builder.create();
-                                            alert.show();
-                                            Button btnOk = alert.getButton(DialogInterface.BUTTON_NEUTRAL);
-                                            btnOk.setTextColor(Color.parseColor("#000000"));
-                                        } else if (Integer.parseInt(str_result) == 1) {
-                                            str_message = obj.getString("Message");
-                                            sendPost();
+                                        } else if (Integer.parseInt(str_result) == 2) {
+                                            str_message = obj.getString("message");
+                                            Toast.makeText(MegaSalesViewPostActivity.this, str_message, Toast.LENGTH_SHORT).show();
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -255,7 +246,7 @@ public class ViewRepostActivity extends AppCompatActivity {
                                 public void onErrorResponse(VolleyError error) {
 
                                     Utils.dismissProgress();
-                                    Toast.makeText(ViewRepostActivity.this, ViewRepostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MegaSalesViewPostActivity.this, MegaSalesViewPostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                                     if (error instanceof NoConnectionError) {
                                         System.out.println("NoConnectionError");
@@ -277,23 +268,24 @@ public class ViewRepostActivity extends AppCompatActivity {
                                 protected Map<String, String> getParams() {
                                     Map<String, String> params = new HashMap<>();
                                     params.put("userIndexId", obj.getId());
-                                    params.put("typeId", strPostType);
-                                    params.put("fromDate", strFDate);
-                                    params.put("toDate", strTDate);
-                                    params.put("count", String.valueOf(offerDataList.size()));
-                                    System.out.println(Tag + " postValidation inputs " + params);
+                                    params.put("megasalesIndexId", strOfferId);
+                                    params.put("fromDate", strFromDate);
+                                    params.put("toDate", strToDate);
+                                    params.put("accessOptions", strAccessOption);
+                                    params.put("megasalesTitle", strOfferTitle);
+                                    System.out.println(Tag + " sendPost inputs " + params);
                                     return params;
                                 }
                             };
 
                             stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                            VolleySingleton.getInstance(ViewRepostActivity.this).addToRequestQueue(stringRequest);
+                            VolleySingleton.getInstance(MegaSalesViewPostActivity.this).addToRequestQueue(stringRequest);
                         } else {
-                            Toast.makeText(ViewRepostActivity.this, ViewRepostActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MegaSalesViewPostActivity.this, MegaSalesViewPostActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
-                .setNegativeButton(ViewRepostActivity.this.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                .setNegativeButton(MegaSalesViewPostActivity.this.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -312,9 +304,106 @@ public class ViewRepostActivity extends AppCompatActivity {
         btn_yes.setTextColor(Color.parseColor("#000000"));
     }
 
+    private void sendOffer(final String str_post_index_id) {
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(MegaSalesViewPostActivity.this);
+
+            for (int i = 0; i < offerDataList.size(); i++) {
+
+                final int currentPos = i;
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.createmegasalesoffers, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+                            //converting response to json object
+                            JSONObject obj = new JSONObject(response);
+
+                            System.out.println(Tag + " sendOffer response - " + response);
+
+                            str_result = obj.getString("errorCode");
+                            System.out.print(Tag + " sendOffer result " + str_result);
+
+                            if (Integer.parseInt(str_result) == 0) {
+                                str_message = obj.getString("message");
+                                if (currentPos + 1 == offerDataList.size()) {
+
+                                    Utils.dismissProgress();
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(MegaSalesViewPostActivity.this);
+                                    builder.setMessage("Your post has been successfully saved.")
+                                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    Intent intent = new Intent(MegaSalesViewPostActivity.this, ManageBusinessActivity.class);
+                                                    intent.putExtra("key", keyIntent);
+                                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            });
+                                    AlertDialog alert = builder.create();
+                                    alert.show();
+                                    Button btnOk = alert.getButton(DialogInterface.BUTTON_NEUTRAL);
+                                    btnOk.setTextColor(Color.parseColor("#000000"));
+                                }
+
+                            } else if (Integer.parseInt(str_result) == 2) {
+                                Utils.dismissProgress();
+                                str_message = obj.getString("message");
+                                Toast.makeText(MegaSalesViewPostActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        Utils.dismissProgress();
+                        Toast.makeText(MegaSalesViewPostActivity.this, MegaSalesViewPostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                        if (error instanceof NoConnectionError) {
+                            System.out.println("NoConnectionError");
+                        } else if (error instanceof TimeoutError) {
+                            System.out.println("TimeoutError");
+
+                        } else if (error instanceof ServerError) {
+                            System.out.println("ServerError");
+
+                        } else if (error instanceof AuthFailureError) {
+                            System.out.println("AuthFailureError");
+
+                        } else if (error instanceof NetworkError) {
+                            System.out.println("NetworkError");
+                        }
+                    }
+                }) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("userIndexId", obj.getId());
+                        params.put("heading", offerDataList.get(currentPos).getHeading());
+                        params.put("description", offerDataList.get(currentPos).getDesc());
+                        params.put("offerImage", offerDataList.get(currentPos).getImage());
+                        params.put("postIndexId", str_post_index_id);
+                        System.out.println(Tag + " sendOffer inputs " + params);
+                        return params;
+                    }
+                };
+
+                stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+            }
+
+        } else {
+            Toast.makeText(this, MegaSalesViewPostActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void getPostDetails() {
         if (Utils.isInternetOn()) {
-            Utils.showProgress(ViewRepostActivity.this);
+            Utils.showProgress(MegaSalesViewPostActivity.this);
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.viewoffer, new Response.Listener<String>() {
                 @Override
@@ -364,10 +453,10 @@ public class ViewRepostActivity extends AppCompatActivity {
 
                         } else if (Integer.parseInt(str_result) == 1) {
                             str_message = obj.getString("message");
-                            Toast.makeText(ViewRepostActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MegaSalesViewPostActivity.this, str_message, Toast.LENGTH_SHORT).show();
                         } else if (Integer.parseInt(str_result) == 2) {
                             str_message = obj.getString("message");
-                            Toast.makeText(ViewRepostActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MegaSalesViewPostActivity.this, str_message, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -378,7 +467,7 @@ public class ViewRepostActivity extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
 
                     Utils.dismissProgress();
-                    Toast.makeText(ViewRepostActivity.this, ViewRepostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MegaSalesViewPostActivity.this, MegaSalesViewPostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
                         System.out.println("NoConnectionError");
@@ -400,7 +489,7 @@ public class ViewRepostActivity extends AppCompatActivity {
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<>();
                     params.put("userIndexId", obj.getId());
-                    params.put("type", RegBusinessTypeSharedPreference.getBusinessType(ViewRepostActivity.this));
+                    params.put("type", RegBusinessTypeSharedPreference.getBusinessType(MegaSalesViewPostActivity.this));
                     params.put("latitude", strLati);
                     params.put("longitude", strLongi);
                     params.put("accessOptions", strAccessOption);
@@ -412,7 +501,7 @@ public class ViewRepostActivity extends AppCompatActivity {
             stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
         } else {
-            Toast.makeText(this, ViewRepostActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, MegaSalesViewPostActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -426,7 +515,7 @@ public class ViewRepostActivity extends AppCompatActivity {
     }
 
     private void setShopBanners(final List<ShopBanner> shopBannerList) {
-        viewPagerAdapter = new ViewPagerShopBannerAdapter(shopBannerList, ViewRepostActivity.this);
+        viewPagerAdapter = new ViewPagerShopBannerAdapter(shopBannerList, MegaSalesViewPostActivity.this);
         mPager.setAdapter(viewPagerAdapter);
 
 //        // Auto start of viewpager
@@ -488,7 +577,7 @@ public class ViewRepostActivity extends AppCompatActivity {
 
         for (int j = 0; j < dotscount; j++) {
 
-            dots[j] = new ImageView(ViewRepostActivity.this);
+            dots[j] = new ImageView(MegaSalesViewPostActivity.this);
             dots[j].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -509,184 +598,6 @@ public class ViewRepostActivity extends AppCompatActivity {
 
     private void back() {
         finish();
-    }
-
-    private void sendPost() {
-        if (Utils.isInternetOn()) {
-            Utils.showProgress(ViewRepostActivity.this);
-
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.createpost, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-
-                    try {
-                        //converting response to json object
-                        JSONObject obj = new JSONObject(response);
-
-                        System.out.println(Tag + " sendPost response - " + response);
-
-                        Utils.dismissProgress();
-
-                        str_result = obj.getString("errorCode");
-                        System.out.print(Tag + " sendPost result " + str_result);
-
-                        if (Integer.parseInt(str_result) == 0) {
-
-                            str_message = obj.getString("message");
-                            String str_post_index_id = obj.getString("postIndexId");
-                            String isBoost = obj.getString("isBoost");
-                            sendOffer(str_post_index_id, isBoost);
-
-                        } else if (Integer.parseInt(str_result) == 2) {
-                            str_message = obj.getString("message");
-                            Toast.makeText(ViewRepostActivity.this, str_message, Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                    Utils.dismissProgress();
-                    Toast.makeText(ViewRepostActivity.this, ViewRepostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
-
-                    if (error instanceof NoConnectionError) {
-                        System.out.println("NoConnectionError");
-                    } else if (error instanceof TimeoutError) {
-                        System.out.println("TimeoutError");
-
-                    } else if (error instanceof ServerError) {
-                        System.out.println("ServerError");
-
-                    } else if (error instanceof AuthFailureError) {
-                        System.out.println("AuthFailureError");
-
-                    } else if (error instanceof NetworkError) {
-                        System.out.println("NetworkError");
-                    }
-                }
-            }) {
-                @Override
-                protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("userIndexId", obj.getId());
-                    params.put("typeId", strPostType);
-                    params.put("fromDate", strFDate);
-                    params.put("toDate", strTDate);
-                    params.put("accessOptions", strAccessOption);
-                    params.put("festivalName", strFestivalName);
-                    System.out.println(Tag + " sendPost inputs " + params);
-                    return params;
-                }
-            };
-
-            stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
-        } else {
-            Toast.makeText(this, ViewRepostActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void sendOffer(final String str_post_index_id, final String isBoost) {
-        if (Utils.isInternetOn()) {
-            Utils.showProgress(ViewRepostActivity.this);
-
-            for (int i = 0; i < offerDataList.size(); i++) {
-
-                final int currentPos = i;
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.createrepostoffers, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        try {
-                            //converting response to json object
-                            JSONObject obj = new JSONObject(response);
-
-                            System.out.println(Tag + " sendOffer response - " + response);
-
-                            str_result = obj.getString("errorCode");
-                            System.out.print(Tag + " sendOffer result " + str_result);
-
-                            if (Integer.parseInt(str_result) == 0) {
-                                str_message = obj.getString("message");
-                                if (currentPos + 1 == offerDataList.size()) {
-                                    if (isBoost.equalsIgnoreCase("Yes")) {
-                                        app.notifyToUsers(str_post_index_id, strShopIndexId, strShopType);
-                                    }
-                                    Utils.dismissProgress();
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(ViewRepostActivity.this);
-                                    builder.setMessage("Your post has been successfully saved.")
-                                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                    back();
-                                                }
-                                            });
-                                    AlertDialog alert = builder.create();
-                                    alert.show();
-                                    Button btnOk = alert.getButton(DialogInterface.BUTTON_NEUTRAL);
-                                    btnOk.setTextColor(Color.parseColor("#000000"));
-                                }
-
-                            } else if (Integer.parseInt(str_result) == 2) {
-                                Utils.dismissProgress();
-                                str_message = obj.getString("message");
-                                Toast.makeText(ViewRepostActivity.this, str_message, Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                        Utils.dismissProgress();
-                        Toast.makeText(ViewRepostActivity.this, ViewRepostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
-
-                        if (error instanceof NoConnectionError) {
-                            System.out.println("NoConnectionError");
-                        } else if (error instanceof TimeoutError) {
-                            System.out.println("TimeoutError");
-
-                        } else if (error instanceof ServerError) {
-                            System.out.println("ServerError");
-
-                        } else if (error instanceof AuthFailureError) {
-                            System.out.println("AuthFailureError");
-
-                        } else if (error instanceof NetworkError) {
-                            System.out.println("NetworkError");
-                        }
-                    }
-                }) {
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("userIndexId", obj.getId());
-                        params.put("heading", offerDataList.get(currentPos).getHeading());
-                        params.put("description", offerDataList.get(currentPos).getDesc());
-                        if (offerDataList.get(currentPos).getBase64Str().isEmpty()) {
-                            params.put("offerImage", "");
-                        } else {
-                            params.put("offerImage", offerDataList.get(currentPos).getBase64Str());
-                        }
-                        params.put("offerIndexId", offerDataList.get(currentPos).getOfferIndexId());
-                        params.put("postIndexId", str_post_index_id);
-                        System.out.println(Tag + " sendOffer inputs " + params);
-                        return params;
-                    }
-                };
-
-                stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
-            }
-
-        } else {
-            Toast.makeText(this, ViewRepostActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override

@@ -35,7 +35,7 @@ import com.localkartmarketing.localkart.adapter.SubcriptionAdapter;
 import com.localkartmarketing.localkart.model.AccessOptions;
 import com.localkartmarketing.localkart.model.UserDetail;
 import com.localkartmarketing.localkart.support.MyGridView;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONArray;
@@ -48,7 +48,7 @@ import java.util.Map;
 
 public class SubscriptionActivity extends AppCompatActivity {
     private final String Tag = "SubscriptionActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -71,7 +71,7 @@ public class SubscriptionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscription);
 
-        utilis = new Utilis(SubscriptionActivity.this);
+        utils = new Utils(SubscriptionActivity.this);
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -185,9 +185,9 @@ public class SubscriptionActivity extends AppCompatActivity {
     String str_result = "", str_message = "";
     private final ArrayList<AccessOptions> accessOptionListValue = new ArrayList<AccessOptions>();
     private void getApiCall() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(SubscriptionActivity.this);
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.viewplandetails, new Response.Listener<String>() {
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(SubscriptionActivity.this);
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.viewplandetails, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -197,7 +197,7 @@ public class SubscriptionActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getApiCall response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getApiCall result " + str_result);
@@ -271,7 +271,7 @@ public class SubscriptionActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(SubscriptionActivity.this, SubscriptionActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {

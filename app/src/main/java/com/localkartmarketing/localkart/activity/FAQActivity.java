@@ -16,11 +16,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.localkartmarketing.localkart.R;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 
 public class FAQActivity extends AppCompatActivity {
     private String Tag = "FAQActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -31,7 +31,7 @@ public class FAQActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_f_a_q);
 
-        utilis = new Utilis(FAQActivity.this);
+        utils = new Utils(FAQActivity.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -70,8 +70,8 @@ public class FAQActivity extends AppCompatActivity {
 
         WebView webView = findViewById(R.id.web_view);
         webView.getSettings().setJavaScriptEnabled(true);
-        if (Utilis.isInternetOn()) {
-            webView.loadUrl(Utilis.helpUrl);
+        if (Utils.isInternetOn()) {
+            webView.loadUrl(Utils.helpUrl);
         } else {
             Toast.makeText(this, this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
         }

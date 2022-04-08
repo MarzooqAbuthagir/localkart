@@ -4,87 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.SearchActivity">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:minHeight="?attr/actionBarSize"
-        app:theme="@style/AppTheme"
-        android:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:contentInsetStart="0dp"
-        android:background="@color/adv_bus_color">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:singleLine="true"
-            android:layout_gravity="center"
-            android:fontFamily="@font/roboto_regular"
-            android:id="@+id/toolbar_title" />
-    </androidx.appcompat.widget.Toolbar>
-
-    <RelativeLayout
-        android:layout_margin="5dp"
-        android:layout_below="@id/toolbar"
-        android:id="@+id/lay_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/grey_curve_box">
-
-        <EditText
-            android:id="@+id/et_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toStartOf="@+id/iv_close"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/roboto_regular"
-            android:hint="Search here..."
-            android:inputType="textCapWords"
-            android:padding="12dp"
-            android:textColor="@color/black"
-            android:textSize="16dp" />
-
-        <ImageView
-            android:id="@+id/iv_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_toStartOf="@+id/iv_search"
-            android:paddingStart="12dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:paddingEnd="0dp"
-            app:tint="@color/grey"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_close"
-            android:contentDescription="null" />
-
-        <ImageView
-            android:id="@+id/iv_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="12dp"
-            app:tint="@color/grey"
-            android:layout_alignParentEnd="true"
-            app:srcCompat="@drawable/ic_search"
-            android:contentDescription="null" />
-
-    </RelativeLayout>
+    tools:context=".activity.MegaSalesActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/lay_search"
         android:layout_above="@id/lay_btm"
         android:scrollbars="vertical"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_no_records"
@@ -93,7 +21,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_centerInParent="true"
-        android:text="No results found."
+        android:text="Offers are being updated.\nPlease check back later."
         android:textColor="#000"
         android:textSize="16dp"
         android:fontFamily="@font/roboto_regular"

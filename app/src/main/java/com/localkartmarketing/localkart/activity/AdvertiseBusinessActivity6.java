@@ -51,7 +51,7 @@ import com.localkartmarketing.localkart.model.UserDetail;
 import com.localkartmarketing.localkart.support.RegBusinessIdSharedPreference;
 import com.localkartmarketing.localkart.support.RegBusinessSharedPrefrence;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONException;
@@ -64,7 +64,7 @@ import java.util.Map;
 
 public class AdvertiseBusinessActivity6 extends AppCompatActivity {
     private String Tag = "AdvertiseBusinessActivity6";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -88,7 +88,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advertise_business6);
 
-        utilis = new Utilis(AdvertiseBusinessActivity6.this);
+        utils = new Utils(AdvertiseBusinessActivity6.this);
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -97,12 +97,12 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
-        basicDetailsData = Utilis.getBasicDetails(AdvertiseBusinessActivity6.this);
-        addressDetailsData = Utilis.getAddressDetails(AdvertiseBusinessActivity6.this);
-        contactDetailsData = Utilis.getContactDetails(AdvertiseBusinessActivity6.this);
-        locationData = Utilis.getLocDetails(AdvertiseBusinessActivity6.this);
+        basicDetailsData = Utils.getBasicDetails(AdvertiseBusinessActivity6.this);
+        addressDetailsData = Utils.getAddressDetails(AdvertiseBusinessActivity6.this);
+        contactDetailsData = Utils.getContactDetails(AdvertiseBusinessActivity6.this);
+        locationData = Utils.getLocDetails(AdvertiseBusinessActivity6.this);
         chips = intent.getStringExtra("chips");
-        uploadImagesArrayList = Utilis.getImageList("imageList");
+        uploadImagesArrayList = Utils.getImageList("imageList");
 
         Window window = getWindow();
 
@@ -157,7 +157,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
             }
         });
 
-        listOfService = Utilis.getServiceList(AdvertiseBusinessActivity6.this);
+        listOfService = Utils.getServiceList(AdvertiseBusinessActivity6.this);
         if (listOfService != null) {
             System.out.println("array list contains images");
         } else {
@@ -219,10 +219,10 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
     String str_result = "", str_message = "";
 
     private void registerBusiness(final String strService, final View view) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(AdvertiseBusinessActivity6.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(AdvertiseBusinessActivity6.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.businesssave, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.businesssave, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -232,7 +232,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
 
                         System.out.println(Tag + " registerBusiness response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " registerBusiness result " + str_result);
@@ -255,7 +255,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(AdvertiseBusinessActivity6.this, AdvertiseBusinessActivity6.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -327,7 +327,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
         for (int i = 0; i < uploadImagesArrayList.size(); i++) {
 
             final int currentPos = i;
-            StringRequest request = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.uploadimage, new Response.Listener<String>() {
+            StringRequest request = new StringRequest(Request.Method.POST, Utils.Api + Utils.uploadimage, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String s) {
 
@@ -375,7 +375,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
             public void onClick(View view) {
                 alertDialog.dismiss();
 
-                Utilis.clearRegPref(AdvertiseBusinessActivity6.this);
+                Utils.clearRegPref(AdvertiseBusinessActivity6.this);
 
                 RegBusinessSharedPrefrence.setMenuFlag(AdvertiseBusinessActivity6.this, "1");
 
@@ -434,7 +434,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
     }
 
     private void back() {
-        Utilis.saveServiceList(listOfService);
+        Utils.saveServiceList(listOfService);
         finish();
     }
 }

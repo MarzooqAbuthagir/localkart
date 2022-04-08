@@ -21,7 +21,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.activity.DealsMoreDetailsActivity;
 import com.localkartmarketing.localkart.model.DealsOfferData;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.tooltip.SimpleTooltip;
 
 import java.util.List;
@@ -270,12 +270,12 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
                     shareIntent.setType("text/plain");
 //                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
                     if (arrayList.get(position).getOfferCount().equalsIgnoreCase("1"))
-                        shareMessage = "Valid From " + arrayList.get(position).getFromDate() + " To " + arrayList.get(position).getToDate() + "\n\n" + arrayList.get(position).getName() + " \n\n" + arrayList.get(position).getOfferHeading() + " \n\n" + arrayList.get(position).getOffferDesc() + " \n\nDownload Local Kart App Now ";
+                        shareMessage = "Valid From " + arrayList.get(position).getFromDate() + " To " + arrayList.get(position).getToDate() + "\n\n" + arrayList.get(position).getName() + " \n\n" + arrayList.get(position).getOfferHeading() + " \n\n" + arrayList.get(position).getOffferDesc() + " \n\nDownload LocalKart App Now ";
                     else {
                         int count = Integer.parseInt(arrayList.get(position).getOfferCount()) - 1;
-                        shareMessage = "Valid From " + arrayList.get(position).getFromDate() + " To " + arrayList.get(position).getToDate() + "\n\n" + arrayList.get(position).getName() + " \n\n" + arrayList.get(position).getOfferHeading() + " \n\n" + arrayList.get(position).getOffferDesc() + "\n\nand " + count + " more deals" + " \n\nDownload Local Kart App Now ";
+                        shareMessage = "Valid From " + arrayList.get(position).getFromDate() + " To " + arrayList.get(position).getToDate() + "\n\n" + arrayList.get(position).getName() + " \n\n" + arrayList.get(position).getOfferHeading() + " \n\n" + arrayList.get(position).getOffferDesc() + "\n\nand " + count + " more deals" + " \n\nDownload LocalKart App Now ";
                     }
-                    shareMessage = shareMessage + Utilis.shareUrl;
+                    shareMessage = shareMessage + Utils.shareUrl;
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                     con.startActivity(Intent.createChooser(shareIntent, "choose one"));
                 } catch (Exception e) {

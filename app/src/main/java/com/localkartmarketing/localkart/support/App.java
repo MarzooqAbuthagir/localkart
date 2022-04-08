@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class App extends Application {
     public static final String channelId = "com.localkartmarketing.localkart";
-    Utilis utilis;
+    Utils utils;
     public static final String TAG = App.class.getSimpleName();
     private static Context context;
     private static App mInstance;
@@ -46,7 +46,7 @@ public class App extends Application {
 
         mInstance = this;
 
-        utilis = new Utilis(this);
+        utils = new Utils(this);
         context = getApplicationContext();
     }
 
@@ -99,7 +99,7 @@ public class App extends Application {
     }
 
     private void sendUserID(final String deviceId, final String indexId) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.updatedeviceid, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.updatedeviceid, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -151,7 +151,7 @@ public class App extends Application {
     }
 
     public void notifyToUsers(final String strPostIndexId, final String strShopIndexId, final String strShopType) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.sendpush, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.sendpush, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 

@@ -38,7 +38,7 @@ import com.localkartmarketing.localkart.support.LoginSharedPreference;
 import com.localkartmarketing.localkart.support.RegBusinessIdSharedPreference;
 import com.localkartmarketing.localkart.support.RegBusinessSharedPrefrence;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONException;
@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private Dialog dialog;
 
-    Utilis utilis;
+    Utils utils;
     SharedPreferences mPrefs;
 
     App app;
@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        utilis = new Utilis(LoginActivity.this);
+        utils = new Utils(LoginActivity.this);
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
 
         app = (App) getApplication();
@@ -156,10 +156,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(LoginActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(LoginActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.login, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.login, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -169,7 +169,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " login response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         View view = getCurrentFocus();
                         InputMethodManager methodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -217,7 +217,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(LoginActivity.this, LoginActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {

@@ -44,7 +44,7 @@ import com.localkartmarketing.localkart.adapter.SubcriptionAdapter;
 import com.localkartmarketing.localkart.model.AccessOptions;
 import com.localkartmarketing.localkart.model.PaymentHistoryData;
 import com.localkartmarketing.localkart.model.UserDetail;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONArray;
@@ -57,7 +57,7 @@ import java.util.Map;
 
 public class PaymentHistoryActivity extends AppCompatActivity {
     private String Tag = "PaymentHistoryActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -84,7 +84,7 @@ public class PaymentHistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_history);
-        utilis = new Utilis(PaymentHistoryActivity.this);
+        utils = new Utils(PaymentHistoryActivity.this);
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -135,10 +135,10 @@ public class PaymentHistoryActivity extends AppCompatActivity {
     }
 
     private void getHistory() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(PaymentHistoryActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(PaymentHistoryActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.paymenthistory, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.paymenthistory, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -148,7 +148,7 @@ public class PaymentHistoryActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getHistory response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getHistory result " + str_result);
@@ -210,7 +210,7 @@ public class PaymentHistoryActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(PaymentHistoryActivity.this, PaymentHistoryActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -249,10 +249,10 @@ public class PaymentHistoryActivity extends AppCompatActivity {
     private ArrayList<AccessOptions> accessOptionListValue = new ArrayList<AccessOptions>();
 
     private void getPayDetails(final View view, final String indexId, final String planType) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(PaymentHistoryActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(PaymentHistoryActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.paymenthistorydetails, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.paymenthistorydetails, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -262,7 +262,7 @@ public class PaymentHistoryActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getPayDetails response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getPayDetails result " + str_result);
@@ -307,7 +307,7 @@ public class PaymentHistoryActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(PaymentHistoryActivity.this, PaymentHistoryActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {

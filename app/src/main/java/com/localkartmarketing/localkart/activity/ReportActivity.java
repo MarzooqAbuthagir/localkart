@@ -33,7 +33,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.model.UserDetail;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONException;
@@ -44,7 +44,7 @@ import java.util.Map;
 
 public class ReportActivity extends AppCompatActivity {
     private String Tag = "ReportActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -58,7 +58,7 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
-        utilis = new Utilis(ReportActivity.this);
+        utils = new Utils(ReportActivity.this);
 
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
@@ -121,10 +121,10 @@ public class ReportActivity extends AppCompatActivity {
     String str_result = "", str_message = "";
 
     private void sendComplaint(final String complaint) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(ReportActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(ReportActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.savereports, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.savereports, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -134,7 +134,7 @@ public class ReportActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " sendComplaint response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " sendComplaint result " + str_result);
@@ -170,7 +170,7 @@ public class ReportActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(ReportActivity.this, ReportActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {

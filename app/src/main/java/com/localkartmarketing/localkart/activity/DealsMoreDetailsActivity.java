@@ -48,7 +48,7 @@ import com.localkartmarketing.localkart.model.AccessOptions;
 import com.localkartmarketing.localkart.model.AddOfferData;
 import com.localkartmarketing.localkart.model.ShopBanner;
 import com.localkartmarketing.localkart.model.UserDetail;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONArray;
@@ -63,7 +63,7 @@ import java.util.Map;
 public class DealsMoreDetailsActivity extends AppCompatActivity {
     private String Tag = "DealsMoreDetailsActivity";
 
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -98,14 +98,14 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
     UserDetail userDetail;
     static SharedPreferences mPrefs;
 
-    String strShopName = "", strFromDate ="", strToDate = "";
+    String strShopName = "", strFromDate = "", strToDate = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deals_more_details);
 
-        utilis = new Utilis(DealsMoreDetailsActivity.this);
+        utils = new Utils(DealsMoreDetailsActivity.this);
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -183,7 +183,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
         layNotify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Utilis.isInternetOn()) {
+                if (Utils.isInternetOn()) {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(DealsMoreDetailsActivity.this);
                     String state = Integer.parseInt(strIsSubscribed) == 0 ? "Subscribe" : "UnSubscribe";
@@ -235,12 +235,12 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
                     shareIntent.setType("text/plain");
 //                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
                     if (offerDataList.size() == 1)
-                        shareMessage = "Valid From " + strFromDate + " To " + strToDate + "\n\n" + strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + " \n\nDownload Local Kart App Now ";
+                        shareMessage = "Valid From " + strFromDate + " To " + strToDate + "\n\n" + strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + " \n\nDownload LocalKart App Now ";
                     else {
                         int count = offerDataList.size() - 1;
-                        shareMessage = "Valid From " + strFromDate + " To " + strToDate + "\n\n" + strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + "\n\nand " + count + " more deals" + " \n\nDownload Local Kart App Now ";
+                        shareMessage = "Valid From " + strFromDate + " To " + strToDate + "\n\n" + strShopName + " \n\n" + offerDataList.get(0).getHeading() + " \n\n" + offerDataList.get(0).getDesc() + "\n\nand " + count + " more deals" + " \n\nDownload LocalKart App Now ";
                     }
-                    shareMessage = shareMessage + Utilis.shareUrl;
+                    shareMessage = shareMessage + Utils.shareUrl;
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                     startActivity(Intent.createChooser(shareIntent, "choose one"));
                 } catch (Exception e) {
@@ -265,8 +265,8 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
     }
 
     private void unsubscribeShop() {
-        Utilis.showProgress(DealsMoreDetailsActivity.this);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.unsubscribe, new Response.Listener<String>() {
+        Utils.showProgress(DealsMoreDetailsActivity.this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.unsubscribe, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -276,7 +276,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
 
                     System.out.println(Tag + " unsubscribeShop response - " + response);
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
 
                     String str_result = obj.getString("errorCode");
                     String str_message = "";
@@ -306,7 +306,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                Utilis.dismissProgress();
+                Utils.dismissProgress();
                 Toast.makeText(DealsMoreDetailsActivity.this, getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                 if (error instanceof NoConnectionError) {
@@ -341,8 +341,8 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
     }
 
     private void subscribeShop() {
-        Utilis.showProgress(DealsMoreDetailsActivity.this);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.savesubscribers, new Response.Listener<String>() {
+        Utils.showProgress(DealsMoreDetailsActivity.this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.savesubscribers, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -352,7 +352,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
 
                     System.out.println(Tag + " subscribeShop response - " + response);
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
 
                     String str_result = obj.getString("errorCode");
                     String str_message = "";
@@ -380,7 +380,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Utilis.dismissProgress();
+                Utils.dismissProgress();
                 Toast.makeText(DealsMoreDetailsActivity.this, getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                 if (error instanceof NoConnectionError) {
@@ -415,10 +415,12 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
     }
 
     private void getApiCall() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(DealsMoreDetailsActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(DealsMoreDetailsActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.viewpostdetails, new Response.Listener<String>() {
+            String apiName = strConstPostType.equalsIgnoreCase("MEGASALES") ? Utils.viewmegasalespostdetails : Utils.viewpostdetails;
+            System.out.println(Tag + " api Name "+ apiName);
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + apiName, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -428,7 +430,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getApiCall response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         layMain.setVisibility(View.VISIBLE);
 
@@ -495,7 +497,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(DealsMoreDetailsActivity.this, DealsMoreDetailsActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -542,7 +544,7 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(DealsMoreDetailsActivity.this);
         recyclerView.setLayoutManager(layoutManager);
 
-        offerAdapter = new OfferAdapter(this, offerDataList, 0, true, keyIntent, strPostIndexId, strShopIndexId, strType);
+        offerAdapter = new OfferAdapter(this, offerDataList, 0, true, keyIntent, strPostIndexId, strShopIndexId, strType, strConstPostType);
         recyclerView.setAdapter(offerAdapter);
 
         TextView tvOfferTitle = findViewById(R.id.tv_offer_title);
@@ -713,8 +715,8 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
     }
 
     private void back() {
-        Utilis.callResume = 1;
-        Utilis.constPostType = strConstPostType;
+        Utils.callResume = 1;
+        Utils.constPostType = strConstPostType;
         finish();
     }
 

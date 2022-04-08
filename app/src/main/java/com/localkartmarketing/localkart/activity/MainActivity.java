@@ -1,15 +1,18 @@
 package com.localkartmarketing.localkart.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,9 +26,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -56,9 +61,10 @@ import com.localkartmarketing.localkart.model.CategoryData;
 import com.localkartmarketing.localkart.model.SilderData;
 import com.localkartmarketing.localkart.model.UserDetail;
 import com.localkartmarketing.localkart.support.App;
+import com.localkartmarketing.localkart.support.LocationTrack;
 import com.localkartmarketing.localkart.support.LoginSharedPreference;
 import com.localkartmarketing.localkart.support.RegBusinessSharedPrefrence;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONArray;
@@ -71,7 +77,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private String Tag = "MainActivity";
-    Utilis utilis;
+    Utils utils;
     AppBarLayout appBarLayout;
     Toolbar toolbar;
     NavigationView navigationView;
@@ -107,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        utilis = new Utilis(MainActivity.this);
+        utils = new Utils(MainActivity.this);
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -200,13 +206,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             btnServices.setBackgroundResource(R.drawable.right_curve_unsel);
             btnShopping.setTextColor(Color.parseColor("#ffffff"));
             btnShopping.setBackgroundResource(R.drawable.left_curve_sel);
-            getCategoryData(Utilis.shopcategories);
+            getCategoryData(Utils.shopcategories);
         } else {
             btnShopping.setTextColor(Color.parseColor("#7F7F7F"));
             btnShopping.setBackgroundResource(R.drawable.left_curve_unsel);
             btnServices.setTextColor(Color.parseColor("#ffffff"));
             btnServices.setBackgroundResource(R.drawable.right_curve_sel);
-            getCategoryData(Utilis.servicecategories);
+            getCategoryData(Utils.servicecategories);
         }
 
         btnShopping.setOnClickListener(new View.OnClickListener() {
@@ -218,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     btnServices.setBackgroundResource(R.drawable.right_curve_unsel);
                     btnShopping.setTextColor(Color.parseColor("#ffffff"));
                     btnShopping.setBackgroundResource(R.drawable.left_curve_sel);
-                    getCategoryData(Utilis.shopcategories);
+                    getCategoryData(Utils.shopcategories);
                 }
             }
         });
@@ -226,14 +232,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         btnServices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utilis.clearImageList(MainActivity.this);
+                Utils.clearImageList(MainActivity.this);
                 if (!keyIntent.equalsIgnoreCase("Services")) {
                     keyIntent = "Services";
                     btnShopping.setTextColor(Color.parseColor("#7F7F7F"));
                     btnShopping.setBackgroundResource(R.drawable.left_curve_unsel);
                     btnServices.setTextColor(Color.parseColor("#ffffff"));
                     btnServices.setBackgroundResource(R.drawable.right_curve_sel);
-                    getCategoryData(Utilis.servicecategories);
+                    getCategoryData(Utils.servicecategories);
                 }
             }
         });
@@ -244,10 +250,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void getCategoryData(String apiName) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(MainActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(MainActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utilis.Api + apiName, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + apiName, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -257,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         System.out.println(Tag + " getCategoryData response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getCategoryData result " + str_result);
@@ -279,6 +285,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             CategoryAdapter adapter = new CategoryAdapter(MainActivity.this, categoryListValue, keyIntent);
                             gridView.setAdapter(adapter);
 
+                            fetchLastLocation();
+
                         } else if (Integer.parseInt(str_result) == 2) {
                             str_message = obj.getString("message");
                             Toast.makeText(MainActivity.this, str_message, Toast.LENGTH_SHORT).show();
@@ -294,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(MainActivity.this, MainActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -326,10 +334,66 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void getBannerImages() {
-        if (Utilis.isInternetOn()) {
+    LocationTrack currentLocation;
+    double latitude = 0.0;
+    double longitude = 0.0;
+    private static final int REQUEST_CODE = 101;
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utilis.Api + Utilis.getbanner, new Response.Listener<String>() {
+    private void fetchLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+            return;
+        }
+        System.out.println("MainActivity running fetchLoc");
+        if (Utils.isGpsOn()) {
+            currentLocation = new LocationTrack(MainActivity.this);
+
+            if (currentLocation.canGetLocation()) {
+                System.out.println("MainActivity running inside");
+                longitude = currentLocation.getLongitude();
+                latitude = currentLocation.getLatitude();
+            }
+
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("Location (GPS) permission required to show information based on location.")
+                    .setCancelable(false)
+                    .setPositiveButton("Enable GPS", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(intent, REQUEST_CODE);
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+            Button btnOk = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+            btnOk.setTextColor(Color.parseColor("#000000"));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                System.out.println("Permission Granted");
+                fetchLastLocation();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            fetchLastLocation();
+        }
+    }
+
+    private void getBannerImages() {
+        if (Utils.isInternetOn()) {
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.homeslider, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -354,7 +418,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                 silders.add(silderData);
                             }
-                            setViewPager(json.length());
+                            if (json.length() > 0) {
+                                setViewPager(json.length());
+                            }
 
                         } else if (Integer.parseInt(str_result) == 2) {
                             str_message = obj.getString("message");
@@ -389,7 +455,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }) {
                 @Override
                 protected Map<String, String> getParams() {
-                    return new HashMap<>();
+                    Map<String, String> params = new HashMap<>();
+                    params.put("stateId", userDetail.getStateId());
+                    params.put("districtId", userDetail.getDistrictId());
+                    System.out.println(Tag + " getBannerImages inputs " + params);
+                    return params;
                 }
             };
 
@@ -494,7 +564,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_reg_business) {
-            Utilis.clearRegPref(MainActivity.this);
+            Utils.clearRegPref(MainActivity.this);
             Intent intent = new Intent(MainActivity.this, AdvertiseBusinessActivity.class);
             intent.putExtra("key", keyIntent);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -507,7 +577,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_how_it_works) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Utilis.howItWorksUrl));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Utils.howItWorksUrl));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setPackage("com.android.chrome");
             try {
@@ -535,8 +605,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
 //                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                String shareMessage = "Local Kart \nWhy Shop Online? Shop Nearby !\n\nGet More Deals and Benefits !\n\nDownload Local Kart App Now ";
-                shareMessage = shareMessage + Utilis.shareUrl;
+                String shareMessage = "LocalKart \nWhy Shop Online? Shop Nearby !\n\nGet More Deals and Benefits !\n\nDownload LocalKart App Now ";
+                shareMessage = shareMessage + Utils.shareUrl;
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                 startActivity(Intent.createChooser(shareIntent, "choose one"));
             } catch (Exception e) {
@@ -631,6 +701,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.ic_search) {
+            Utils.clearFilterPref(MainActivity.this);
             Intent intent = new Intent(MainActivity.this, SearchActivity.class);
             intent.putExtra("key", keyIntent);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

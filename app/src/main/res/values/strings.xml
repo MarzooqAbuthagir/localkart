@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">LocalKart - Shop Nearby</string>
+    <string name="app_name">LocalKart</string>
+    <string name="home_titlebar">LocalKart <sup><small><small><small>TM</small></small></small></sup></string>
 
     <string name="progresstitle">Loading... Please Wait</string>
     <string name="somethingwentwrong">Something went wrong</string>
@@ -43,4 +44,6 @@
     <string name="user_t_c">I agree all <u>Terms and Conditions.</u></string>
     <string name="view_plans"><u>View Plans and Subscribe</u></string>
     <string name="report_post"><u>Report This Post</u></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

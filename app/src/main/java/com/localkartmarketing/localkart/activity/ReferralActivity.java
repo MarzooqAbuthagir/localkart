@@ -31,7 +31,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.model.UserDetail;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONException;
@@ -42,7 +42,7 @@ import java.util.Map;
 
 public class ReferralActivity extends AppCompatActivity {
     private String Tag = "ReferralActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -73,7 +73,7 @@ public class ReferralActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_referral);
 
-        utilis = new Utilis(ReferralActivity.this);
+        utils = new Utils(ReferralActivity.this);
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -134,7 +134,7 @@ public class ReferralActivity extends AppCompatActivity {
         btnRegisterNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utilis.clearRegPref(ReferralActivity.this);
+                Utils.clearRegPref(ReferralActivity.this);
                 Intent intent = new Intent(ReferralActivity.this, AdvertiseBusinessActivity.class);
                 intent.putExtra("key", keyIntent);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -161,8 +161,8 @@ public class ReferralActivity extends AppCompatActivity {
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
 //                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                    String shareMessage = "Take Your Business Promotion to Next Level. \n\nShare Digital vCard, Exciting Deals and Offers through Digital Platform and Reach More Customers. \n\nUse Code " + strReferralCode + " and Get Rs." + strAmount + " Discount.\n\nDownload Local Kart App Now ";
-                    shareMessage = shareMessage + Utilis.shareUrl;
+                    String shareMessage = "Take Your Business Promotion to Next Level. \n\nShare Digital vCard, Exciting Deals and Offers through Digital Platform and Reach More Customers. \n\nUse Code " + strReferralCode + " and Get Rs." + strAmount + " Discount.\n\nDownload LocalKart App Now ";
+                    shareMessage = shareMessage + Utils.shareUrl;
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                     startActivity(Intent.createChooser(shareIntent, "choose one"));
                 } catch (Exception e) {
@@ -178,10 +178,10 @@ public class ReferralActivity extends AppCompatActivity {
     String strReferralCode = "", strAmount = "", strDailyPost = "", strWeeklyPost = "", strFestivalPost = "", strDealsPost = "", strValidity = "";
 
     private void getApiCall() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(ReferralActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(ReferralActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.viewreferral, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.viewreferral, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -191,7 +191,7 @@ public class ReferralActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getApiCall response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getApiCall result " + str_result);
@@ -247,7 +247,7 @@ public class ReferralActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(ReferralActivity.this, ReferralActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {

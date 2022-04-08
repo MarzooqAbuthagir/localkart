@@ -17,11 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.localkartmarketing.localkart.R;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 
 public class FranchiseActivity extends AppCompatActivity {
     private String Tag = "FranchiseActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -31,7 +31,7 @@ public class FranchiseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_franchise);
 
-        utilis = new Utilis(FranchiseActivity.this);
+        utils = new Utils(FranchiseActivity.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -76,8 +76,8 @@ public class FranchiseActivity extends AppCompatActivity {
                 return false;
             }
         });
-        if (Utilis.isInternetOn()) {
-            webView.loadUrl(Utilis.becomeFranchise);
+        if (Utils.isInternetOn()) {
+            webView.loadUrl(Utils.becomeFranchise);
         } else {
             Toast.makeText(this, this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
         }

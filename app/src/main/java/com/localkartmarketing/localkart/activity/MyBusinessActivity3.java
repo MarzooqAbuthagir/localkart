@@ -19,11 +19,11 @@ import androidx.core.content.ContextCompat;
 
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.model.ContactDetailsData;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 
 public class MyBusinessActivity3 extends AppCompatActivity {
     private String Tag = "MyBusinessActivity3";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -48,8 +48,8 @@ public class MyBusinessActivity3 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_business3);
 
-        utilis = new Utilis(MyBusinessActivity3.this);
-        contactDetailsData = Utilis.getContactDetails(MyBusinessActivity3.this);
+        utils = new Utils(MyBusinessActivity3.this);
+        contactDetailsData = Utils.getContactDetails(MyBusinessActivity3.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -146,7 +146,7 @@ public class MyBusinessActivity3 extends AppCompatActivity {
                             strVcard,
                             strCod
                     );
-                    Utilis.saveContactDetails(contactDetailsData);
+                    Utils.saveContactDetails(contactDetailsData);
                     Intent intent = new Intent(MyBusinessActivity3.this, MyBusinessActivity4.class);
                     intent.putExtra("key", keyIntent);
                     intent.putExtra("businessType", strBusinessId);
@@ -189,22 +189,22 @@ public class MyBusinessActivity3 extends AppCompatActivity {
             Toast.makeText(MyBusinessActivity3.this, "Enter 10 digit WhatsApp number", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (strEmailId.length() > 0 && !Utilis.eMailValidation(strEmailId)) {
+        if (strEmailId.length() > 0 && Utils.eMailValidation(strEmailId)) {
             etEmail.requestFocus();
             Toast.makeText(MyBusinessActivity3.this, "Enter valid email", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (strWebsite.length() > 0 && !Utilis.webURLValidation(strWebsite)) {
+        if (strWebsite.length() > 0 && Utils.webURLValidation(strWebsite)) {
             etWebsite.requestFocus();
             Toast.makeText(MyBusinessActivity3.this, "Enter valid website address", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (strFacebook.length() > 0 && !Utilis.webURLValidation(strFacebook)) {
+        if (strFacebook.length() > 0 && Utils.webURLValidation(strFacebook)) {
             etFacebook.requestFocus();
             Toast.makeText(MyBusinessActivity3.this, "Enter valid facebook URL", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (strVcard.length() > 0 && !Utilis.webURLValidation(strVcard)) {
+        if (strVcard.length() > 0 && Utils.webURLValidation(strVcard)) {
             etVcard.requestFocus();
             Toast.makeText(MyBusinessActivity3.this, "Enter valid digital vcard", Toast.LENGTH_SHORT).show();
             return false;
@@ -239,7 +239,7 @@ public class MyBusinessActivity3 extends AppCompatActivity {
                 strVcard,
                 strCod
         );
-        Utilis.saveContactDetails(contactDetailsData);
+        Utils.saveContactDetails(contactDetailsData);
         finish();
     }
 }

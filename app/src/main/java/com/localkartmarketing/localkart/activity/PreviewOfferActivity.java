@@ -31,7 +31,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.adapter.ViewPagerOfferListAdapter;
 import com.localkartmarketing.localkart.model.AddOfferData;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONArray;
@@ -46,12 +46,12 @@ import java.util.Map;
 public class PreviewOfferActivity extends AppCompatActivity {
     private String Tag = "PreviewOfferActivity";
 
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
     TextView toolBarTitle;
 
-    String keyIntent = "", dealCount = "", strPostId = "", strShopId = "", strShopType = "";
+    String keyIntent = "", dealCount = "", strPostId = "", strShopId = "", strShopType = "", strConstPostType= "";
     String str_result = "", str_message = "";
     String strShopName = "";
 
@@ -70,7 +70,7 @@ public class PreviewOfferActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview_offer);
 
-        utilis = new Utilis(PreviewOfferActivity.this);
+        utils = new Utils(PreviewOfferActivity.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -78,6 +78,7 @@ public class PreviewOfferActivity extends AppCompatActivity {
         strShopId = intent.getStringExtra("shopId");
         strPostId = intent.getStringExtra("postId");
         strShopType = intent.getStringExtra("shopType");
+        strConstPostType = intent.getStringExtra("constPostType");
 
         Window window = getWindow();
 
@@ -140,8 +141,8 @@ public class PreviewOfferActivity extends AppCompatActivity {
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
 //                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                    String shareMessage = "Valid From " + offerDataList.get(dealOffer).getFromDate() + " To " + offerDataList.get(dealOffer).getToDate() + "\n\n" + strShopName + " \n\n" + offerDataList.get(dealOffer).getHeading() + " \n\n" + offerDataList.get(dealOffer).getDesc() + " \n\nDownload Local Kart App Now ";
-                    shareMessage = shareMessage + Utilis.shareUrl;
+                    String shareMessage = "Valid From " + offerDataList.get(dealOffer).getFromDate() + " To " + offerDataList.get(dealOffer).getToDate() + "\n\n" + strShopName + " \n\n" + offerDataList.get(dealOffer).getHeading() + " \n\n" + offerDataList.get(dealOffer).getDesc() + " \n\nDownload LocalKart App Now ";
+                    shareMessage = shareMessage + Utils.shareUrl;
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                     startActivity(Intent.createChooser(shareIntent, "choose one"));
                 } catch (Exception e) {
@@ -154,10 +155,11 @@ public class PreviewOfferActivity extends AppCompatActivity {
     }
 
     private void getApiCall() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(PreviewOfferActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(PreviewOfferActivity.this);
+            String apiName = strConstPostType.equalsIgnoreCase("MEGASALES") ? Utils.viewmegasalesdeals : Utils.viewdeals;
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.viewdeals, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + apiName, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -167,7 +169,7 @@ public class PreviewOfferActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getApiCall response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         layMain.setVisibility(View.VISIBLE);
 
@@ -260,7 +262,7 @@ public class PreviewOfferActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(PreviewOfferActivity.this, PreviewOfferActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {

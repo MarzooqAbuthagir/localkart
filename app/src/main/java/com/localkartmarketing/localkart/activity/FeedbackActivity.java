@@ -30,7 +30,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.model.UserDetail;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONException;
@@ -41,7 +41,7 @@ import java.util.Map;
 
 public class FeedbackActivity extends AppCompatActivity {
     private String Tag = "FeedbackActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -55,7 +55,7 @@ public class FeedbackActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback);
 
-        utilis = new Utilis(FeedbackActivity.this);
+        utils = new Utils(FeedbackActivity.this);
 
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
@@ -113,10 +113,10 @@ public class FeedbackActivity extends AppCompatActivity {
 
     String str_result = "", str_message = "";
     private void sendFeedback(final String feedback) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(FeedbackActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(FeedbackActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.savefeedback, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.savefeedback, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -126,7 +126,7 @@ public class FeedbackActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " sendFeedback response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " sendFeedback result " + str_result);
@@ -149,7 +149,7 @@ public class FeedbackActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(FeedbackActivity.this, FeedbackActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {

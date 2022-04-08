@@ -29,8 +29,9 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
     private String postId;
     private String shopId;
     private String shopType;
+    private String constPostType;
 
-    public OfferAdapter(Context context, List<AddOfferData> listOfOffer, int i, boolean isClick, String keyIntent, String postId, String shopId, String shopType ) {
+    public OfferAdapter(Context context, List<AddOfferData> listOfOffer, int i, boolean isClick, String keyIntent, String postId, String shopId, String shopType, String constPostType ) {
         super();
         con = context;
         arrayList = listOfOffer;
@@ -40,6 +41,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
         this.postId =  postId;
         this.shopId = shopId;
         this.shopType = shopType;
+        this.constPostType = constPostType;
     }
 
     @NonNull
@@ -73,6 +75,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
                     intent.putExtra("shopId", shopId);
                     intent.putExtra("postId", postId);
                     intent.putExtra("shopType", shopType);
+                    intent.putExtra("constPostType", constPostType);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     con.startActivity(intent);
                 }

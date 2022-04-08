@@ -17,12 +17,12 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.adapter.ViewPagerTabAdapter;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 
 public class DealsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     private String Tag = "DealsActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -30,13 +30,13 @@ public class DealsActivity extends AppCompatActivity implements TabLayout.OnTabS
     ViewPager viewPager;
     ViewPagerTabAdapter viewPagerTabAdapter;
 
-    String keyIntent = "", categoryId = "", categoryName = "", subcategoryName = "", subcategoryId = "";
+    String keyIntent = "", categoryId = "", categoryName = "", subcategoryName = "", subcategoryId = "", megaSalesIndexId = "", offerTitle = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deals);
-        utilis = new Utilis(DealsActivity.this);
+        utils = new Utils(DealsActivity.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -44,6 +44,8 @@ public class DealsActivity extends AppCompatActivity implements TabLayout.OnTabS
         categoryName = intent.getStringExtra("categoryName");
         subcategoryName = intent.getStringExtra("subcategoryName");
         subcategoryId = intent.getStringExtra("subcategoryId");
+        megaSalesIndexId = intent.getStringExtra("megasalesIndexId");
+        offerTitle = intent.getStringExtra("offerTitle");
 
         Window window = getWindow();
 
@@ -81,18 +83,26 @@ public class DealsActivity extends AppCompatActivity implements TabLayout.OnTabS
         tabLayout = findViewById(R.id.tabLayout);
 
         //Adding the tabs using addTab() method
+        if (!offerTitle.isEmpty()) {
+            tabLayout.addTab(tabLayout.newTab().setText(offerTitle));
+        }
         tabLayout.addTab(tabLayout.newTab().setText("DIRECTORY"));
         tabLayout.addTab(tabLayout.newTab().setText("TODAY"));
         tabLayout.addTab(tabLayout.newTab().setText("WEEKLY"));
         tabLayout.addTab(tabLayout.newTab().setText("FESTIVAL"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
+        if (!offerTitle.isEmpty()) {
+            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        } else {
+            tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        }
 
         //Initializing viewPager
         viewPager = findViewById(R.id.pager);
 
         //Creating our pager adapter
-        viewPagerTabAdapter = new ViewPagerTabAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), keyIntent, categoryId, subcategoryId, subcategoryName);
+        viewPagerTabAdapter = new ViewPagerTabAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), keyIntent, categoryId, subcategoryId, subcategoryName, megaSalesIndexId, offerTitle);
 
         //Adding adapter to pager
         viewPager.setAdapter(viewPagerTabAdapter);

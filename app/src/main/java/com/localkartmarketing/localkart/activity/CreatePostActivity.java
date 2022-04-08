@@ -1,14 +1,18 @@
 package com.localkartmarketing.localkart.activity;
 
+import static androidx.core.content.FileProvider.getUriForFile;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -16,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,7 +44,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,10 +68,11 @@ import com.localkartmarketing.localkart.support.App;
 import com.localkartmarketing.localkart.support.LocationTrack;
 import com.localkartmarketing.localkart.support.RegBusinessIdSharedPreference;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
+import com.yalantis.ucrop.UCrop;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,7 +95,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CreatePostActivity extends AppCompatActivity {
     private String Tag = "CreatePostActivity";
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -136,11 +141,13 @@ public class CreatePostActivity extends AppCompatActivity {
 
     App app;
 
+    public static String fileName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
-        utilis = new Utilis(CreatePostActivity.this);
+        utils = new Utils(CreatePostActivity.this);
 
         app = (App) getApplication();
 
@@ -431,8 +438,8 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     private void previewPost() {
-        Utilis.clearOfferList(CreatePostActivity.this);
-        Utilis.setOfferList("offerList", listOfOffer, CreatePostActivity.this);
+        Utils.clearOfferList(CreatePostActivity.this);
+        Utils.setOfferList("offerList", listOfOffer, CreatePostActivity.this);
         Intent intent = new Intent(CreatePostActivity.this, ViewPostActivity.class);
         intent.putExtra("key", keyIntent);
         intent.putExtra("fromDate", etFromDate.getText().toString().trim());
@@ -457,10 +464,10 @@ public class CreatePostActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing but close the dialog
                         dialog.dismiss();
-                        if (Utilis.isInternetOn()) {
-                            Utilis.showProgress(CreatePostActivity.this);
+                        if (Utils.isInternetOn()) {
+                            Utils.showProgress(CreatePostActivity.this);
 
-                            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.postvalidation, new Response.Listener<String>() {
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.postvalidation, new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
 
@@ -470,7 +477,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
                                         System.out.println(Tag + " postValidation response - " + response);
 
-                                        Utilis.dismissProgress();
+                                        Utils.dismissProgress();
 
                                         str_result = obj.getString("errorCode");
                                         System.out.print(Tag + " postValidation result " + str_result);
@@ -502,7 +509,7 @@ public class CreatePostActivity extends AppCompatActivity {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
 
-                                    Utilis.dismissProgress();
+                                    Utils.dismissProgress();
                                     Toast.makeText(CreatePostActivity.this, CreatePostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                                     if (error instanceof NoConnectionError) {
@@ -561,10 +568,10 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     private void sendPost() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(CreatePostActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(CreatePostActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.createpost, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.createpost, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -574,7 +581,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " sendPost response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " sendPost result " + str_result);
@@ -598,7 +605,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(CreatePostActivity.this, CreatePostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -639,13 +646,13 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     private void sendOffer(final String str_post_index_id, final String isBoost) {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(CreatePostActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(CreatePostActivity.this);
 
             for (int i = 0; i < listOfOffer.size(); i++) {
 
                 final int currentPos = i;
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.createoffers, new Response.Listener<String>() {
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.createoffers, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
@@ -666,7 +673,7 @@ public class CreatePostActivity extends AppCompatActivity {
                                                 RegBusinessIdSharedPreference.getBusinessId(CreatePostActivity.this),
                                                 RegBusinessTypeSharedPreference.getBusinessType(CreatePostActivity.this));
                                     }
-                                    Utilis.dismissProgress();
+                                    Utils.dismissProgress();
                                     AlertDialog.Builder builder = new AlertDialog.Builder(CreatePostActivity.this);
                                     builder.setMessage("Your post has been successfully saved.")
                                             .setNeutralButton("OK", new DialogInterface.OnClickListener() {
@@ -682,7 +689,7 @@ public class CreatePostActivity extends AppCompatActivity {
                                 }
 
                             } else if (Integer.parseInt(str_result) == 2) {
-                                Utilis.dismissProgress();
+                                Utils.dismissProgress();
                                 str_message = obj.getString("message");
                                 Toast.makeText(CreatePostActivity.this, str_message, Toast.LENGTH_SHORT).show();
                             }
@@ -694,7 +701,7 @@ public class CreatePostActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
                         Toast.makeText(CreatePostActivity.this, CreatePostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                         if (error instanceof NoConnectionError) {
@@ -736,10 +743,10 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     private void getApiCall() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(CreatePostActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(CreatePostActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.listarray, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.listarray, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -749,7 +756,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getApiCall response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getApiCall result " + str_result);
@@ -854,7 +861,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(CreatePostActivity.this, CreatePostActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -1162,7 +1169,7 @@ public class CreatePostActivity extends AppCompatActivity {
         } else if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 System.out.println("Permission Granted");
-                if (Utilis.isGpsOn()) {
+                if (Utils.isGpsOn()) {
                     fetchLastLocation();
                 }
             }
@@ -1179,22 +1186,29 @@ public class CreatePostActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (optionsMenu[i].equals("Take Photo")) {
 
+//                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//                        try {
+//                            photoFile = createImageFile();
+//
+//                            photoURI = FileProvider.getUriForFile(
+//                                    CreatePostActivity.this,
+//                                    "com.localkartmarketing.localkart.fileprovider",
+//                                    photoFile
+//                            );
+//                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                            startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
+//
+//                        } catch (IOException ex) {
+//                            // Error occurred while creating the File
+//                        }
+//                    }
+
+                    fileName = System.currentTimeMillis() + ".jpg";
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, getCacheImagePath(fileName));
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        try {
-                            photoFile = createImageFile();
-
-                            photoURI = FileProvider.getUriForFile(
-                                    CreatePostActivity.this,
-                                    "com.localkartmarketing.localkart.fileprovider",
-                                    photoFile
-                            );
-                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                            startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
-
-                        } catch (IOException ex) {
-                            // Error occurred while creating the File
-                        }
+                        startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
                     }
 
                 } else if (optionsMenu[i].equals("Choose from Gallery")) {
@@ -1207,6 +1221,13 @@ public class CreatePostActivity extends AppCompatActivity {
             }
         });
         builder.show();
+    }
+
+    private Uri getCacheImagePath(String fileName) {
+        File path = new File(getExternalCacheDir(), "camera");
+        if (!path.exists()) path.mkdirs();
+        File image = new File(path, fileName);
+        return getUriForFile(CreatePostActivity.this, getPackageName() + ".provider", image);
     }
 
     private File createImageFile() throws IOException {
@@ -1230,15 +1251,48 @@ public class CreatePostActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAPTURE_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
-            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(16, 9).setRequestedSize(400, 600).start(CreatePostActivity.this);
-        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            Uri resultUri = result.getUri();
+//            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(16, 9).setRequestedSize(400, 600).start(CreatePostActivity.this);
+            cropImage(getCacheImagePath(fileName));
+//        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == UCrop.REQUEST_CROP && resultCode == Activity.RESULT_OK) {
+//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+//            Uri resultUri = result.getUri();
+            Uri resultUri = UCrop.getOutput(data);
             onSelectFromGalleryResult(resultUri);
         } else if (requestCode == SELECT_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
             photoURI = data.getData();
-            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(16, 9).setRequestedSize(400, 600).start(CreatePostActivity.this);
+//            CropImage.activity(photoURI).setCropMenuCropButtonTitle("OK").setAspectRatio(16, 9).setRequestedSize(400, 600).start(CreatePostActivity.this);
+            cropImage(photoURI);
         }
+    }
+
+    private void cropImage(Uri sourceUri) {
+        int IMAGE_COMPRESSION = 100;
+        Uri destinationUri = Uri.fromFile(new File(getCacheDir(), queryName(getContentResolver(), sourceUri)));
+        UCrop.Options options = new UCrop.Options();
+        options.setCompressionQuality(IMAGE_COMPRESSION);
+        options.setHideBottomControls(true);
+        options.withAspectRatio(16, 9);
+
+        options.setToolbarTitle("Crop Photo");
+        options.setToolbarColor(ContextCompat.getColor(this, R.color.adv_bus_color));
+        options.setStatusBarColor(ContextCompat.getColor(this, R.color.adv_bus_color));
+        options.setActiveWidgetColor(ContextCompat.getColor(this, R.color.adv_bus_color));
+
+        UCrop.of(sourceUri, destinationUri)
+                .withOptions(options)
+                .start(this);
+    }
+
+    private static String queryName(ContentResolver resolver, Uri uri) {
+        Cursor returnCursor =
+                resolver.query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
     }
 
     private void onSelectFromGalleryResult(Uri data) {
@@ -1258,7 +1312,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         assert bm != null;
-        bm.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+        bm.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         base64img = Base64.encodeToString(byteArray, Base64.DEFAULT);
         System.out.println("Gallery image " + base64img);
@@ -1285,7 +1339,7 @@ public class CreatePostActivity extends AppCompatActivity {
             return;
         }
 
-        if (Utilis.isGpsOn()) {
+        if (Utils.isGpsOn()) {
             currentLocation = new LocationTrack(CreatePostActivity.this);
 
             if (currentLocation.canGetLocation()) {

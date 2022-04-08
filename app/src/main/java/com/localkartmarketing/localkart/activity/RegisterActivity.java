@@ -42,7 +42,7 @@ import com.localkartmarketing.localkart.support.LoginSharedPreference;
 import com.localkartmarketing.localkart.support.RegBusinessIdSharedPreference;
 import com.localkartmarketing.localkart.support.RegBusinessSharedPrefrence;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -78,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private Dialog dialog;
 
-    Utilis utilis;
+    Utils utils;
     SharedPreferences mPrefs;
 
     App app;
@@ -88,7 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        utilis = new Utilis(RegisterActivity.this);
+        utils = new Utils(RegisterActivity.this);
         mPrefs = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
 
         app = (App) getApplication();
@@ -189,10 +189,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void sendOtp() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(RegisterActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(RegisterActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.sendotp, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.sendotp, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -202,7 +202,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " sendOtp response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         View view = getCurrentFocus();
                         InputMethodManager methodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -233,7 +233,7 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(RegisterActivity.this, RegisterActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -361,10 +361,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void register() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(RegisterActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(RegisterActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.signup, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.signup, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -374,7 +374,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " register response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " register result " + str_result);
@@ -428,7 +428,7 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(RegisterActivity.this, RegisterActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -468,10 +468,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void getDistrictList() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(RegisterActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(RegisterActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.districtList, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.districtList, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -481,7 +481,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getDistrictList response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getDistrictList result " + str_result);
@@ -531,7 +531,7 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(RegisterActivity.this, RegisterActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -567,10 +567,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void getStateList() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(RegisterActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(RegisterActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utilis.Api + Utilis.stateList, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.stateList, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -580,7 +580,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getStateList response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         str_result = obj.getString("errorCode");
                         System.out.print(Tag + " getStateList result " + str_result);
@@ -630,7 +630,7 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(RegisterActivity.this, RegisterActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {

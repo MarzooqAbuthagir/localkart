@@ -55,7 +55,7 @@ import com.localkartmarketing.localkart.model.AccessOptions;
 import com.localkartmarketing.localkart.model.DirectoryMoreDetailsData;
 import com.localkartmarketing.localkart.model.ShopBanner;
 import com.localkartmarketing.localkart.model.UserDetail;
-import com.localkartmarketing.localkart.support.Utilis;
+import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
 import org.json.JSONArray;
@@ -64,6 +64,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ import java.util.Map;
 public class DirectoryMoreDetailsActivity extends AppCompatActivity {
     private final String Tag = "DirectoryMoreDetailsActivity";
 
-    Utilis utilis;
+    Utils utils;
     Toolbar toolbar;
     ActionBar actionBar = null;
 
@@ -122,7 +123,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_directory_more_details);
 
-        utilis = new Utilis(DirectoryMoreDetailsActivity.this);
+        utils = new Utils(DirectoryMoreDetailsActivity.this);
 
         mPrefs = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -210,7 +211,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
         layNotify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Utilis.isInternetOn()) {
+                if (Utils.isInternetOn()) {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(DirectoryMoreDetailsActivity.this);
                     String state = Integer.parseInt(strIsSubscribed) == 0 ? "Subscribe" : "UnSubscribe";
@@ -279,8 +280,8 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
                             Intent intent = new Intent(Intent.ACTION_SEND);
                             intent.setType("image/*");
                             intent.putExtra(Intent.EXTRA_STREAM, getImageUri(getBitmapFromView(layMain)));
-                            String shareMessage = "Download Local Kart App Now ";
-                            shareMessage = shareMessage + Utilis.shareUrl;
+                            String shareMessage = "Download LocalKart App Now ";
+                            shareMessage = shareMessage + Utils.shareUrl;
                             intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                             try {
                                 startActivity(Intent.createChooser(intent, "My Profile ..."));
@@ -299,9 +300,9 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
 
     public Uri getImageUri(Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
 
-        String path = MediaStore.Images.Media.insertImage(getContentResolver(), inImage, "Title", null);
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), inImage, "Title_"+ Calendar.getInstance().getTime(), null);
         return Uri.parse(path);
     }
 
@@ -325,8 +326,8 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
     }
 
     private void unsubscribeShop() {
-        Utilis.showProgress(DirectoryMoreDetailsActivity.this);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.unsubscribe, new Response.Listener<String>() {
+        Utils.showProgress(DirectoryMoreDetailsActivity.this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.unsubscribe, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -336,7 +337,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
 
                     System.out.println(Tag + " unsubscribeShop response - " + response);
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
 
                     String str_result = obj.getString("errorCode");
                     String str_message = "";
@@ -366,7 +367,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                Utilis.dismissProgress();
+                Utils.dismissProgress();
                 Toast.makeText(DirectoryMoreDetailsActivity.this, getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                 if (error instanceof NoConnectionError) {
@@ -401,8 +402,8 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
     }
 
     private void subscribeShop() {
-        Utilis.showProgress(DirectoryMoreDetailsActivity.this);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.savesubscribers, new Response.Listener<String>() {
+        Utils.showProgress(DirectoryMoreDetailsActivity.this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.savesubscribers, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -412,7 +413,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
 
                     System.out.println(Tag + " subscribeShop response - " + response);
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
 
                     String str_result = obj.getString("errorCode");
                     String str_message = "";
@@ -440,7 +441,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Utilis.dismissProgress();
+                Utils.dismissProgress();
                 Toast.makeText(DirectoryMoreDetailsActivity.this, getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                 if (error instanceof NoConnectionError) {
@@ -475,10 +476,10 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
     }
 
     private void getApiCall() {
-        if (Utilis.isInternetOn()) {
-            Utilis.showProgress(DirectoryMoreDetailsActivity.this);
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(DirectoryMoreDetailsActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utilis.Api + Utilis.directorymoredetails, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.directorymoredetails, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -488,7 +489,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
 
                         System.out.println(Tag + " getApiCall response - " + response);
 
-                        Utilis.dismissProgress();
+                        Utils.dismissProgress();
 
                         layMain.setVisibility(View.VISIBLE);
 
@@ -570,7 +571,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
 
-                    Utilis.dismissProgress();
+                    Utils.dismissProgress();
                     Toast.makeText(DirectoryMoreDetailsActivity.this, DirectoryMoreDetailsActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
@@ -809,8 +810,8 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
     }
 
     private void back() {
-        Utilis.callResume = 1;
-        Utilis.constPostType = strConstPostType;
+        Utils.callResume = 1;
+        Utils.constPostType = strConstPostType;
         finish();
     }
 
