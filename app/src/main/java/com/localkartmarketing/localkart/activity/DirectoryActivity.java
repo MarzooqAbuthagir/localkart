@@ -295,6 +295,7 @@ public class DirectoryActivity extends Fragment {
                             directoryData.setLongitude(jsonObject.getString("longitude"));
                             directoryData.setIsSubscribed(jsonObject.getString("isSubscribed"));
                             directoryData.setShareUrl(jsonObject.getString("shareUrl"));
+                            directoryData.setIsVerify(jsonObject.getString("isVerify"));
 
                             JSONObject js = jsonObject.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(
@@ -783,6 +784,7 @@ public class DirectoryActivity extends Fragment {
                             directoryData.setLongitude(jsonObject.getString("longitude"));
                             directoryData.setIsSubscribed(jsonObject.getString("isSubscribed"));
                             directoryData.setShareUrl(jsonObject.getString("shareUrl"));
+                            directoryData.setIsVerify(jsonObject.getString("isVerify"));
 
                             JSONObject js = jsonObject.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(

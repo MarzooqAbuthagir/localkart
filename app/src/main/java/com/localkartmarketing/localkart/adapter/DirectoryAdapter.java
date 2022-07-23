@@ -155,6 +155,12 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
                 }
             }
         });
+
+        if (!arrayList.get(position).getIsVerify().equalsIgnoreCase("0")) {
+            holder.layVerify.setVisibility(View.VISIBLE);
+        } else {
+            holder.layVerify.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -174,6 +180,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
         LinearLayout layMoreDetails;
         LinearLayout layDirection;
         LinearLayout layNotify;
+        LinearLayout layVerify;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -189,6 +196,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
             ivNotify = itemView.findViewById(R.id.iv_notify);
             layNotify = itemView.findViewById(R.id.lay_notify);
             layShare = itemView.findViewById(R.id.lay_share);
+            layVerify = itemView.findViewById(R.id.lay_verify);
         }
     }
 

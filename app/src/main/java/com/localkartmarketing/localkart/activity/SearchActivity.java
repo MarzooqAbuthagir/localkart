@@ -410,6 +410,7 @@ public class SearchActivity extends AppCompatActivity {
                             directoryData.setLongitude(jsonObject.getString("longitude"));
                             directoryData.setIsSubscribed(jsonObject.getString("isSubscribed"));
                             directoryData.setShareUrl(jsonObject.getString("shareUrl"));
+                            directoryData.setIsVerify(jsonObject.getString("isVerify"));
 
                             JSONObject js = jsonObject.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(
@@ -871,6 +872,7 @@ public class SearchActivity extends AppCompatActivity {
                             directoryData.setLongitude(jsonObject.getString("longitude"));
                             directoryData.setIsSubscribed(jsonObject.getString("isSubscribed"));
                             directoryData.setShareUrl(jsonObject.getString("shareUrl"));
+                            directoryData.setIsVerify(jsonObject.getString("isVerify"));
 
                             JSONObject js = jsonObject.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(

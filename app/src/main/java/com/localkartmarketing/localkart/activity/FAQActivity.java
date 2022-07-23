@@ -2,11 +2,13 @@ package com.localkartmarketing.localkart.activity;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,6 +72,32 @@ public class FAQActivity extends AppCompatActivity {
 
         WebView webView = findViewById(R.id.web_view);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                System.out.println(Tag + " url "+ url);
+                if (url.startsWith("tel:")) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(url));
+                    startActivity(intent);
+                    view.reload();
+                    return true;
+                }  else if (url.startsWith("mailto:")) {
+                    Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
+                    startActivity(intent);
+                    view.reload();
+                    return true;
+                } else if (url.contains("whatsapp")) {
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                    view.reload();
+                    return true;
+                }
+
+                view.loadUrl(url);
+                return true;
+            }
+        });
         if (Utils.isInternetOn()) {
             webView.loadUrl(Utils.helpUrl);
         } else {

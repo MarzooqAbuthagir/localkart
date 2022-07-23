@@ -12,6 +12,7 @@ public class DirectoryData {
     private String longitude;
     private String isSubscribed;
     private String shareUrl;
+    private String isVerify;
 
     public DirectoryData() {
     }
@@ -102,5 +103,13 @@ public class DirectoryData {
 
     public void setShareUrl(String shareUrl) {
         this.shareUrl = shareUrl;
+    }
+
+    public String getIsVerify() {
+        return isVerify;
+    }
+
+    public void setIsVerify(String isVerify) {
+        this.isVerify = isVerify;
     }
 }
