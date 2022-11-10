@@ -31,6 +31,7 @@
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/ic_how_it_works.xml" value="0.2703125" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/ic_how_it_works_1.xml" value="0.2703125" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/ic_right_arrow.xml" value="0.2703125" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/ic_search.xml" value="0.208" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/ic_share.xml" value="0.2703125" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/ic_share_nav.xml" value="0.14635416666666667" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/ic_tick.xml" value="0.14635416666666667" />
@@ -46,8 +47,10 @@
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_about_us.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_advertise_business.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_advertise_business2.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_advertise_business3.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_advertise_business5.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_advertise_business6.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_create_job.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_create_post.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_deals.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_deals_more_details.xml" value="0.25416666666666665" />
@@ -57,6 +60,7 @@
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_f_a_q.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_feedback.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_festival.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_job_opening.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_login.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_manage_business.xml" value="0.2246376811594203" />
@@ -64,10 +68,12 @@
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_mega_sales_view_post.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_my_business.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_my_business2.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_my_business3.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_my_business5.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_my_business6.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_notification_post.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_plan.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_preview_job.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_preview_offer.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_referral.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_register.xml" value="0.25416666666666665" />
@@ -76,9 +82,11 @@
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_splash.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_subscription.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_today.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_view_job.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_view_post.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_weekly.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/alert_add_offer.xml" value="0.1" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/alert_add_job.xml" value="0.253125" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/alert_add_offer.xml" value="0.264" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/alert_app_update.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/alert_business_register.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/alert_business_update.xml" value="0.25416666666666665" />
@@ -93,14 +101,18 @@
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/deals_list_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/directory_list_item.xml" value="0.264" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/fragment_mega_sales_activity.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/history_list_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/image_list_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/manage_business_list_item.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/news_item.xml" value="0.253125" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/offer_layout.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/offer_list_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/plan_price_list_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/plans_list_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/service_offered_list_item.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/spinner_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/menu/drawer_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/menu/menu_delete.xml" value="0.253125" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/menu/menu_search.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/menu/searchview.xml" value="0.25416666666666665" />
       </map>

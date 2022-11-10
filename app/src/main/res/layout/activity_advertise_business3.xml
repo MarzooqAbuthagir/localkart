@@ -9,22 +9,22 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/adv_bus_color"
         android:minHeight="?attr/actionBarSize"
-        app:theme="@style/AppTheme"
-        android:background="@color/adv_bus_color">
+        app:theme="@style/AppTheme">
+
         <TextView
+            android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:singleLine="true"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_regular"
-            android:id="@+id/toolbar_title" />
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
     </androidx.appcompat.widget.Toolbar>
-
 
 
     <RelativeLayout
@@ -43,28 +43,28 @@
             android:background="#6200EE" />
 
         <ScrollView
-            android:background="@color/white"
-            android:layout_below="@+id/progress_view"
-            android:layout_above="@+id/lay_btm"
-            android:fillViewport="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_above="@+id/lay_btm"
+            android:layout_below="@+id/progress_view"
+            android:background="@color/white"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
                     android:padding="7dp"
                     android:text="3. Contact Details"
-                    android:fontFamily="@font/roboto_regular"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="18dp" />
 
@@ -76,35 +76,63 @@
                     android:hint="Phone Number (Fixed Line)">
 
                     <EditText
-                        android:paddingStart="12dp"
                         android:id="@+id/et_phone_no"
-                        android:fontFamily="@font/roboto_regular"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:imeOptions="actionNext"
                         android:digits="0123456789"
-                        android:textColor="@color/black" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_regular"
-                    android:hint="Mobile Number">
-
-                    <EditText
+                        android:fontFamily="@font/roboto_regular"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
                         android:paddingStart="12dp"
-                        android:id="@+id/et_mobile_no"
-                        android:fontFamily="@font/roboto_regular"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:digits="0123456789"
-                        android:maxLength="10"
-                        android:imeOptions="actionNext"
                         android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
+                        android:hint="Mobile Number">
+
+                        <EditText
+                            android:id="@+id/et_mobile_no"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="0123456789"
+                            android:fontFamily="@font/roboto_regular"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:paddingStart="12dp"
+                            android:textColor="@color/black" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    
+                    <Button
+                        android:id="@+id/btn_verify"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:text="Verify"
+                        android:visibility="gone"
+                        android:textColor="@color/white"
+                        android:background="@color/red" />
+
+                    <Button
+                        android:id="@+id/btn_change"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:text="Change"
+                        android:visibility="gone"
+                        android:textColor="@color/white"
+                        android:background="@color/green" />
+
+                </FrameLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -113,15 +141,15 @@
                     android:hint="Alternate / Appointment Number">
 
                     <EditText
-                        android:paddingStart="12dp"
                         android:id="@+id/et_alt_num"
-                        android:fontFamily="@font/roboto_regular"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"
                         android:digits="0123456789"
-                        android:maxLength="10"
+                        android:fontFamily="@font/roboto_regular"
                         android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:maxLength="10"
+                        android:paddingStart="12dp"
                         android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -132,15 +160,15 @@
                     android:hint="Cash on Delivery (COD) Number">
 
                     <EditText
-                        android:paddingStart="12dp"
                         android:id="@+id/et_cod"
-                        android:fontFamily="@font/roboto_regular"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"
                         android:digits="0123456789"
-                        android:maxLength="10"
+                        android:fontFamily="@font/roboto_regular"
                         android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:maxLength="10"
+                        android:paddingStart="12dp"
                         android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -151,15 +179,15 @@
                     android:hint="WhatsApp Number">
 
                     <EditText
-                        android:paddingStart="12dp"
                         android:id="@+id/et_whatsapp_no"
-                        android:fontFamily="@font/roboto_regular"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"
                         android:digits="0123456789"
+                        android:fontFamily="@font/roboto_regular"
                         android:imeOptions="actionNext"
+                        android:inputType="number"
                         android:maxLength="10"
+                        android:paddingStart="12dp"
                         android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -170,12 +198,12 @@
                     android:hint="Email Id">
 
                     <EditText
-                        android:paddingStart="12dp"
                         android:id="@+id/et_email"
-                        android:fontFamily="@font/roboto_regular"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
                         android:inputType="textEmailAddress"
+                        android:paddingStart="12dp"
                         android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -186,12 +214,12 @@
                     android:hint="Website">
 
                     <EditText
-                        android:paddingStart="12dp"
                         android:id="@+id/et_website"
-                        android:fontFamily="@font/roboto_regular"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
                         android:inputType="textWebEmailAddress"
+                        android:paddingStart="12dp"
                         android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -202,12 +230,12 @@
                     android:hint="Facebook">
 
                     <EditText
-                        android:paddingStart="12dp"
                         android:id="@+id/et_facebook"
-                        android:fontFamily="@font/roboto_regular"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
                         android:inputType="textWebEmailAddress"
+                        android:paddingStart="12dp"
                         android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -219,48 +247,51 @@
                     android:visibility="gone">
 
                     <EditText
-                        android:paddingStart="12dp"
                         android:id="@+id/et_vcard"
-                        android:fontFamily="@font/roboto_regular"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
                         android:inputType="textWebEmailAddress"
+                        android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"/>
+                    android:layout_height="25dp" />
             </LinearLayout>
 
         </ScrollView>
 
         <LinearLayout
             android:id="@+id/lay_btm"
-            android:layout_height="wrap_content"
             android:layout_width="fill_parent"
-            android:orientation="horizontal"
-            android:layout_alignParentBottom="true">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
             <Button
                 android:id="@+id/btn_previous"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/left_button_theme"
+                android:fontFamily="@font/roboto_regular"
                 android:text="Previous"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:fontFamily="@font/roboto_regular"
-                android:background="@drawable/left_button_theme"/>
+                android:textColor="@color/white" />
+
             <Button
                 android:id="@+id/btn_next"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Next"
                 android:layout_weight="1"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:background="@drawable/right_button_theme"
                 android:fontFamily="@font/roboto_regular"
-                android:background="@drawable/right_button_theme"/>
+                android:text="Next"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
 
         </LinearLayout>
     </RelativeLayout>

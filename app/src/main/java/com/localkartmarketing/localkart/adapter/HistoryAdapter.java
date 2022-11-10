@@ -2,7 +2,9 @@ package com.localkartmarketing.localkart.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,18 +28,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     private Context con;
     private List<HistoryData> arrayList;
     String keyIntent;
-    public HistoryAdapter(Context context, ArrayList<HistoryData> historyData, String keyIntent) {
+    private OnItemClickListener onItemClickListener;
+
+    public HistoryAdapter(Context context, ArrayList<HistoryData> historyData, String keyIntent, OnItemClickListener onItemClickListener) {
         super();
         con = context;
         arrayList = historyData;
         this.keyIntent = keyIntent;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
     @Override
     public HistoryAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.history_list_item, viewGroup, false);
-        return new MyViewHolder(v);
+        return new MyViewHolder(v, onItemClickListener);
     }
 
     @Override
@@ -48,12 +53,57 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         holder.tvType.setText(arrayList.get(position).getType());
         if (Integer.parseInt(arrayList.get(position).getCount()) > 1) {
             holder.tvOfferCount.setBackgroundResource(R.drawable.light_pink_curve_box);
-            holder.tvOfferCount.setText("+"+arrayList.get(position).getCount());
+            holder.tvOfferCount.setText("+" + arrayList.get(position).getCount());
         } else {
             holder.tvOfferCount.setText("");
         }
 
         holder.tvStatus.setText(arrayList.get(position).getStatus());
+
+        if (arrayList.get(position).getStatus().equalsIgnoreCase("pending")) {
+            holder.btnDelete.setVisibility(View.VISIBLE);
+            holder.tvDelete.setVisibility(View.GONE);
+        } else {
+            holder.btnDelete.setVisibility(View.GONE);
+            holder.tvDelete.setVisibility(View.VISIBLE);
+        }
+
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(con);
+
+                builder
+                        .setMessage("Are you sure you want to delete ?")
+                        .setPositiveButton(con.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Do nothing but close the dialog
+                                dialog.dismiss();
+
+                                onItemClickListener.onItemClickListener(arrayList.get(position));
+                            }
+                        })
+                        .setNegativeButton(con.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Do nothing
+                                dialog.dismiss();
+                            }
+                        });
+
+                android.app.AlertDialog alert = builder.create();
+                alert.show();
+
+                Button btn_yes = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+                Button btn_no = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+                btn_no.setTextColor(Color.parseColor("#000000"));
+                btn_yes.setTextColor(Color.parseColor("#000000"));
+
+            }
+        });
 
         holder.btnView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +117,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
                 intent.putExtra("shopLongitude", arrayList.get(position).getShopLongitude());
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 con.startActivity(intent);
-                ((Activity)con).finish();
+                ((Activity) con).finish();
             }
         });
 
@@ -93,9 +143,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView tvDate, tvId, tvType, tvPost, tvOfferCount, tvStatus;
-        Button btnView;
-        public MyViewHolder(@NonNull View itemView) {
+        TextView tvDate, tvId, tvType, tvPost, tvOfferCount, tvStatus, tvDelete;
+        Button btnView, btnDelete;
+        OnItemClickListener onItemClickListener;
+
+        public MyViewHolder(@NonNull View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
             tvDate = itemView.findViewById(R.id.tv_date);
             tvId = itemView.findViewById(R.id.tv_id);
@@ -104,6 +156,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             tvOfferCount = itemView.findViewById(R.id.tv_offer_count);
             btnView = itemView.findViewById(R.id.btn_view);
             tvStatus = itemView.findViewById(R.id.tv_status);
+            tvDelete = itemView.findViewById(R.id.tv_delete);
+            btnDelete = itemView.findViewById(R.id.btn_delete);
+            this.onItemClickListener = onItemClickListener;
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClickListener(HistoryData historyData);
     }
 }

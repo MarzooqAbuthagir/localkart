@@ -70,7 +70,6 @@ import com.localkartmarketing.localkart.support.RegBusinessIdSharedPreference;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
 import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
-import com.theartofdev.edmodo.cropper.CropImage;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 import com.yalantis.ucrop.UCrop;
 
@@ -212,7 +211,7 @@ public class CreatePostActivity extends AppCompatActivity {
             }
         });
 
-        offerAdapter = new AddOfferAdapter(this, listOfOffer);
+        offerAdapter = new AddOfferAdapter(this, listOfOffer, 1, "");
         recyclerView.setAdapter(offerAdapter);
 
         offerAdapter.setOnItemDeleteClickListener(new AddOfferAdapter.OnItemDeleteClickListener() {

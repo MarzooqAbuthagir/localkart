@@ -121,6 +121,18 @@ public class ManageBusinessActivity extends AppCompatActivity {
         CardView cardHistory = findViewById(R.id.card_history_layout);
         CardView cardHelp = findViewById(R.id.card_help_layout);
         CardView cardDigitalVcard = findViewById(R.id.card_digital_vcard);
+        CardView cardJob = findViewById(R.id.card_job_layout);
+
+        cardJob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ManageBusinessActivity.this, CreateJobActivity.class);
+                intent.putExtra("key", keyIntent);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         cardMyBusiness.setOnClickListener(new View.OnClickListener() {
             @Override

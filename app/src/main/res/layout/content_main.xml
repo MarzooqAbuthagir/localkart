@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/view"
@@ -17,102 +17,140 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimaryDark"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
             app:titleMarginStart="0dp">
 
             <TextView
                 style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/home_titlebar"
-                android:padding="8dp"
                 android:fontFamily="@font/roboto_regular"
+                android:padding="8dp"
+                android:text="@string/home_titlebar"
                 android:textSize="20dp" />
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView
-        android:fillViewport="true"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:layout_weight="0.95"
+            android:fillViewport="true">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="245dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/view_pager"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="220dp"
-                    android:layout_marginBottom="0dp" />
+                    android:layout_height="245dp"
+                    android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_above="@+id/btn_lay"
-                    android:id="@+id/slider_dots"
+                    <androidx.viewpager.widget.ViewPager
+                        android:id="@+id/view_pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:layout_marginBottom="0dp" />
+
+                    <LinearLayout
+                        android:id="@+id/slider_dots"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/btn_lay"
+                        android:layout_margin="5dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:orientation="horizontal" />
+
+                    <LinearLayout
+                        android:id="@+id/btn_lay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btn_shopping"
+                            android:layout_width="140dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="-8dip"
+                            android:background="@drawable/left_curve_sel"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center"
+                            android:text="Shopping"
+                            android:textAllCaps="true"
+                            android:textColor="@color/white" />
+
+                        <Button
+                            android:id="@+id/btn_services"
+                            android:layout_width="140dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/right_curve_unsel"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center"
+                            android:text="Services"
+                            android:textAllCaps="true"
+                            android:textColor="@color/grey" />
+
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <GridView
+                    android:id="@+id/grid_category"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:orientation="horizontal" />
-
-                <LinearLayout
-                    android:id="@+id/btn_lay"
-                    android:layout_alignParentBottom="true"
-                    android:gravity="center"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="5dp"
+                    android:gravity="center"
+                    android:numColumns="4"
+                    android:verticalSpacing="24dp" />
+            </LinearLayout>
+        </ScrollView>
 
-                    <Button
-                        android:id="@+id/btn_shopping"
-                        android:layout_marginEnd="-8dip"
-                        android:layout_width="140dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:background="@drawable/left_curve_sel"
-                        android:text="Shopping"
-                        android:textColor="@color/white"
-                        android:textAllCaps="true"
-                        android:fontFamily="@font/roboto_regular"/>
 
-                    <Button
-                        android:background="@drawable/right_curve_unsel"
-                        android:id="@+id/btn_services"
-                        android:layout_width="140dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:textColor="@color/grey"
-                        android:text="Services"
-                        android:textAllCaps="true"
-                        android:fontFamily="@font/roboto_regular"/>
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/recycler_view"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_weight="0.05"-->
+<!--            android:background="@color/colorPrimaryDark"-->
+<!--            android:scrollbars="horizontal" />-->
 
-                </LinearLayout>
-            </RelativeLayout>
+        <TextView
+            android:id="@+id/tvBottom"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:background="@color/colorPrimaryDark"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:text=""
+            android:layout_weight="0.05"
+            android:layout_height="0dp" />
 
-            <GridView
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:id="@+id/grid_category"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:numColumns="4"
-                android:verticalSpacing="24dp" />
-        </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 </LinearLayout>

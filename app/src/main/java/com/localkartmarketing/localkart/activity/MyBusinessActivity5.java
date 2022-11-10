@@ -22,6 +22,8 @@ import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -41,7 +43,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -73,7 +74,6 @@ import com.localkartmarketing.localkart.support.RegBusinessSharedPrefrence;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
 import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
-import com.theartofdev.edmodo.cropper.CropImage;
 import com.yalantis.ucrop.UCrop;
 
 import org.json.JSONException;
@@ -944,5 +944,140 @@ public class MyBusinessActivity5 extends AppCompatActivity {
         Utils.clearImageList(MyBusinessActivity5.this);
         Utils.setImageList("imageList", arrayList, MyBusinessActivity5.this);
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_delete, menu);
+        MenuItem menuItem = menu.getItem(0);
+        if (strBusinessId.equalsIgnoreCase("1")) {
+            menuItem.setVisible(true);
+        } else {
+            menuItem.setVisible(false);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.ic_delete) {
+
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MyBusinessActivity5.this);
+
+            builder
+                    .setMessage("Are you sure you want to delete ?")
+                    .setPositiveButton(MyBusinessActivity5.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Do nothing but close the dialog
+                            dialog.dismiss();
+                            deleteBusinessAccount();
+
+                        }
+                    })
+                    .setNegativeButton(MyBusinessActivity5.this.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Do nothing
+                            dialog.dismiss();
+                        }
+                    });
+
+            android.app.AlertDialog alert = builder.create();
+            alert.show();
+
+            Button btn_yes = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+            Button btn_no = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+            btn_no.setTextColor(Color.parseColor("#000000"));
+            btn_yes.setTextColor(Color.parseColor("#000000"));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteBusinessAccount() {
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(MyBusinessActivity5.this);
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.businessdelete, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    try {
+                        //converting response to json object
+                        JSONObject obj = new JSONObject(response);
+
+                        System.out.println(Tag + " businessdelete response - " + response);
+
+                        Utils.dismissProgress();
+
+                        str_result = obj.getString("errorCode");
+                        System.out.print(Tag + " businessdelete result " + str_result);
+
+                        if (Integer.parseInt(str_result) == 0) {
+
+                            Utils.clearRegPref(MyBusinessActivity5.this);
+                            RegBusinessSharedPrefrence.setMenuFlag(MyBusinessActivity5.this, "0");
+
+                            RegBusinessTypeSharedPreference.setBusinessType(MyBusinessActivity5.this, "");
+                            RegBusinessIdSharedPreference.setBusinessId(MyBusinessActivity5.this, "");
+
+                            Intent intent = new Intent(MyBusinessActivity5.this, MainActivity.class);
+                            intent.putExtra("key", "Shopping");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+
+                        } else if (Integer.parseInt(str_result) == 1) {
+                            str_message = obj.getString("message");
+                            Toast.makeText(MyBusinessActivity5.this, str_message, Toast.LENGTH_SHORT).show();
+                        } else if (Integer.parseInt(str_result) == 2) {
+                            str_message = obj.getString("message");
+                            Toast.makeText(MyBusinessActivity5.this, str_message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    Utils.dismissProgress();
+                    Toast.makeText(MyBusinessActivity5.this, MyBusinessActivity5.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                    if (error instanceof NoConnectionError) {
+                        System.out.println("NoConnectionError");
+                    } else if (error instanceof TimeoutError) {
+                        System.out.println("TimeoutError");
+
+                    } else if (error instanceof ServerError) {
+                        System.out.println("ServerError");
+
+                    } else if (error instanceof AuthFailureError) {
+                        System.out.println("AuthFailureError");
+
+                    } else if (error instanceof NetworkError) {
+                        System.out.println("NetworkError");
+                    }
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("businessIndexId", basicDetailsData.getIndexId());
+                    params.put("businessType", basicDetailsData.getBusinessType());
+                    System.out.println(Tag + " businessdelete inputs " + params);
+                    return params;
+                }
+            };
+
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+        } else {
+            Toast.makeText(this, MyBusinessActivity5.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+        }
     }
 }

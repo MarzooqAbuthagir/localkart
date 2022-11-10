@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.localkartmarketing.localkart.activity.DirectoryActivity;
 import com.localkartmarketing.localkart.activity.FestivalActivity;
+import com.localkartmarketing.localkart.activity.JobOpeningActivity;
 import com.localkartmarketing.localkart.activity.MegaSalesActivity;
 import com.localkartmarketing.localkart.activity.TodayActivity;
 import com.localkartmarketing.localkart.activity.WeeklyActivity;
@@ -91,6 +92,15 @@ public class ViewPagerTabAdapter extends FragmentStatePagerAdapter {
                     bundle4.putString("subcatName", subcatName);
                     tab4.setArguments(bundle4);
                     return tab4;
+                case 5:
+                    JobOpeningActivity tab5 = new JobOpeningActivity();
+                    Bundle bundle5 = new Bundle();
+                    bundle5.putString("type", type);
+                    bundle5.putString("catId", catId);
+                    bundle5.putString("subcatId", subcatId);
+                    bundle5.putString("subcatName", subcatName);
+                    tab5.setArguments(bundle5);
+                    return tab5;
                 default:
                     return null;
             }
@@ -132,6 +142,15 @@ public class ViewPagerTabAdapter extends FragmentStatePagerAdapter {
                     bundle4.putString("subcatName", subcatName);
                     tab4.setArguments(bundle4);
                     return tab4;
+                case 4:
+                    JobOpeningActivity tab5 = new JobOpeningActivity();
+                    Bundle bundle5 = new Bundle();
+                    bundle5.putString("type", type);
+                    bundle5.putString("catId", catId);
+                    bundle5.putString("subcatId", subcatId);
+                    bundle5.putString("subcatName", subcatName);
+                    tab5.setArguments(bundle5);
+                    return tab5;
                 default:
                     return null;
             }

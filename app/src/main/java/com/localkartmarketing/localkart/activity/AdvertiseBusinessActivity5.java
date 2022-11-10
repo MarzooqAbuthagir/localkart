@@ -403,6 +403,10 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
                         } else if (Integer.parseInt(str_result) == 2) {
                             str_message = obj.getString("message");
                             Toast.makeText(AdvertiseBusinessActivity5.this, str_message, Toast.LENGTH_SHORT).show();
+                        } else if (Integer.parseInt(str_result) == 1) {
+                            str_message = obj.getString("message");
+                            String str_index_id = obj.getString("indexId");
+                            uploadImages(str_index_id, view);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

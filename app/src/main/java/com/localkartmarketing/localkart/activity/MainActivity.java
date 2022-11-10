@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -108,6 +109,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static SharedPreferences mPrefs;
 
     App app;
+
+//    RecyclerView recyclerView;
+//    ArrayList<NewsData> newsListValue = new ArrayList<>();
+    TextView tvBottom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,6 +252,111 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView tvVersion = findViewById(R.id.tv_version);
         tvVersion.setText("Version " + BuildConfig.VERSION_NAME);
         tvVersion.setTextColor(Color.GRAY);
+
+//        recyclerView = findViewById(R.id.recycler_view);
+//
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+//        recyclerView.setLayoutManager(layoutManager);
+//
+//        LinearLayoutManager horizontalLayout = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
+//        recyclerView.setLayoutManager(horizontalLayout);
+
+        tvBottom = findViewById(R.id.tvBottom);
+        tvBottom.setSelected(true);
+        tvBottom.setSingleLine(true);
+        tvBottom.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+    }
+
+    private void getNewsData() {
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(MainActivity.this);
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.viewnews, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    try {
+                        //converting response to json object
+                        JSONObject obj = new JSONObject(response);
+
+                        System.out.println(Tag + " getNewsData response - " + response);
+
+                        Utils.dismissProgress();
+
+                        str_result = obj.getString("errorCode");
+                        System.out.print(Tag + " getNewsData result " + str_result);
+
+                        if (Integer.parseInt(str_result) == 0) {
+
+                            tvBottom.setText(obj.getString("newsDetails"));
+
+//                            newsListValue.clear();
+//
+//                            JSONArray json = obj.getJSONArray("result");
+//                            for (int i = 0; i < json.length(); i++) {
+//                                JSONObject jsonObject = json.getJSONObject(i);
+//                                NewsData newsData = new NewsData(
+//                                        jsonObject.getString("newsId"),
+//                                        jsonObject.getString("newsDetails"),
+//                                        jsonObject.getString("actionType"),
+//                                        jsonObject.getString("dataLink"));
+//
+//                                newsListValue.add(newsData);
+//                            }
+//
+//                            NewsAdapter adapter = new NewsAdapter(MainActivity.this, newsListValue);
+//                            recyclerView.setAdapter(adapter);
+
+                        } else if (Integer.parseInt(str_result) == 2) {
+                            str_message = obj.getString("Message");
+                            Toast.makeText(MainActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                        } else if (Integer.parseInt(str_result) == 1) {
+                            str_message = obj.getString("Message");
+//                            Toast.makeText(MainActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                            tvBottom.setText("Currently No News Feed Available for your Registered District.");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    Utils.dismissProgress();
+                    Toast.makeText(MainActivity.this, MainActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                    if (error instanceof NoConnectionError) {
+                        System.out.println("NoConnectionError");
+                    } else if (error instanceof TimeoutError) {
+                        System.out.println("TimeoutError");
+
+                    } else if (error instanceof ServerError) {
+                        System.out.println("ServerError");
+
+                    } else if (error instanceof AuthFailureError) {
+                        System.out.println("AuthFailureError");
+
+                    } else if (error instanceof NetworkError) {
+                        System.out.println("NetworkError");
+                    }
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("stateId", userDetail.getStateId());
+                    params.put("districtId", userDetail.getDistrictId());
+                    System.out.println(Tag + " getNewsData inputs " + params);
+                    return params;
+                }
+            };
+
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+        } else {
+            Toast.makeText(this, MainActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void getCategoryData(String apiName) {
@@ -286,6 +396,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             gridView.setAdapter(adapter);
 
                             fetchLastLocation();
+
+                            getNewsData();
 
                         } else if (Integer.parseInt(str_result) == 2) {
                             str_message = obj.getString("message");

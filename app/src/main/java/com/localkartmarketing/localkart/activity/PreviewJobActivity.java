@@ -3,6 +3,7 @@ package com.localkartmarketing.localkart.activity;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -30,7 +31,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.adapter.ViewPagerOfferListAdapter;
+import com.localkartmarketing.localkart.adapter.ViewPagerShopBannerAdapter;
 import com.localkartmarketing.localkart.model.AddOfferData;
+import com.localkartmarketing.localkart.model.ShopBanner;
 import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
@@ -43,8 +46,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PreviewOfferActivity extends AppCompatActivity {
-    private String Tag = "PreviewOfferActivity";
+public class PreviewJobActivity extends AppCompatActivity {
+    private String Tag = "PreviewJobActivity";
 
     Utils utils;
     Toolbar toolbar;
@@ -57,20 +60,27 @@ public class PreviewOfferActivity extends AppCompatActivity {
 
     private static ViewPager mPager;
     LinearLayout sliderDotspanel;
+    private static int currentPage = 0;
+    Handler handler = new Handler();
+    Runnable runnable;
+    int delay = 2000;
 
-    ViewPagerOfferListAdapter viewPagerAdapter;
+//    ViewPagerOfferListAdapter viewPagerAdapter;
 
     LinearLayout layMain, layLeft, layRight, layBtm;
     TextView tvOfferTitle, tvOfferDesc, tvDate;
     List<AddOfferData> offerDataList = new ArrayList<>();
     int dealOffer;
 
+    List<ShopBanner> shopBannerList = new ArrayList<>();
+    ViewPagerShopBannerAdapter viewPagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_preview_offer);
+        setContentView(R.layout.activity_preview_job);
 
-        utils = new Utils(PreviewOfferActivity.this);
+        utils = new Utils(PreviewJobActivity.this);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -89,7 +99,7 @@ public class PreviewOfferActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         // finally change the color
-        window.setStatusBarColor(ContextCompat.getColor(PreviewOfferActivity.this, R.color.colorPrimaryDark));
+        window.setStatusBarColor(ContextCompat.getColor(PreviewJobActivity.this, R.color.colorPrimaryDark));
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -157,7 +167,7 @@ public class PreviewOfferActivity extends AppCompatActivity {
 
     private void getApiCall() {
         if (Utils.isInternetOn()) {
-            Utils.showProgress(PreviewOfferActivity.this);
+            Utils.showProgress(PreviewJobActivity.this);
             String apiName = strConstPostType.equalsIgnoreCase("MEGASALES") ? Utils.viewmegasalesdeals :
                     strConstPostType.equalsIgnoreCase("JOB OPENING") ? Utils.viewjobdeals : Utils.viewdeals;
 
@@ -199,6 +209,18 @@ public class PreviewOfferActivity extends AppCompatActivity {
                                 );
                                 offerDataList.add(offerData);
                             }
+
+                            shopBannerList.clear();
+                            JSONArray jsonArray = obj.getJSONArray("multipleImages");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject object = jsonArray.getJSONObject(i);
+                                ShopBanner shopBanner = new ShopBanner(
+                                        object.getString("imageUrl")
+                                );
+                                shopBannerList.add(shopBanner);
+                            }
+
+                            setShopBanners(shopBannerList);
 
                             dealOffer = Integer.parseInt(dealCount);
                             setView(dealOffer);
@@ -253,10 +275,10 @@ public class PreviewOfferActivity extends AppCompatActivity {
 
                         } else if (Integer.parseInt(str_result) == 2) {
                             str_message = obj.getString("message");
-                            Toast.makeText(PreviewOfferActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PreviewJobActivity.this, str_message, Toast.LENGTH_SHORT).show();
                         } else if (Integer.parseInt(str_result) == 1) {
                             str_message = obj.getString("message");
-                            Toast.makeText(PreviewOfferActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PreviewJobActivity.this, str_message, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -267,7 +289,7 @@ public class PreviewOfferActivity extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
 
                     Utils.dismissProgress();
-                    Toast.makeText(PreviewOfferActivity.this, PreviewOfferActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PreviewJobActivity.this, PreviewJobActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
 
                     if (error instanceof NoConnectionError) {
                         System.out.println("NoConnectionError");
@@ -299,7 +321,7 @@ public class PreviewOfferActivity extends AppCompatActivity {
             stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
         } else {
-            Toast.makeText(this, PreviewOfferActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, PreviewJobActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -308,12 +330,67 @@ public class PreviewOfferActivity extends AppCompatActivity {
         tvOfferDesc.setText(offerDataList.get(dealOffer).getDesc());
         tvDate.setText(offerDataList.get(dealOffer).getFromDate() + " To " + offerDataList.get(dealOffer).getToDate());
 
-        viewPagerAdapter = new ViewPagerOfferListAdapter(offerDataList, PreviewOfferActivity.this);
+//        viewPagerAdapter = new ViewPagerOfferListAdapter(offerDataList, PreviewJobActivity.this);
+//        mPager.setAdapter(viewPagerAdapter);
+//
+//        mPager.setCurrentItem(dealOffer);
+//
+//        addDot(dealOffer);
+    }
+
+    private void setShopBanners(final List<ShopBanner> shopBannerList) {
+        viewPagerAdapter = new ViewPagerShopBannerAdapter(shopBannerList, PreviewJobActivity.this);
         mPager.setAdapter(viewPagerAdapter);
 
-        mPager.setCurrentItem(dealOffer);
+//        // Auto start of viewpager
+//        final Handler handler = new Handler();
+//        final Runnable Update = new Runnable() {
+//            public void run() {
+//
+//                if (currentPage == shopBannerList.size()) {
+//                    currentPage = 0;
+//                }
+//                mPager.setCurrentItem(currentPage++, true);
+//            }
+//        };
+//        handler.postDelayed(Update, 1000);
+//        swipeTimer = new Timer();
+//        swipeTimer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                handler.post(Update);
+//            }
+//        }, DELAY_MS, PERIOD_MS);
 
-        addDot(dealOffer);
+        handler.postDelayed(runnable = new Runnable() {
+            @Override
+            public void run() {
+                handler.postDelayed(runnable, delay);
+                if (currentPage == shopBannerList.size()) {
+                    currentPage = 0;
+                }
+                mPager.setCurrentItem(currentPage++, true);
+            }
+        }, delay);
+
+        addDot(0);
+
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                addDot(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void addDot(int dotPosition) {
@@ -324,7 +401,7 @@ public class PreviewOfferActivity extends AppCompatActivity {
 
         for (int j = 0; j < dotscount; j++) {
 
-            dots[j] = new ImageView(PreviewOfferActivity.this);
+            dots[j] = new ImageView(PreviewJobActivity.this);
             dots[j].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -345,5 +422,11 @@ public class PreviewOfferActivity extends AppCompatActivity {
 
     private void back() {
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(runnable);
     }
 }

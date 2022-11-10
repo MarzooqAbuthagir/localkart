@@ -67,11 +67,13 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
         }
         holder.tvShopName.setText(arrayList.get(position).getName());
         holder.tvShopDesc.setText(arrayList.get(position).getDescription());
+        String suffixTxt;
         if (arrayList.get(position).getOfferCount().equalsIgnoreCase("1")) {
-            holder.tvOfferCount.setText("+" + arrayList.get(position).getOfferCount() + " Deal");
+            suffixTxt = constPostType.equalsIgnoreCase("JOB OPENING") ? " Job" : " Deal";
         } else {
-            holder.tvOfferCount.setText("+" + arrayList.get(position).getOfferCount() + " Deals");
+            suffixTxt = constPostType.equalsIgnoreCase("JOB OPENING") ? " Jobs" : " Deals";
         }
+        holder.tvOfferCount.setText("+" + arrayList.get(position).getOfferCount() + suffixTxt);
 
         holder.tvDistance.setText(arrayList.get(position).getDistance());
         Glide.with(con).load(arrayList.get(position).getLogo())

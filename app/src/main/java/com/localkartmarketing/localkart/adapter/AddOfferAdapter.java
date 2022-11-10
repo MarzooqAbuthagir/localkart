@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.model.AddOfferData;
 
@@ -21,10 +23,15 @@ public class AddOfferAdapter extends RecyclerView.Adapter<AddOfferAdapter.ViewHo
     private List<AddOfferData> arrayList;
     private OnItemEditClickListener mItemEditClickListener;
     private OnItemDeleteClickListener mItemDeleteClickListener;
-    public AddOfferAdapter(Context context, List<AddOfferData> listOfOffer) {
+    int pageId;
+    String strJobImage;
+
+    public AddOfferAdapter(Context context, List<AddOfferData> listOfOffer, int pageId, String image) {
         super();
         con = context;
         arrayList = listOfOffer;
+        this.pageId = pageId;
+        this.strJobImage = image;
     }
 
     public void setOnItemEditClickListener(final OnItemEditClickListener mItemClickListener) {
@@ -44,17 +51,22 @@ public class AddOfferAdapter extends RecyclerView.Adapter<AddOfferAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull final AddOfferAdapter.ViewHolder holder, int position) {
-        System.out.println("onadapter "+ position + " heading "+arrayList.get(position).getHeading());
+        System.out.println("onadapter " + position + " heading " + arrayList.get(position).getHeading());
         holder.tvHeading.setText(arrayList.get(position).getHeading());
         holder.tvDesc.setText(arrayList.get(position).getDesc());
 
 //        holder.tvOffer.setText("Deal "+arrayList.get(position).getOffCount());
         int pos = position + 1;
-        holder.tvOffer.setText("Deal "+pos);
-        holder.imageView.getLayoutParams().height = 500;
-        holder.imageView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        holder.imageView.setImageBitmap(arrayList.get(position).getBitmap());
-
+        holder.tvOffer.setText(pageId == 2 ? "Job Opening " + pos : "Deal " + pos);
+        if (pageId == 2) {
+            Glide.with(con).load(arrayList.get(position).getImage())
+                    .placeholder(R.mipmap.ic_launcher_round)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.imageView);
+        } else {
+            holder.imageView.getLayoutParams().height = 500;
+            holder.imageView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+            holder.imageView.setImageBitmap(arrayList.get(position).getBitmap());
+        }
         holder.ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

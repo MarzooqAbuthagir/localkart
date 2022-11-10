@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HistoryActivity extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity implements HistoryAdapter.OnItemClickListener {
     private String Tag = "HistoryActivity";
     Utils utils;
     Toolbar toolbar;
@@ -170,7 +170,7 @@ public class HistoryActivity extends AppCompatActivity {
                                 historyData.add(history);
                             }
 
-                            HistoryAdapter adapter = new HistoryAdapter(HistoryActivity.this, historyData, keyIntent);
+                            HistoryAdapter adapter = new HistoryAdapter(HistoryActivity.this, historyData, keyIntent, HistoryActivity.this);
                             recyclerView.setAdapter(adapter);
 
                             Drawable mDivider = ContextCompat.getDrawable(HistoryActivity.this, R.drawable.divider_line);
@@ -244,5 +244,75 @@ public class HistoryActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onItemClickListener(final HistoryData historyData) {
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(HistoryActivity.this);
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.deletepost, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    try {
+                        //converting response to json object
+                        JSONObject obj = new JSONObject(response);
+
+                        System.out.println(Tag + " deletepost response - " + response);
+
+                        Utils.dismissProgress();
+
+                        str_result = obj.getString("errorCode");
+                        System.out.print(Tag + " deletepost result " + str_result);
+
+                        if (Integer.parseInt(str_result) == 0) {
+
+                            getHistory();
+                        } else if (Integer.parseInt(str_result) == 1) {
+                            str_message = obj.getString("message");
+                            Toast.makeText(HistoryActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    Utils.dismissProgress();
+                    Toast.makeText(HistoryActivity.this, HistoryActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                    if (error instanceof NoConnectionError) {
+                        System.out.println("NoConnectionError");
+                    } else if (error instanceof TimeoutError) {
+                        System.out.println("TimeoutError");
+
+                    } else if (error instanceof ServerError) {
+                        System.out.println("ServerError");
+
+                    } else if (error instanceof AuthFailureError) {
+                        System.out.println("AuthFailureError");
+
+                    } else if (error instanceof NetworkError) {
+                        System.out.println("NetworkError");
+                    }
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("postIndexId", historyData.getPostIndexId());
+                    System.out.println(Tag + " deletepost inputs " + params);
+                    return params;
+                }
+            };
+
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+        } else {
+            Toast.makeText(this, HistoryActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+        }
     }
 }

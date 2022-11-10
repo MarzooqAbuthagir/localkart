@@ -40,7 +40,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,7 +64,6 @@ import com.localkartmarketing.localkart.support.LocationTrack;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
 import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
-import com.theartofdev.edmodo.cropper.CropImage;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 import com.yalantis.ucrop.UCrop;
 
@@ -212,7 +210,7 @@ public class MegaSalesCreatePostActivity extends AppCompatActivity {
             }
         });
 
-        offerAdapter = new AddOfferAdapter(this, listOfOffer);
+        offerAdapter = new AddOfferAdapter(this, listOfOffer, 1, "");
         recyclerView.setAdapter(offerAdapter);
 
         offerAdapter.setOnItemDeleteClickListener(new AddOfferAdapter.OnItemDeleteClickListener() {

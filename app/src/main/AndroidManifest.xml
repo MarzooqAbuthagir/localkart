@@ -21,12 +21,21 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        android:requestLegacyExternalStorage="true"
         tools:replace="android:allowBackup">
+        <activity
+            android:name=".activity.PreviewJobActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ViewJobActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CreateJobActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.MegaSalesViewPostActivity"
             android:exported="true" />
@@ -98,8 +107,7 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat" />
-        <!-- <meta-data -->
+            android:theme="@style/Base.Theme.AppCompat" /> <!-- <meta-data -->
         <!-- android:name="com.google.android.geo.API_KEY" -->
         <!-- android:value="AIzaSyCAdZwm8yXwsIX-V5aZtXc64Q2xpEbHWio" /> -->
         <meta-data
@@ -107,9 +115,7 @@
             android:value="AIzaSyCv9weX5m5_OpT-SjTqtjHAw7LOhmHaBCo" />
         <meta-data
             android:name="com.onesignal.NotificationAccentColor.DEFAULT"
-            android:value="#FFE63E89" />
-
-        <!-- uCrop cropping activity -->
+            android:value="#FFE63E89" /> <!-- uCrop cropping activity -->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"

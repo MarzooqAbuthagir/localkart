@@ -1,5 +1,7 @@
 package com.localkartmarketing.localkart.support;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -24,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class Utils {
     @SuppressLint("StaticFieldLeak")
@@ -105,6 +105,18 @@ public class Utils {
     public static String viewmegasalesdeals = "viewmegasalesdeals";
     public static String homeslider = "homeslider";
     public static String categoryslider = "categoryslider";
+    public static String userdelete = "userdelete";
+    public static String businessdelete = "businessdelete";
+    public static String deletepost = "deletepost";
+    public static String jobpostvalidation = "jobpostvalidation";
+    public static String createjobpost = "createjobpost";
+    public static String createjoboffers = "createjoboffers";
+    public static String joblist = "joblist";
+    public static String joblistnearme = "joblist_nearme";
+    public static String viewjobpostdetails = "viewjobpostdetails";
+    public static String viewjobdeals = "viewjobdeals";
+    public static String viewnews = "viewnews";
+    public static String sendotpnew = "sendotpnew";
 
     // Help and Support Url
     public static String helpUrl = "https://localkart.app/app/help-and-support.php";
@@ -282,6 +294,18 @@ public class Utils {
         return sharedPreferences.getString("chips", "");
     }
 
+    public static void setBusRegMobNum(boolean value) {
+        sharedPreferences = con.getSharedPreferences("BUS_REG_MOB_NUM", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("busRegMobNum", value);
+        editor.apply();
+    }
+
+    public static boolean getBusRegMobNum(Context con) {
+        sharedPreferences = con.getSharedPreferences("BUS_REG_MOB_NUM", MODE_PRIVATE);
+        return sharedPreferences.getBoolean("busRegMobNum", false);
+    }
+
     public static void saveServiceList(List<String> services) {
         sharedPreferences = con.getSharedPreferences("SERVICES", MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
@@ -317,6 +341,9 @@ public class Utils {
         sharedPreferences.edit().clear().apply();
 
         sharedPreferences = con.getSharedPreferences("TAGS", MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+
+        sharedPreferences = con.getSharedPreferences("BUS_REG_MOB_NUM", MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();
 
         clearImageList(con);

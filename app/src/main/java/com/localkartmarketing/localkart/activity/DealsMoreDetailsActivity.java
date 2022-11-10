@@ -152,6 +152,12 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
         tvAccessValue = findViewById(R.id.tv_acccess_value);
         tvReportPost = findViewById(R.id.tv_report_post);
 
+        if (strConstPostType.equalsIgnoreCase("JOB OPENING")) {
+            tvReportPost.setVisibility(View.GONE);
+        } else {
+            tvReportPost.setVisibility(View.VISIBLE);
+        }
+
         mPager = findViewById(R.id.view_pager);
         sliderDotspanel = findViewById(R.id.slider_dots);
 
@@ -418,8 +424,9 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
         if (Utils.isInternetOn()) {
             Utils.showProgress(DealsMoreDetailsActivity.this);
 
-            String apiName = strConstPostType.equalsIgnoreCase("MEGASALES") ? Utils.viewmegasalespostdetails : Utils.viewpostdetails;
-            System.out.println(Tag + " api Name "+ apiName);
+            String apiName = strConstPostType.equalsIgnoreCase("MEGASALES") ? Utils.viewmegasalespostdetails :
+                    strConstPostType.equalsIgnoreCase("JOB OPENING") ? Utils.viewjobpostdetails : Utils.viewpostdetails;
+            System.out.println(Tag + " api Name " + apiName);
             StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + apiName, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -548,11 +555,13 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
         recyclerView.setAdapter(offerAdapter);
 
         TextView tvOfferTitle = findViewById(R.id.tv_offer_title);
+        String suffixTxt;
         if (offerDataList.size() > 1) {
-            tvOfferTitle.setText("Deals");
+            suffixTxt = strConstPostType.equalsIgnoreCase("JOB OPENING") ? "Job Openings" : "Deals";
         } else {
-            tvOfferTitle.setText("Deal");
+            suffixTxt = strConstPostType.equalsIgnoreCase("JOB OPENING") ? "Job Opening" : "Deal";
         }
+        tvOfferTitle.setText(suffixTxt);
 
         setShopBanners(shopBannerList);
 

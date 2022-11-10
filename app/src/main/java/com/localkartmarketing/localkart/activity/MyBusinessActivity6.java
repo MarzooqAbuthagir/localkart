@@ -1,20 +1,16 @@
 package com.localkartmarketing.localkart.activity;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -23,6 +19,15 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -386,5 +391,134 @@ public class MyBusinessActivity6 extends AppCompatActivity {
     private void back() {
         Utils.saveServiceList(listOfService);
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_delete, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.ic_delete) {
+
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MyBusinessActivity6.this);
+
+            builder
+                    .setMessage("Are you sure you want to delete ?")
+                    .setPositiveButton(MyBusinessActivity6.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Do nothing but close the dialog
+                            dialog.dismiss();
+                            deleteBusinessAccount();
+
+                        }
+                    })
+                    .setNegativeButton(MyBusinessActivity6.this.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Do nothing
+                            dialog.dismiss();
+                        }
+                    });
+
+            android.app.AlertDialog alert = builder.create();
+            alert.show();
+
+            Button btn_yes = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+            Button btn_no = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+            btn_no.setTextColor(Color.parseColor("#000000"));
+            btn_yes.setTextColor(Color.parseColor("#000000"));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteBusinessAccount() {
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(MyBusinessActivity6.this);
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.businessdelete, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    try {
+                        //converting response to json object
+                        JSONObject obj = new JSONObject(response);
+
+                        System.out.println(Tag + " businessdelete response - " + response);
+
+                        Utils.dismissProgress();
+
+                        str_result = obj.getString("errorCode");
+                        System.out.print(Tag + " businessdelete result " + str_result);
+
+                        if (Integer.parseInt(str_result) == 0) {
+
+                            Utils.clearRegPref(MyBusinessActivity6.this);
+                            RegBusinessSharedPrefrence.setMenuFlag(MyBusinessActivity6.this, "0");
+
+                            RegBusinessTypeSharedPreference.setBusinessType(MyBusinessActivity6.this, "");
+                            RegBusinessIdSharedPreference.setBusinessId(MyBusinessActivity6.this, "");
+
+                            Intent intent = new Intent(MyBusinessActivity6.this, MainActivity.class);
+                            intent.putExtra("key", "Shopping");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+
+                        } else if (Integer.parseInt(str_result) == 1) {
+                            str_message = obj.getString("message");
+                            Toast.makeText(MyBusinessActivity6.this, str_message, Toast.LENGTH_SHORT).show();
+                        } else if (Integer.parseInt(str_result) == 2) {
+                            str_message = obj.getString("message");
+                            Toast.makeText(MyBusinessActivity6.this, str_message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    Utils.dismissProgress();
+                    Toast.makeText(MyBusinessActivity6.this, MyBusinessActivity6.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                    if (error instanceof NoConnectionError) {
+                        System.out.println("NoConnectionError");
+                    } else if (error instanceof TimeoutError) {
+                        System.out.println("TimeoutError");
+
+                    } else if (error instanceof ServerError) {
+                        System.out.println("ServerError");
+
+                    } else if (error instanceof AuthFailureError) {
+                        System.out.println("AuthFailureError");
+
+                    } else if (error instanceof NetworkError) {
+                        System.out.println("NetworkError");
+                    }
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("businessIndexId", basicDetailsData.getIndexId());
+                    params.put("businessType", basicDetailsData.getBusinessType());
+                    System.out.println(Tag + " businessdelete inputs " + params);
+                    return params;
+                }
+            };
+
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+        } else {
+            Toast.makeText(this, MyBusinessActivity6.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+        }
     }
 }

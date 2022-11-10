@@ -90,13 +90,14 @@ public class DealsActivity extends AppCompatActivity implements TabLayout.OnTabS
         tabLayout.addTab(tabLayout.newTab().setText("TODAY"));
         tabLayout.addTab(tabLayout.newTab().setText("WEEKLY"));
         tabLayout.addTab(tabLayout.newTab().setText("FESTIVAL"));
+        tabLayout.addTab(tabLayout.newTab().setText("JOB OPENINGS"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        if (!offerTitle.isEmpty()) {
+//        if (!offerTitle.isEmpty()) {
             tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        } else {
-            tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        }
+//        } else {
+//            tabLayout.setTabMode(TabLayout.MODE_FIXED);
+//        }
 
         //Initializing viewPager
         viewPager = findViewById(R.id.pager);

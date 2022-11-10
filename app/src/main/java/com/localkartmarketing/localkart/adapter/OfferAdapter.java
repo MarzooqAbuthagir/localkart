@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.localkartmarketing.localkart.R;
+import com.localkartmarketing.localkart.activity.PreviewJobActivity;
 import com.localkartmarketing.localkart.activity.PreviewOfferActivity;
 import com.localkartmarketing.localkart.model.AddOfferData;
 
@@ -31,7 +32,7 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
     private String shopType;
     private String constPostType;
 
-    public OfferAdapter(Context context, List<AddOfferData> listOfOffer, int i, boolean isClick, String keyIntent, String postId, String shopId, String shopType, String constPostType ) {
+    public OfferAdapter(Context context, List<AddOfferData> listOfOffer, int i, boolean isClick, String keyIntent, String postId, String shopId, String shopType, String constPostType) {
         super();
         con = context;
         arrayList = listOfOffer;
@@ -67,7 +68,19 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
         holder.layMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isClickable) {
+                if (isClickable && constPostType.equalsIgnoreCase("JOB OPENING")) {
+                    String dealCount = String.valueOf(position);
+                    Intent intent = new Intent(con, PreviewJobActivity.class);
+                    intent.putExtra("key", key);
+                    intent.putExtra("dealCount", dealCount);
+                    intent.putExtra("shopId", shopId);
+                    intent.putExtra("postId", postId);
+                    intent.putExtra("shopType", shopType);
+                    intent.putExtra("constPostType", constPostType);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    con.startActivity(intent);
+                }
+                else if (isClickable) {
                     String dealCount = String.valueOf(position);
                     Intent intent = new Intent(con, PreviewOfferActivity.class);
                     intent.putExtra("key", key);

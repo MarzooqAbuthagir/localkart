@@ -108,7 +108,40 @@
 
         <View
             android:background="@color/white"
-            android:layout_width="5dp"
+            android:layout_width="15dp"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="70dp"
+            android:layout_height="25dp"
+            android:text="Delete"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:textSize="14dp"
+            android:visibility="gone"
+            android:fontFamily="@font/roboto_regular"
+            android:background="@drawable/button_theme"/>
+
+        <TextView
+            android:id="@+id/tv_delete"
+            android:text=" - "
+            android:textAllCaps="true"
+            android:padding="5dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:fontFamily="@font/roboto_regular"
+            android:layout_width="70dp"
+            android:textSize="14dp"
+            android:visibility="gone"
+            android:singleLine="true"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:background="@color/white"
+            android:layout_width="15dp"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 

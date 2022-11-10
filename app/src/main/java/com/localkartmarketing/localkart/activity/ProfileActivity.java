@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Base64;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -37,7 +40,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -58,9 +60,9 @@ import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.model.DistrictData;
 import com.localkartmarketing.localkart.model.StateData;
 import com.localkartmarketing.localkart.model.UserDetail;
+import com.localkartmarketing.localkart.support.LoginSharedPreference;
 import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
-import com.theartofdev.edmodo.cropper.CropImage;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 import com.yalantis.ucrop.UCrop;
 
@@ -723,7 +725,7 @@ public class ProfileActivity extends AppCompatActivity {
             if (ContextCompat.checkSelfPermission(ProfileActivity.this,
                     Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(getApplicationContext(),
-                        "Permission Requires to Access Camera.", Toast.LENGTH_SHORT)
+                                "Permission Requires to Access Camera.", Toast.LENGTH_SHORT)
                         .show();
             } else if (ContextCompat.checkSelfPermission(ProfileActivity.this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -891,6 +893,138 @@ public class ProfileActivity extends AppCompatActivity {
         intent.putExtra("key", keyIntent);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_delete, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.ic_delete) {
+
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ProfileActivity.this);
+
+            builder
+                    .setMessage("Are you sure you want to delete ?")
+                    .setPositiveButton(ProfileActivity.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Do nothing but close the dialog
+                            dialog.dismiss();
+
+                            deleteUserAccount();
+                        }
+                    })
+                    .setNegativeButton(ProfileActivity.this.getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Do nothing
+                            dialog.dismiss();
+                        }
+                    });
+
+            android.app.AlertDialog alert = builder.create();
+            alert.show();
+
+            Button btn_yes = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+            Button btn_no = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+            btn_no.setTextColor(Color.parseColor("#000000"));
+            btn_yes.setTextColor(Color.parseColor("#000000"));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteUserAccount() {
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(ProfileActivity.this);
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.userdelete, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    try {
+                        //converting response to json object
+                        JSONObject obj = new JSONObject(response);
+
+                        System.out.println(Tag + " deleteUserAccount response - " + response);
+
+                        Utils.dismissProgress();
+
+                        str_result = obj.getString("errorCode");
+                        System.out.print(Tag + " deleteUserAccount result " + str_result);
+
+                        if (Integer.parseInt(str_result) == 0) {
+                            stateListValue.clear();
+                            str_message = obj.getString("message");
+
+                            toLogoutCustomer();
+
+                        } else if (Integer.parseInt(str_result) == 2) {
+                            str_message = obj.getString("message");
+                            Toast.makeText(ProfileActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                        } else if (Integer.parseInt(str_result) == 1) {
+                            str_message = obj.getString("message");
+                            Toast.makeText(ProfileActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    Utils.dismissProgress();
+                    Toast.makeText(ProfileActivity.this, ProfileActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                    if (error instanceof NoConnectionError) {
+                        System.out.println("NoConnectionError");
+                    } else if (error instanceof TimeoutError) {
+                        System.out.println("TimeoutError");
+
+                    } else if (error instanceof ServerError) {
+                        System.out.println("ServerError");
+
+                    } else if (error instanceof AuthFailureError) {
+                        System.out.println("AuthFailureError");
+
+                    } else if (error instanceof NetworkError) {
+                        System.out.println("NetworkError");
+                    }
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("userIndexId", obj.getId());
+                    System.out.println(Tag + " deleteUserAccount inputs " + params);
+                    return params;
+                }
+            };
+
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            VolleySingleton.getInstance(ProfileActivity.this).addToRequestQueue(stringRequest);
+        } else {
+            Toast.makeText(ProfileActivity.this, ProfileActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void toLogoutCustomer() {
+        LoginSharedPreference.setLoggedIn(ProfileActivity.this, false);
+
+        SharedPreferences preferences = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
+
+        startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
         finish();
     }
 }

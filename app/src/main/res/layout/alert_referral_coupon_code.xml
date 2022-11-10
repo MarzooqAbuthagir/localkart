@@ -144,18 +144,18 @@
         android:background="@drawable/grey_curve_box">
 
         <EditText
-            android:layout_centerInParent="true"
-            android:fontFamily="@font/roboto_regular"
-            android:textSize="16dp"
-            android:textColor="@color/black"
-            android:hint="Enter Referral / Coupon Code"
+            android:id="@+id/et_code"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:padding="7dp"
-            android:inputType="textCapCharacters"
+            android:layout_centerInParent="true"
             android:layout_toLeftOf="@+id/btn_apply"
-            android:id="@+id/et_code"
-            android:background="@android:color/transparent"/>
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/roboto_regular"
+            android:hint="Enter Referral / Coupon Code"
+            android:inputType="textCapCharacters"
+            android:padding="7dp"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
 
 
         <Button
