@@ -286,7 +286,7 @@ public class TodayActivity extends Fragment {
                             dealsOfferData.setIsSubscribed(jsonObject.getString("isSubscribed"));
                             dealsOfferData.setOfferHeading(jsonObject.getString("offerHeading"));
                             dealsOfferData.setOffferDesc(jsonObject.getString("offerDescription"));
-
+                            dealsOfferData.setViewCount(jsonObject.getString("viewCount"));
                             JSONObject js = jsonObject.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(
                                     js.getString("key"),
@@ -539,7 +539,7 @@ public class TodayActivity extends Fragment {
                             dealsOfferData.setIsSubscribed(jsonObject.getString("isSubscribed"));
                             dealsOfferData.setOfferHeading(jsonObject.getString("offerHeading"));
                             dealsOfferData.setOffferDesc(jsonObject.getString("offerDescription"));
-
+                            dealsOfferData.setViewCount(jsonObject.getString("viewCount"));
                             JSONObject js = jsonObject.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(
                                     js.getString("key"),

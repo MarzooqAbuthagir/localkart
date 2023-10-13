@@ -13,6 +13,8 @@ public class DirectoryData {
     private String isSubscribed;
     private String shareUrl;
     private String isVerify;
+    private String viewCount;
+    private String averageRating;
 
     public DirectoryData() {
     }
@@ -111,5 +113,21 @@ public class DirectoryData {
 
     public void setIsVerify(String isVerify) {
         this.isVerify = isVerify;
+    }
+
+    public String getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(String viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public String getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(String averageRating) {
+        this.averageRating = averageRating;
     }
 }

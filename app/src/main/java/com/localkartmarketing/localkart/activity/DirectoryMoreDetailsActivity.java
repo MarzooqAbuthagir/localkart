@@ -15,12 +15,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +46,7 @@ import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -116,7 +120,11 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
     UserDetail userDetail;
     static SharedPreferences mPrefs;
 
-    TextView tvReport;
+    TextView tvReport, tvRate;
+    String countApiName = "", rateApiName = "";
+    RatingBar ratingBar;
+    TextView tvViewCount, tvRating;
+    String strRating="", strViewCount ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,6 +180,13 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
         tvDirection = findViewById(R.id.tv_direction);
         tvAddress = findViewById(R.id.tv_address);
         tvReport = findViewById(R.id.tv_report);
+        tvRate = findViewById(R.id.tv_rate);
+
+        ratingBar = findViewById(R.id.ratingBar);
+        Drawable drawable = ratingBar.getProgressDrawable();
+        drawable.setColorFilter(Color.parseColor("#FFDF00"),PorterDuff.Mode.SRC_ATOP);
+        tvRating = findViewById(R.id.tv_avg_rating);
+        tvViewCount = findViewById(R.id.tv_views);
 
         mPager = findViewById(R.id.view_pager);
         sliderDotspanel = findViewById(R.id.slider_dots);
@@ -302,7 +317,7 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
 
-        String path = MediaStore.Images.Media.insertImage(getContentResolver(), inImage, "Title_"+ Calendar.getInstance().getTime(), null);
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), inImage, "Title_" + Calendar.getInstance().getTime(), null);
         return Uri.parse(path);
     }
 
@@ -682,10 +697,12 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
             recyclerView.setAdapter(adapter);
 
             tvReport.setText(Html.fromHtml("<u>Report This Service</u>"));
+            tvRate.setText(Html.fromHtml("<u>Rate This Service</u>"));
 
         } else {
             layService.setVisibility(View.GONE);
             tvReport.setText(Html.fromHtml("<u>Report This Shop</u>"));
+            tvRate.setText(Html.fromHtml("<u>Rate This Shop</u>"));
         }
 
         rvAccessOption = findViewById(R.id.rv_access_option);
@@ -710,6 +727,208 @@ public class DirectoryMoreDetailsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        tvRate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(DirectoryMoreDetailsActivity.this, R.style.CustomAlertDialog);
+                ViewGroup viewGroup = findViewById(android.R.id.content);
+                View dialogView = LayoutInflater.from(view.getContext()).inflate(R.layout.alert_rating_bar, viewGroup, false);
+                TextView tvRateTitle = dialogView.findViewById(R.id.tv_rate_title);
+                final RatingBar ratingbar = dialogView.findViewById(R.id.ratingBar);
+                Button btnSubmit = dialogView.findViewById(R.id.btn_submit);
+                Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+                builder.setView(dialogView);
+                builder.setCancelable(false);
+
+                ratingbar.setRating(Float.parseFloat(strRating));
+
+                if (strShopType.equalsIgnoreCase("Shopping")) {
+                    tvRateTitle.setText("Rate this shop");
+                    rateApiName = Utils.shoprating;
+                } else {
+                    tvRateTitle.setText("Rate this service");
+                    rateApiName = Utils.servicerating;
+                }
+                final android.app.AlertDialog alertDialog = builder.create();
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
+                    }
+                });
+                btnSubmit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String rating = String.valueOf(ratingbar.getRating());
+                        if (ratingbar.getRating() == 0.0) {
+                            Toast.makeText(DirectoryMoreDetailsActivity.this, "Select rating to submit", Toast.LENGTH_SHORT).show();
+                        } else {
+                            if (Utils.isInternetOn()) {
+                                rateApi(rating, alertDialog, rateApiName);
+                            } else {
+                                Toast.makeText(DirectoryMoreDetailsActivity.this, DirectoryMoreDetailsActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
+                alertDialog.show();
+
+            }
+        });
+
+        updateViewCount();
+    }
+
+    private void updateViewCount() {
+
+        JSONObject JObj = new JSONObject();
+        try {
+            JObj.put("user_id", userDetail.getId());
+            if (strShopType.equalsIgnoreCase("Shopping")) {
+                JObj.put("shop_id", strShopIndexId);
+                countApiName = Utils.shopviewcount;
+            } else {
+                JObj.put("service_id", strShopIndexId);
+                countApiName = Utils.serviceviewcount;
+            }
+        } catch (Exception e) {
+            System.out.println(Tag + " input exception " + e.getMessage());
+        }
+
+        Utils.showProgress(DirectoryMoreDetailsActivity.this);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Utils.Api + countApiName, JObj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject obj) {
+                try {
+                    System.out.println(Tag + " updateViewCount response - " + obj);
+
+                    Utils.dismissProgress();
+
+                    str_result = obj.getString("httpCode");
+                    System.out.print(Tag + " updateViewCount result " + str_result);
+
+                    if (Integer.parseInt(str_result) == 200) {
+
+                        setRateAndView();
+
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Utils.dismissProgress();
+                Toast.makeText(DirectoryMoreDetailsActivity.this, DirectoryMoreDetailsActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        request.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(request);
+    }
+
+    private void setRateAndView() {
+        JSONObject JObj = new JSONObject();
+        try {
+            JObj.put("shop_service_id", strShopIndexId);
+            JObj.put("shopType", strShopType);
+
+        } catch (Exception e) {
+            System.out.println(Tag + " input exception " + e.getMessage());
+        }
+
+        Utils.showProgress(DirectoryMoreDetailsActivity.this);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Utils.Api + Utils.shopservicedetailcount, JObj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject obj) {
+                try {
+                    System.out.println(Tag + " setRateAndView response - " + obj);
+
+                    Utils.dismissProgress();
+
+                    strViewCount = obj.getString("viewCount");
+                    strRating = obj.getString("averageRating");
+
+                    tvViewCount.setText(strViewCount);
+                    tvRating.setText(strRating);
+                    ratingBar.setRating(Float.parseFloat(strRating));
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Utils.dismissProgress();
+                Toast.makeText(DirectoryMoreDetailsActivity.this, DirectoryMoreDetailsActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        request.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(request);
+    }
+
+    private void rateApi(final String rating, final android.app.AlertDialog alertDialog, String rateApiName) {
+        JSONObject JObj = new JSONObject();
+        try {
+            JObj.put("user_id", userDetail.getId());
+            JObj.put("rating", rating);
+            if (strShopType.equalsIgnoreCase("Shopping")) {
+                JObj.put("shop_id", strShopIndexId);
+            } else {
+                JObj.put("service_id", strShopIndexId);
+            }
+        } catch (Exception e) {
+            System.out.println(Tag + " input exception " + e.getMessage());
+        }
+
+        Utils.showProgress(DirectoryMoreDetailsActivity.this);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Utils.Api + rateApiName, JObj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject obj) {
+                try {
+                    System.out.println(Tag + " rateApi response - " + obj);
+
+                    Utils.dismissProgress();
+
+                    str_result = obj.getString("httpCode");
+                    System.out.print(Tag + " rateApi result " + str_result);
+
+                    if (Integer.parseInt(str_result) == 200) {
+
+                        str_message = obj.getString("message");
+                        alertDialog.dismiss();
+                        Toast.makeText(DirectoryMoreDetailsActivity.this, str_message, Toast.LENGTH_SHORT).show();
+
+                        setRateAndView();
+
+                    } else {
+                        str_message = obj.getString("message");
+                        Toast.makeText(DirectoryMoreDetailsActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Utils.dismissProgress();
+                Toast.makeText(DirectoryMoreDetailsActivity.this, DirectoryMoreDetailsActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        request.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(request);
     }
 
     private void openLocation() {

@@ -2,6 +2,7 @@ package com.localkartmarketing.localkart.support;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -118,6 +120,13 @@ public class Utils {
     public static String viewnews = "viewnews";
     public static String sendotpnew = "sendotpnew";
 
+    public static String shoprating = "shoprating";
+    public static String servicerating = "servicerating";
+    public static String shopviewcount = "shopviewcount";
+    public static String serviceviewcount = "serviceviewcount";
+    public static String shopservicedetailcount = "shopservicedetailcount";
+    public static String posthistoryviewcount = "posthistoryviewcount";
+
     // Help and Support Url
     public static String helpUrl = "https://localkart.app/app/help-and-support.php";
     public static String aboutUs = "https://localkart.app/app/about-us.php";
@@ -128,6 +137,7 @@ public class Utils {
     public static String userTCUrl = "https://localkart.app/user-terms-and-conditions.php";
     public static String businessTCUrl = "https://localkart.app/business-terms-and-conditions.php";
     public static String howItWorksUrl = "https://localkart.app/app/how-it-works.php";
+    public static String ticketUrl = "https://localkart.app/events/";
 
     public static int callResume = 0;
     public static String constPostType = "";
@@ -456,5 +466,13 @@ public class Utils {
     public static void clearReOfferList(Context con) {
         sharedPreferences = con.getSharedPreferences("MY_RE_OFFERS", MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();
+    }
+
+    public static String getAndroidOs() {
+        String permissionRequest = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionRequest = Manifest.permission.READ_MEDIA_IMAGES;
+        }
+        return permissionRequest;
     }
 }

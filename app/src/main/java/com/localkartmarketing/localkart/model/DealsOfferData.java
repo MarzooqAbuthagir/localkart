@@ -18,6 +18,15 @@ public class DealsOfferData {
     private String isSubscribed;
     private String offerHeading;
     private String offferDesc;
+    private String viewCount;
+
+    public String getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(String viewCount) {
+        this.viewCount = viewCount;
+    }
 
     public String getOfferHeading() {
         return offerHeading;

@@ -60,6 +60,9 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
         holder.tvDistance.setText(arrayList.get(position).getDistance());
         holder.tvCall.setText(arrayList.get(position).getAccessOptions().getKey());
 
+        holder.tvViewCount.setText(arrayList.get(position).getViewCount());
+        holder.tvAverageRating.setText(arrayList.get(position).getAverageRating());
+
         Glide.with(con).load(arrayList.get(position).getLogo())
                 .placeholder(R.mipmap.ic_launcher_round)
 //                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
@@ -175,6 +178,8 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
         TextView tvShopDesc;
         TextView tvDistance;
         TextView tvCall;
+        TextView tvViewCount;
+        TextView tvAverageRating;
         LinearLayout layCall;
         LinearLayout layShare;
         LinearLayout layMoreDetails;
@@ -197,6 +202,8 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
             layNotify = itemView.findViewById(R.id.lay_notify);
             layShare = itemView.findViewById(R.id.lay_share);
             layVerify = itemView.findViewById(R.id.lay_verify);
+            tvViewCount = itemView.findViewById(R.id.tv_view_count);
+            tvAverageRating = itemView.findViewById(R.id.tv_avg_rating);
         }
     }
 

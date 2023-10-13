@@ -2,15 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.localkartmarketing.localkart"
         minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 4
-        versionName "1.3"
+        targetSdkVersion 33
+        versionCode 8
+        versionName "1.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true

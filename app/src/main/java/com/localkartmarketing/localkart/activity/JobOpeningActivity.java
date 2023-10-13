@@ -287,6 +287,7 @@ public class JobOpeningActivity extends Fragment {
                             dealsOfferData.setIsSubscribed(jsonObject.getString("isSubscribed"));
                             dealsOfferData.setOfferHeading(jsonObject.getString("offerHeading"));
                             dealsOfferData.setOffferDesc(jsonObject.getString("offerDescription"));
+                            dealsOfferData.setViewCount("");
 
                             JSONObject js = jsonObject.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(
@@ -541,6 +542,7 @@ public class JobOpeningActivity extends Fragment {
                             dealsOfferData.setIsSubscribed(jsonObject.getString("isSubscribed"));
                             dealsOfferData.setOfferHeading(jsonObject.getString("offerHeading"));
                             dealsOfferData.setOffferDesc(jsonObject.getString("offerDescription"));
+                            dealsOfferData.setViewCount("");
 
                             JSONObject js = jsonObject.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(

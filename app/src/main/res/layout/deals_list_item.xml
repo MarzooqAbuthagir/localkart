@@ -26,12 +26,43 @@
                 android:paddingRight="10dp"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
-                android:layout_toLeftOf="@id/lay_notify"
+                android:layout_toLeftOf="@id/lay_view_count"
                 android:layout_centerInParent="true"
                 android:textAllCaps="false"
                 android:fontFamily="@font/roboto_regular"
                 android:textColor="@color/desc_text"
                 android:textSize="14dp" />
+
+            <LinearLayout
+                android:id="@+id/lay_view_count"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:layout_toLeftOf="@+id/tv_view_count"
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/iv_view_count"
+                    android:layout_gravity="center"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_open_eye"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_view_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/roboto_regular"
+                android:layout_toLeftOf="@+id/view_space"
+                android:visibility="gone"/>
+
+            <View
+                android:id="@+id/view_space"
+                android:layout_toLeftOf="@+id/lay_notify"
+                android:layout_width="10dp"
+                android:layout_height="20dp"/>
 
             <LinearLayout
                 android:id="@+id/lay_notify"

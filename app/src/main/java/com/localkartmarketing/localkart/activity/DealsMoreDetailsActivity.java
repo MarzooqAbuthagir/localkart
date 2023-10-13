@@ -39,6 +39,7 @@ import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.localkartmarketing.localkart.R;
@@ -439,6 +440,8 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
 
                         Utils.dismissProgress();
 
+                        updatePostCount();
+
                         layMain.setVisibility(View.VISIBLE);
 
                         str_result = obj.getString("errorCode");
@@ -639,6 +642,43 @@ public class DealsMoreDetailsActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void updatePostCount() {
+        JSONObject JObj = new JSONObject();
+        try {
+            JObj.put("user_id", userDetail.getId());
+            JObj.put("offer_id", strPostIndexId);
+            JObj.put("shop_id",strShopIndexId);
+
+        } catch (Exception e) {
+            System.out.println(Tag + " input exception " + e.getMessage());
+        }
+
+        Utils.showProgress(DealsMoreDetailsActivity.this);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Utils.Api + Utils.posthistoryviewcount, JObj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject obj) {
+                try {
+                    System.out.println(Tag + " updatePostCount response - " + obj);
+
+                    Utils.dismissProgress();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Utils.dismissProgress();
+                Toast.makeText(DealsMoreDetailsActivity.this, DealsMoreDetailsActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        request.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(request);
     }
 
     private void setShopBanners(final List<ShopBanner> shopBannerList) {

@@ -165,7 +165,8 @@ public class HistoryActivity extends AppCompatActivity implements HistoryAdapter
                                         jsonObject.getString("shopIndexId"),
                                         jsonObject.getString("shopLatitude"),
                                         jsonObject.getString("shopLongitude"),
-                                        jsonObject.getString("Status"));
+                                        jsonObject.getString("Status"),
+                                        jsonObject.getString("viewCount"));
 
                                 historyData.add(history);
                             }

@@ -143,6 +143,19 @@
             android:background="@color/white"
             android:layout_width="15dp"
             android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tv_views"
+            android:text=""
+            android:textAllCaps="true"
+            android:padding="5dp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/roboto_regular"
+            android:layout_width="70dp"
+            android:textSize="14dp"
+            android:singleLine="true"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
     <View

@@ -296,6 +296,8 @@ public class DirectoryActivity extends Fragment {
                             directoryData.setIsSubscribed(jsonObject.getString("isSubscribed"));
                             directoryData.setShareUrl(jsonObject.getString("shareUrl"));
                             directoryData.setIsVerify(jsonObject.getString("isVerify"));
+                            directoryData.setViewCount(jsonObject.getString("viewCount"));
+                            directoryData.setAverageRating(jsonObject.getString("averageRating"));
 
                             JSONObject js = jsonObject.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(
@@ -785,6 +787,8 @@ public class DirectoryActivity extends Fragment {
                             directoryData.setIsSubscribed(jsonObject.getString("isSubscribed"));
                             directoryData.setShareUrl(jsonObject.getString("shareUrl"));
                             directoryData.setIsVerify(jsonObject.getString("isVerify"));
+                            directoryData.setViewCount(jsonObject.getString("viewCount"));
+                            directoryData.setAverageRating(jsonObject.getString("averageRating"));
 
                             JSONObject js = jsonObject.getJSONObject("accessOptions");
                             AccessOptions accessOptions = new AccessOptions(

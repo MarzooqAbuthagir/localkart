@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_toLeftOf="@+id/lay_notify"
+                android:layout_toLeftOf="@+id/tv_avg_rating"
                 android:fontFamily="@font/roboto_regular"
                 android:paddingLeft="10dp"
                 android:paddingTop="5dp"
@@ -34,6 +34,66 @@
                 android:textColor="@color/black"
                 android:textSize="14dp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_avg_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/roboto_regular"
+                android:layout_toLeftOf="@+id/lay_avg_rating"/>
+
+            <LinearLayout
+                android:id="@+id/lay_avg_rating"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:layout_toLeftOf="@+id/view_space1"
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/iv_avg_rating"
+                    android:layout_gravity="center"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_star"
+                    />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view_space1"
+                android:layout_toLeftOf="@+id/lay_view_count"
+                android:layout_width="5dp"
+                android:layout_height="20dp"/>
+
+            <LinearLayout
+                android:id="@+id/lay_view_count"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:layout_toLeftOf="@+id/tv_view_count"
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/iv_view_count"
+                    android:layout_gravity="center"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_open_eye"
+                    />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_view_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/roboto_regular"
+                android:layout_toLeftOf="@+id/view_space"/>
+
+            <View
+                android:id="@+id/view_space"
+                android:layout_toLeftOf="@+id/lay_notify"
+                android:layout_width="10dp"
+                android:layout_height="20dp"/>
 
             <LinearLayout
                 android:id="@+id/lay_notify"

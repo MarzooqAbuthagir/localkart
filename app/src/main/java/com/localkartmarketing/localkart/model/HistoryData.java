@@ -12,8 +12,9 @@ public class HistoryData {
     private String shopLatitude;
     private String shopLongitude;
     private String status;
+    private String viewCount;
 
-    public HistoryData(String postIndexId, String postDate, String postCode, String type, String heading, String count, String shopType, String shopId, String shopLati, String shopLongi, String status) {
+    public HistoryData(String postIndexId, String postDate, String postCode, String type, String heading, String count, String shopType, String shopId, String shopLati, String shopLongi, String status, String viewCount) {
         this.postIndexId = postIndexId;
         this.postDate = postDate;
         this.postCode = postCode;
@@ -25,6 +26,15 @@ public class HistoryData {
         this.shopLatitude = shopLati;
         this.shopLongitude = shopLongi;
         this.status = status;
+        this.viewCount = viewCount;
+    }
+
+    public String getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(String viewCount) {
+        this.viewCount = viewCount;
     }
 
     public String getShopType() {

@@ -44,7 +44,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -72,7 +71,6 @@ import com.localkartmarketing.localkart.support.LocationTrack;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
 import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
-import com.theartofdev.edmodo.cropper.CropImage;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 import com.yalantis.ucrop.UCrop;
 
@@ -828,7 +826,7 @@ public class RepostActivity extends AppCompatActivity {
 
     public static boolean checkAndRequestPermissions(final Activity context) {
         int WExtstorePermission = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                Utils.getAndroidOs());
         int cameraPermission = ContextCompat.checkSelfPermission(context,
                 Manifest.permission.CAMERA);
         List<String> listPermissionsNeeded = new ArrayList<>();
@@ -837,7 +835,7 @@ public class RepostActivity extends AppCompatActivity {
         }
         if (WExtstorePermission != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded
-                    .add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    .add(Utils.getAndroidOs());
         }
         if (!listPermissionsNeeded.isEmpty()) {
             ActivityCompat.requestPermissions(context, listPermissionsNeeded
@@ -1049,7 +1047,7 @@ public class RepostActivity extends AppCompatActivity {
                         "Permission Requires to Access Camera.", Toast.LENGTH_SHORT)
                         .show();
             } else if (ContextCompat.checkSelfPermission(RepostActivity.this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    Utils.getAndroidOs()) != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(getApplicationContext(),
                         "Permission Requires to Access Your Storage.",
                         Toast.LENGTH_SHORT).show();

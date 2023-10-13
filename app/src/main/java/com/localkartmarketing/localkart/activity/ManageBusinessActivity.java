@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +35,7 @@ import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.localkartmarketing.localkart.R;
@@ -39,6 +43,8 @@ import com.localkartmarketing.localkart.adapter.ManageBusinessMenuAdapter;
 import com.localkartmarketing.localkart.model.ManageBusinessMenu;
 import com.localkartmarketing.localkart.model.UserDetail;
 import com.localkartmarketing.localkart.support.LocationTrack;
+import com.localkartmarketing.localkart.support.RegBusinessIdSharedPreference;
+import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
 import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
@@ -69,6 +75,10 @@ public class ManageBusinessActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     List<ManageBusinessMenu> manageBusinessMenuList = new ArrayList<>();
+
+    CardView cardPerformance;
+    ImageView ivSub, ivView, ivStar;
+    TextView tvRating, tvSubCount, tvViewCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +124,14 @@ public class ManageBusinessActivity extends AppCompatActivity {
         });
         TextView toolBarTitle = findViewById(R.id.toolbar_title);
         toolBarTitle.setText("Manage Business");
+
+        cardPerformance = findViewById(R.id.card_performance);
+        ivSub = findViewById(R.id.iv_sub);
+        ivView = findViewById(R.id.iv_view);
+        ivStar = findViewById(R.id.iv_star);
+        tvRating = findViewById(R.id.tv_rating);
+        tvSubCount = findViewById(R.id.tv_sub_count);
+        tvViewCount = findViewById(R.id.tv_view_count);
 
         CardView cardMyBusiness = findViewById(R.id.card_business_layout);
         CardView cardSubscription = findViewById(R.id.card_subscription_layout);
@@ -258,6 +276,8 @@ public class ManageBusinessActivity extends AppCompatActivity {
                             recyclerView.setAdapter(adapter);
 
                         }
+
+                        getPerformance();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -297,6 +317,61 @@ public class ManageBusinessActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, ManageBusinessActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void getPerformance() {
+        JSONObject JObj = new JSONObject();
+        try {
+            JObj.put("shop_service_id", RegBusinessIdSharedPreference.getBusinessId(ManageBusinessActivity.this));
+            JObj.put("shopType", RegBusinessTypeSharedPreference.getBusinessType(ManageBusinessActivity.this));
+
+        } catch (Exception e) {
+            System.out.println(Tag + " input exception " + e.getMessage());
+        }
+
+        Utils.showProgress(ManageBusinessActivity.this);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Utils.Api + Utils.shopservicedetailcount, JObj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject obj) {
+                try {
+                    System.out.println(Tag + " setRateAndView response - " + obj);
+
+                    Utils.dismissProgress();
+
+                    String strViewCount = obj.getString("viewCount");
+                    String strRating = obj.getString("averageRating");
+                    String strSubCount = obj.getString("subscribeCount");
+
+                    cardPerformance.setVisibility(View.VISIBLE);
+                    tvViewCount.setText(strViewCount);
+                    tvRating.setText(strRating);
+                    tvSubCount.setText(strSubCount);
+
+                    Drawable drawable = ivSub.getDrawable();
+                    drawable.setColorFilter(Color.parseColor("#E4287C"),PorterDuff.Mode.SRC_ATOP);
+
+                    Drawable drawable1 = ivView.getDrawable();
+                    drawable1.setColorFilter(Color.parseColor("#E4287C"),PorterDuff.Mode.SRC_ATOP);
+
+                    Drawable drawable2 = ivStar.getDrawable();
+                    drawable2.setColorFilter(Color.parseColor("#E4287C"),PorterDuff.Mode.SRC_ATOP);
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Utils.dismissProgress();
+                Toast.makeText(ManageBusinessActivity.this, ManageBusinessActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        request.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(request);
     }
 
     private void fetchLastLocation() {

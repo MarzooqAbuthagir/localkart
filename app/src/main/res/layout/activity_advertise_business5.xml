@@ -242,6 +242,26 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <EditText
+        android:visibility="gone"
+        android:layout_margin="8dp"
+        android:id="@+id/et_bus_refcode"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/grey_curve_box"
+        android:fontFamily="@font/roboto_regular"
+        android:hint="Enter Referral Code"
+        android:inputType="textCapCharacters"
+        android:padding="7dp"
+        android:textColor="@color/black"
+        android:textSize="16dp" />
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal">
     <Button
         android:id="@+id/btn_previous"
@@ -263,6 +283,7 @@
         android:textColor="@color/white"
         android:fontFamily="@font/roboto_regular"
         android:background="@drawable/right_button_theme"/>
+</LinearLayout>
 </LinearLayout>
 
         </LinearLayout>

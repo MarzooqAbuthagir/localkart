@@ -675,7 +675,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
-        } else if (id == R.id.nav_reg_business) {
+        } else if (id == R.id.nav_ticket) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Utils.ticketUrl));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setPackage("com.android.chrome");
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException ex) {
+                // Chrome browser presumably not installed so allow user to choose instead
+                intent.setPackage(null);
+                startActivity(intent);
+            }
+        }  else if (id == R.id.nav_reg_business) {
             Utils.clearRegPref(MainActivity.this);
             Intent intent = new Intent(MainActivity.this, AdvertiseBusinessActivity.class);
             intent.putExtra("key", keyIntent);

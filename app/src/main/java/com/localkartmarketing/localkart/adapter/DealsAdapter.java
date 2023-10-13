@@ -75,6 +75,16 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
         }
         holder.tvOfferCount.setText("+" + arrayList.get(position).getOfferCount() + suffixTxt);
 
+        if(constPostType.equalsIgnoreCase("JOB OPENING") || constPostType.equalsIgnoreCase("MEGASALES")){
+            holder.ivViewCount.setVisibility(View.GONE);
+            holder.tvViewCount.setVisibility(View.GONE);
+        } else {
+            holder.ivViewCount.setVisibility(View.VISIBLE);
+            holder.tvViewCount.setVisibility(View.VISIBLE);
+
+            holder.tvViewCount.setText(arrayList.get(position).getViewCount());
+        }
+
         holder.tvDistance.setText(arrayList.get(position).getDistance());
         Glide.with(con).load(arrayList.get(position).getLogo())
                 .placeholder(R.mipmap.ic_launcher_round)
@@ -294,12 +304,13 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvDate, tvShopName;
-        ImageView ivShare, ivNotify, ivAccessOption;
+        ImageView ivShare, ivNotify, ivAccessOption, ivViewCount;
         ImageView ivShopLogo;
         TextView tvShopDesc;
         TextView tvDistance;
         TextView tvOfferCount;
         TextView tvAccessOption;
+        TextView tvViewCount;
         LinearLayout layAccessOption;
         LinearLayout layMoreDetails;
         LinearLayout layDirection;
@@ -322,6 +333,8 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.ViewHolder> 
             ivAccessOption = itemView.findViewById(R.id.iv_access_option);
             layNotify = itemView.findViewById(R.id.lay_notify);
             layShare = itemView.findViewById(R.id.lay_share);
+            ivViewCount = itemView.findViewById(R.id.iv_view_count);
+            tvViewCount = itemView.findViewById(R.id.tv_view_count);
         }
     }
 

@@ -18,6 +18,11 @@
             android:title="About Us" />
 
         <item
+            android:id="@+id/nav_ticket"
+            android:icon="@drawable/ic_ticket"
+            android:title="Events - TicketOne" />
+
+        <item
             android:id="@+id/nav_reg_business"
             android:icon="@drawable/ic_advertise_your_business"
             android:title="Advertise Your Business" />

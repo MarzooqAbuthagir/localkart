@@ -320,7 +320,7 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
 
     public static boolean checkAndRequestPermissions(final Activity context) {
         int WExtstorePermission = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                Utils.getAndroidOs());
         int cameraPermission = ContextCompat.checkSelfPermission(context,
                 Manifest.permission.CAMERA);
         List<String> listPermissionsNeeded = new ArrayList<>();
@@ -329,7 +329,7 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
         }
         if (WExtstorePermission != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded
-                    .add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    .add(Utils.getAndroidOs());
         }
         if (!listPermissionsNeeded.isEmpty()) {
             ActivityCompat.requestPermissions(context, listPermissionsNeeded
@@ -604,7 +604,7 @@ public class AdvertiseBusinessActivity extends AppCompatActivity {
                         "Permission Requires to Access Camera.", Toast.LENGTH_SHORT)
                         .show();
             } else if (ContextCompat.checkSelfPermission(AdvertiseBusinessActivity.this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    Utils.getAndroidOs()) != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(getApplicationContext(),
                         "Permission Requires to Access Your Storage.",
                         Toast.LENGTH_SHORT).show();

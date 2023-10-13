@@ -68,6 +68,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             holder.tvDelete.setVisibility(View.VISIBLE);
         }
 
+        holder.tvViews.setText(arrayList.get(position).getViewCount());
+
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,7 +145,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView tvDate, tvId, tvType, tvPost, tvOfferCount, tvStatus, tvDelete;
+        TextView tvDate, tvId, tvType, tvPost, tvOfferCount, tvStatus, tvDelete, tvViews;
         Button btnView, btnDelete;
         OnItemClickListener onItemClickListener;
 
@@ -158,6 +160,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             tvStatus = itemView.findViewById(R.id.tv_status);
             tvDelete = itemView.findViewById(R.id.tv_delete);
             btnDelete = itemView.findViewById(R.id.btn_delete);
+            tvViews = itemView.findViewById(R.id.tv_views);
             this.onItemClickListener = onItemClickListener;
         }
     }

@@ -41,7 +41,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -73,7 +72,6 @@ import com.localkartmarketing.localkart.support.RegBusinessSharedPrefrence;
 import com.localkartmarketing.localkart.support.RegBusinessTypeSharedPreference;
 import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
-import com.theartofdev.edmodo.cropper.CropImage;
 import com.yalantis.ucrop.UCrop;
 
 import org.json.JSONException;
@@ -125,6 +123,7 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
     int SELECT_IMAGE_REQUEST = 2;
 
     public static String fileName;
+    private EditText etBusRefCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,6 +189,8 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
         Button btnAddTag = findViewById(R.id.btn_add_tags);
         chipGroup = findViewById(R.id.chipGroup);
 
+        etBusRefCode = findViewById(R.id.et_bus_refcode);
+
         btnAddTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -246,8 +247,10 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
         LinearLayout layTC = findViewById(R.id.lay_tc);
         if (strBusinessId.equalsIgnoreCase("1")) {
             layTC.setVisibility(View.VISIBLE);
+            etBusRefCode.setVisibility(View.VISIBLE);
         } else {
             layTC.setVisibility(View.GONE);
+            etBusRefCode.setVisibility(View.GONE);
         }
         final CheckBox checkBox = findViewById(R.id.checkbox);
         TextView tvBusTC = findViewById(R.id.tv_bus_tc);
@@ -324,7 +327,7 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
 
     public static boolean checkAndRequestPermissions(final Activity context) {
         int WExtstorePermission = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                Utils.getAndroidOs());
         int cameraPermission = ContextCompat.checkSelfPermission(context,
                 Manifest.permission.CAMERA);
         List<String> listPermissionsNeeded = new ArrayList<>();
@@ -333,7 +336,7 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
         }
         if (WExtstorePermission != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded
-                    .add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    .add(Utils.getAndroidOs());
         }
         if (!listPermissionsNeeded.isEmpty()) {
             ActivityCompat.requestPermissions(context, listPermissionsNeeded
@@ -466,6 +469,7 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
                     params.put("longitude", locationData.getLongitude());
                     params.put("address", locationData.getAddress());
                     params.put("tags", strChip);
+                    params.put("busRefCode", etBusRefCode.getText().toString().trim());
                     System.out.println(Tag + " registerBusiness inputs " + params);
                     return params;
                 }
@@ -602,7 +606,7 @@ public class AdvertiseBusinessActivity5 extends AppCompatActivity {
                         "Permission Requires to Access Camera.", Toast.LENGTH_SHORT)
                         .show();
             } else if (ContextCompat.checkSelfPermission(AdvertiseBusinessActivity5.this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    Utils.getAndroidOs()) != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(getApplicationContext(),
                         "Permission Requires to Access Your Storage.",
                         Toast.LENGTH_SHORT).show();

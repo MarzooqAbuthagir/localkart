@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -38,63 +39,151 @@
             android:exported="false" />
         <activity
             android:name=".activity.MegaSalesViewPostActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".activity.MegaSalesCreatePostActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".activity.SearchActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".activity.DigitalVCardActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".activity.ReportActivity"
-            android:exported="true" />
-        <activity android:name=".activity.BusinessTCActivity" />
-        <activity android:name=".activity.UserTCActivity" />
-        <activity android:name=".activity.PaymentHistoryActivity" />
-        <activity android:name=".activity.ReferralActivity" />
-        <activity android:name=".activity.NotificationPostActivity" />
-        <activity android:name=".activity.NotificationActivity" />
-        <activity android:name=".activity.ProfileActivity" />
-        <activity android:name=".activity.PreviewOfferActivity" />
-        <activity android:name=".activity.FranchiseActivity" />
-        <activity android:name=".activity.PrivacyPolicyActivity" />
-        <activity android:name=".activity.RateUsActivity" />
-        <activity android:name=".activity.AboutUsActivity" />
-        <activity android:name=".activity.FeedbackActivity" />
-        <activity android:name=".activity.FAQActivity" />
-        <activity android:name=".activity.PayWebViewActivity" />
-        <activity android:name=".activity.ViewRepostActivity" />
-        <activity android:name=".activity.RepostActivity" />
-        <activity android:name=".activity.ViewHistoryActivity" />
-        <activity android:name=".activity.MyBusinessActivity6" />
-        <activity android:name=".activity.MyBusinessActivity5" />
-        <activity android:name=".activity.MyBusinessActivity4" />
-        <activity android:name=".activity.MyBusinessActivity3" />
-        <activity android:name=".activity.MyBusinessActivity2" />
-        <activity android:name=".activity.MyBusinessActivity" />
-        <activity android:name=".activity.ShopLocationActivity" />
-        <activity android:name=".activity.DirectoryMoreDetailsActivity" />
-        <activity android:name=".activity.DealsMoreDetailsActivity" />
-        <activity android:name=".activity.DealsActivity" />
-        <activity android:name=".activity.HistoryActivity" />
-        <activity android:name=".activity.ViewPostActivity" />
-        <activity android:name=".activity.PlanActivity" />
-        <activity android:name=".activity.SubscriptionActivity" />
-        <activity android:name=".activity.CreatePostActivity" />
-        <activity android:name=".activity.ManageBusinessActivity" />
-        <activity android:name=".activity.AdvertiseBusinessActivity6" />
-        <activity android:name=".activity.AdvertiseBusinessActivity5" />
-        <activity android:name=".activity.AdvertiseBusinessActivity4" />
-        <activity android:name=".activity.AdvertiseBusinessActivity3" />
-        <activity android:name=".activity.AdvertiseBusinessActivity2" />
-        <activity android:name=".activity.AdvertiseBusinessActivity" />
-        <activity android:name=".activity.SubActivity" />
-        <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.SplashActivity">
+            android:exported="false" />
+        <activity
+            android:name=".activity.BusinessTCActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.UserTCActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PaymentHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ReferralActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.NotificationPostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.NotificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PreviewOfferActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.FranchiseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PrivacyPolicyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.RateUsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AboutUsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.FeedbackActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.FAQActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PayWebViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ViewRepostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.RepostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ViewHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MyBusinessActivity6"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MyBusinessActivity5"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MyBusinessActivity4"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MyBusinessActivity3"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MyBusinessActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MyBusinessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ShopLocationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.DirectoryMoreDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.DealsMoreDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.DealsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.HistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ViewPostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PlanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SubscriptionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CreatePostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ManageBusinessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdvertiseBusinessActivity6"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdvertiseBusinessActivity5"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdvertiseBusinessActivity4"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdvertiseBusinessActivity3"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdvertiseBusinessActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdvertiseBusinessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SubActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SplashActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -104,9 +193,11 @@
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="keyboardHidden"
+            android:exported="false"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:exported="false"
             android:theme="@style/Base.Theme.AppCompat" /> <!-- <meta-data -->
         <!-- android:name="com.google.android.geo.API_KEY" -->
         <!-- android:value="AIzaSyCAdZwm8yXwsIX-V5aZtXc64Q2xpEbHWio" /> -->
@@ -118,6 +209,7 @@
             android:value="#FFE63E89" /> <!-- uCrop cropping activity -->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -143,6 +235,43 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
+
+        <receiver
+            android:name="com.razorpay.RzpTokenReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="rzp.device_token.share" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="com.razorpay.CheckoutActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:theme="@style/CheckoutTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <data
+                    android:host="rzp.io"
+                    android:scheme="io.rzp" />
+            </intent-filter>
+        </activity>
+
+
+<!--        <receiver-->
+<!--            android:exported="true"-->
+<!--            android:name="com.onesignal.GcmBroadcastReceiver"-->
+<!--            android:permission="com.google.android.c2dm.permission.SEND" >-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.google.android.c2dm.intent.RECEIVE" />-->
+<!--                <category android:name="com.localkartmarketing.localkart" />-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
+
+        <activity android:name="com.onesignal.NotificationOpenedActivityHMS" android:exported="true" />
+        <receiver android:name="com.onesignal.GcmBroadcastReceiver" android:exported="true"  />
+        <receiver android:name="com.onesignal.BootUpReceiver" android:exported="true" />
+        <receiver android:name="com.onesignal.UpgradeReceiver" android:exported="true"  />
     </application>
 
 </manifest>

@@ -82,6 +82,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
 
     UserDetail obj;
     static SharedPreferences mPrefs;
+    private EditText etBusRefCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +134,8 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
         });
         TextView toolBarTitle = findViewById(R.id.toolbar_title);
         toolBarTitle.setText("Register Your Business");
+
+        etBusRefCode = findViewById(R.id.et_bus_refcode);
 
         View progressView = findViewById(R.id.progress_view);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 10);
@@ -310,6 +313,7 @@ public class AdvertiseBusinessActivity6 extends AppCompatActivity {
                     params.put("address", locationData.getAddress());
                     params.put("tags", chips);
                     params.put("serviceList", strService);
+                    params.put("busRefCode", etBusRefCode.getText().toString().trim());
                     System.out.println(Tag + " registerBusiness inputs " + params);
                     return params;
                 }
