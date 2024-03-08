@@ -76,7 +76,7 @@ public class ManageBusinessActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     List<ManageBusinessMenu> manageBusinessMenuList = new ArrayList<>();
 
-    CardView cardPerformance;
+    CardView cardPerformance, cardCreateEvent, cardManageEvent;
     ImageView ivSub, ivView, ivStar;
     TextView tvRating, tvSubCount, tvViewCount;
 
@@ -140,6 +140,26 @@ public class ManageBusinessActivity extends AppCompatActivity {
         CardView cardHelp = findViewById(R.id.card_help_layout);
         CardView cardDigitalVcard = findViewById(R.id.card_digital_vcard);
         CardView cardJob = findViewById(R.id.card_job_layout);
+        cardCreateEvent = findViewById(R.id.card_create_event_layout);
+        cardManageEvent = findViewById(R.id.card_manage_event_layout);
+
+        cardCreateEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        cardManageEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ManageBusinessActivity.this, ManageEventActivity.class);
+                intent.putExtra("key", keyIntent);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         cardJob.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -324,7 +344,7 @@ public class ManageBusinessActivity extends AppCompatActivity {
         try {
             JObj.put("shop_service_id", RegBusinessIdSharedPreference.getBusinessId(ManageBusinessActivity.this));
             JObj.put("shopType", RegBusinessTypeSharedPreference.getBusinessType(ManageBusinessActivity.this));
-
+            System.out.println(Tag + " inputs " + JObj.toString());
         } catch (Exception e) {
             System.out.println(Tag + " input exception " + e.getMessage());
         }
@@ -349,22 +369,25 @@ public class ManageBusinessActivity extends AppCompatActivity {
                     tvSubCount.setText(strSubCount);
 
                     Drawable drawable = ivSub.getDrawable();
-                    drawable.setColorFilter(Color.parseColor("#E4287C"),PorterDuff.Mode.SRC_ATOP);
+                    drawable.setColorFilter(Color.parseColor("#E4287C"), PorterDuff.Mode.SRC_ATOP);
 
                     Drawable drawable1 = ivView.getDrawable();
-                    drawable1.setColorFilter(Color.parseColor("#E4287C"),PorterDuff.Mode.SRC_ATOP);
+                    drawable1.setColorFilter(Color.parseColor("#E4287C"), PorterDuff.Mode.SRC_ATOP);
 
                     Drawable drawable2 = ivStar.getDrawable();
-                    drawable2.setColorFilter(Color.parseColor("#E4287C"),PorterDuff.Mode.SRC_ATOP);
+                    drawable2.setColorFilter(Color.parseColor("#E4287C"), PorterDuff.Mode.SRC_ATOP);
 
+                    getTicket();
 
                 } catch (Exception e) {
+                    getTicket();
                     e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                getTicket();
                 Utils.dismissProgress();
                 Toast.makeText(ManageBusinessActivity.this, ManageBusinessActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
             }
@@ -372,6 +395,77 @@ public class ManageBusinessActivity extends AppCompatActivity {
 
         request.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         VolleySingleton.getInstance(this).addToRequestQueue(request);
+    }
+
+    String str_errorCode = "", str_result = "", str_message = "";
+
+    private void getTicket() {
+        if (Utils.isInternetOn()) {
+            Utils.showProgress(ManageBusinessActivity.this);
+
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.checkorgregister + "?useindexId=250", new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    try {
+                        //converting response to json object
+                        JSONObject obj = new JSONObject(response);
+
+                        System.out.println(Tag + " getTicket response - " + response);
+
+                        Utils.dismissProgress();
+
+                        str_errorCode = obj.getString("errorCode");
+                        System.out.print(Tag + " getTicket result " + str_errorCode);
+
+                        if (Integer.parseInt(str_errorCode) == 0) {
+                            str_result = obj.getString("result");
+                            str_message = obj.getString("Message");
+
+                            if (str_result.equalsIgnoreCase("1")) {
+                                cardManageEvent.setVisibility(View.VISIBLE);
+                            } else {
+                                cardCreateEvent.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    Utils.dismissProgress();
+                    Toast.makeText(ManageBusinessActivity.this, ManageBusinessActivity.this.getResources().getString(R.string.somethingwentwrong), Toast.LENGTH_SHORT).show();
+
+                    if (error instanceof NoConnectionError) {
+                        System.out.println("NoConnectionError");
+                    } else if (error instanceof TimeoutError) {
+                        System.out.println("TimeoutError");
+
+                    } else if (error instanceof ServerError) {
+                        System.out.println("ServerError");
+
+                    } else if (error instanceof AuthFailureError) {
+                        System.out.println("AuthFailureError");
+
+                    } else if (error instanceof NetworkError) {
+                        System.out.println("NetworkError");
+                    }
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    return new HashMap<>();
+                }
+            };
+
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+        } else {
+            Toast.makeText(this, ManageBusinessActivity.this.getResources().getString(R.string.nointernet), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void fetchLastLocation() {

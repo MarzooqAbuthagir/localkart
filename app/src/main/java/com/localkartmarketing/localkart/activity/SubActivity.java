@@ -325,7 +325,7 @@ public class SubActivity extends AppCompatActivity {
     }
 
     private void setViewPager(final int length) {
-        viewPagerAdapter = new ViewPagerAdapter(silders, SubActivity.this);
+        viewPagerAdapter = new ViewPagerAdapter(silders, SubActivity.this, "Sub");
         mPager.setAdapter(viewPagerAdapter);
 
 //        // Auto start of viewpager

@@ -22,25 +22,65 @@ public class GenericTextWatcher implements TextWatcher {
         switch (view.getId()) {
 
             case R.id.otp_edit_box1:
-                if (text.length() == 1)
+                if (text.length() == 1) {
+                    int len = editText[1].getText().toString().length();
+                    if (len > 0) {
+                        editText[1].setSelection(len);
+                    } else {
+                        editText[1].setSelection(0);
+                    }
                     editText[1].requestFocus();
+                }
                 break;
             case R.id.otp_edit_box2:
 
-                if (text.length() == 1)
+                if (text.length() == 1) {
+                    int len = editText[2].getText().toString().length();
+                    if (len > 0) {
+                        editText[2].setSelection(len);
+                    } else {
+                        editText[2].setSelection(0);
+                    }
                     editText[2].requestFocus();
-                else if (text.length() == 0)
+                } else if (text.length() == 0) {
+                    int len = editText[0].getText().toString().length();
+                    if (len > 0) {
+                        editText[0].setSelection(len);
+                    } else {
+                        editText[0].setSelection(0);
+                    }
                     editText[0].requestFocus();
+                }
                 break;
             case R.id.otp_edit_box3:
-                if (text.length() == 1)
+                if (text.length() == 1) {
+                    int len = editText[3].getText().toString().length();
+                    if (len > 0) {
+                        editText[3].setSelection(len);
+                    } else {
+                        editText[3].setSelection(0);
+                    }
                     editText[3].requestFocus();
-                else if (text.length() == 0)
+                } else if (text.length() == 0) {
+                    int len = editText[1].getText().toString().length();
+                    if (len > 0) {
+                        editText[1].setSelection(len);
+                    } else {
+                        editText[1].setSelection(0);
+                    }
                     editText[1].requestFocus();
+                }
                 break;
             case R.id.otp_edit_box4:
-                if (text.length() == 0)
+                if (text.length() == 0) {
+                    int len = editText[2].getText().toString().length();
+                    if (len > 0) {
+                        editText[2].setSelection(len);
+                    } else {
+                        editText[2].setSelection(0);
+                    }
                     editText[2].requestFocus();
+                }
                 break;
         }
     }

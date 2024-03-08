@@ -139,6 +139,19 @@ public class Utils {
     public static String howItWorksUrl = "https://localkart.app/app/how-it-works.php";
     public static String ticketUrl = "https://localkart.app/events/";
 
+    public static String customereventlist = "customereventlist";
+    public static String eventdetails = "eventdetails";
+    public static String mybookings = "mybookings";
+    public static String eventbookingdetails = "eventbookingdetails";
+    public static String eventticketavailablity = "eventticketavailablity";
+
+    public static String checkorgregister = "checkorgregister";
+    public static String bussinesseventlist = "bussinesseventlist";
+    public static String eventsummary = "eventsummary";
+    public static String eventbookinglist = "eventbookinglist";
+    public static String checkeventbooking = "checkeventbooking";
+    public static String confeecalculation = "confeecalculation";
+
     public static int callResume = 0;
     public static String constPostType = "";
 

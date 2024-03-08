@@ -28,10 +28,12 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     private Context context;
     private List<SilderData> silders;
+    private String pagerId;
 
-    public ViewPagerAdapter(List<SilderData> silder, Context context) {
+    public ViewPagerAdapter(List<SilderData> silder, Context context, String pagerId) {
         this.silders = silder;
         this.context = context;
+        this.pagerId = pagerId;
     }
 
     @Override
@@ -55,13 +57,23 @@ public class ViewPagerAdapter extends PagerAdapter {
         ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
 //        System.out.println("image path " + silder.getImage());
 
-        MultiTransformation multiLeft = new MultiTransformation(
-                new CenterCrop(),
-                new RoundedCornersTransformation(50, 0, RoundedCornersTransformation.CornerType.BOTTOM));
+        if (pagerId.equalsIgnoreCase("Main")) {
+            //        MultiTransformation multiLeft = new MultiTransformation(
+//                new CenterCrop(),
+//                new RoundedCornersTransformation(50, 0, RoundedCornersTransformation.CornerType.BOTTOM));
 
-        Glide.with(context).load(silder.getImage())
-                .apply(RequestOptions.bitmapTransform(multiLeft))
-                .diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+            Glide.with(context).load(silder.getImage())
+//                .apply(RequestOptions.bitmapTransform(multiLeft))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+        } else {
+            MultiTransformation multiLeft = new MultiTransformation(
+                    new CenterCrop(),
+                    new RoundedCornersTransformation(50, 0, RoundedCornersTransformation.CornerType.BOTTOM));
+
+            Glide.with(context).load(silder.getImage())
+                    .apply(RequestOptions.bitmapTransform(multiLeft))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+        }
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override

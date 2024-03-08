@@ -114,6 +114,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //    ArrayList<NewsData> newsListValue = new ArrayList<>();
     TextView tvBottom;
 
+    LinearLayout layEvents, layShopping, layServices, layRecharge;
+    ImageView imgEvents, imgShopping, imgServices, imgRecharge;
+    TextView tvEvents, tvShopping, tvServices, tvRecharge;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -206,18 +210,67 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         btnServices = findViewById(R.id.btn_services);
         gridView = findViewById(R.id.grid_category);
 
+        layEvents = findViewById(R.id.lay_events);
+        layShopping = findViewById(R.id.lay_shopping);
+        layServices = findViewById(R.id.lay_services);
+        layRecharge = findViewById(R.id.lay_recharge);
+        tvEvents = findViewById(R.id.text_view_event);
+        tvShopping = findViewById(R.id.text_view_shopping);
+        tvServices = findViewById(R.id.text_view_services);
+        tvRecharge = findViewById(R.id.text_view_recharge);
+        imgEvents = findViewById(R.id.img_view_event);
+        imgShopping = findViewById(R.id.img_view_shopping);
+        imgServices = findViewById(R.id.img_view_services);
+        imgRecharge = findViewById(R.id.img_view_recharge);
+        layEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                keyIntent = "Events";
+                eventsClicked();
+            }
+        });
+        layShopping.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                keyIntent = "Shopping";
+                shoppingClicked();
+                getCategoryData(Utils.shopcategories);
+            }
+        });
+        layServices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                keyIntent = "Services";
+                servicesClicked();
+                getCategoryData(Utils.servicecategories);
+            }
+        });
+        layRecharge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                keyIntent = "Recharge";
+                rechargeClicked();
+            }
+        });
+
         if (keyIntent.equalsIgnoreCase("Shopping")) {
             btnServices.setTextColor(Color.parseColor("#7F7F7F"));
             btnServices.setBackgroundResource(R.drawable.right_curve_unsel);
             btnShopping.setTextColor(Color.parseColor("#ffffff"));
             btnShopping.setBackgroundResource(R.drawable.left_curve_sel);
+            shoppingClicked();
             getCategoryData(Utils.shopcategories);
-        } else {
+        } else if(keyIntent.equalsIgnoreCase("Services")) {
             btnShopping.setTextColor(Color.parseColor("#7F7F7F"));
             btnShopping.setBackgroundResource(R.drawable.left_curve_unsel);
             btnServices.setTextColor(Color.parseColor("#ffffff"));
             btnServices.setBackgroundResource(R.drawable.right_curve_sel);
+            servicesClicked();
             getCategoryData(Utils.servicecategories);
+        } else if (keyIntent.equalsIgnoreCase("Events")) {
+            eventsClicked();
+        } else if (keyIntent.equalsIgnoreCase("Recharge")) {
+            rechargeClicked();
         }
 
         btnShopping.setOnClickListener(new View.OnClickListener() {
@@ -266,6 +319,93 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tvBottom.setSingleLine(true);
         tvBottom.setEllipsize(TextUtils.TruncateAt.MARQUEE);
     }
+
+    void eventsClicked() {
+        layServices.setBackgroundResource(R.drawable.white_box);
+        layShopping.setBackgroundResource(R.drawable.white_box);
+        layRecharge.setBackgroundResource(R.drawable.white_box);
+
+        layEvents.setBackgroundResource(R.drawable.pink_box);
+
+        tvServices.setTextColor(Color.parseColor("#E4287C"));
+        tvShopping.setTextColor(Color.parseColor("#E4287C"));
+        tvRecharge.setTextColor(Color.parseColor("#E4287C"));
+
+        tvEvents.setTextColor(Color.parseColor("#ffffff"));
+
+        imgServices.setBackgroundResource(R.drawable.ic_services);
+        imgShopping.setBackgroundResource(R.drawable.ic_shopping);
+        imgRecharge.setBackgroundResource(R.drawable.ic_recharge);
+
+        imgEvents.setBackgroundResource(R.drawable.ic_events_white);
+
+        Intent intent = new Intent(MainActivity.this, EventActivity.class);
+        intent.putExtra("key", keyIntent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    void shoppingClicked() {
+        layEvents.setBackgroundResource(R.drawable.white_box);
+        layServices.setBackgroundResource(R.drawable.white_box);
+        layRecharge.setBackgroundResource(R.drawable.white_box);
+
+        layShopping.setBackgroundResource(R.drawable.pink_box);
+
+        tvEvents.setTextColor(Color.parseColor("#E4287C"));
+        tvServices.setTextColor(Color.parseColor("#E4287C"));
+        tvRecharge.setTextColor(Color.parseColor("#E4287C"));
+
+        tvShopping.setTextColor(Color.parseColor("#ffffff"));
+
+        imgEvents.setBackgroundResource(R.drawable.ic_events);
+        imgServices.setBackgroundResource(R.drawable.ic_services);
+        imgRecharge.setBackgroundResource(R.drawable.ic_recharge);
+
+        imgShopping.setBackgroundResource(R.drawable.ic_shopping_white);
+    }
+
+    void servicesClicked() {
+        layEvents.setBackgroundResource(R.drawable.white_box);
+        layShopping.setBackgroundResource(R.drawable.white_box);
+        layRecharge.setBackgroundResource(R.drawable.white_box);
+
+        layServices.setBackgroundResource(R.drawable.pink_box);
+
+        tvEvents.setTextColor(Color.parseColor("#E4287C"));
+        tvShopping.setTextColor(Color.parseColor("#E4287C"));
+        tvRecharge.setTextColor(Color.parseColor("#E4287C"));
+
+        tvServices.setTextColor(Color.parseColor("#ffffff"));
+
+        imgEvents.setBackgroundResource(R.drawable.ic_events);
+        imgShopping.setBackgroundResource(R.drawable.ic_shopping);
+        imgRecharge.setBackgroundResource(R.drawable.ic_recharge);
+
+        imgServices.setBackgroundResource(R.drawable.ic_services_white);
+    }
+
+    void rechargeClicked() {
+        layServices.setBackgroundResource(R.drawable.white_box);
+        layShopping.setBackgroundResource(R.drawable.white_box);
+        layEvents.setBackgroundResource(R.drawable.white_box);
+
+        layRecharge.setBackgroundResource(R.drawable.pink_box);
+
+        tvServices.setTextColor(Color.parseColor("#E4287C"));
+        tvShopping.setTextColor(Color.parseColor("#E4287C"));
+        tvEvents.setTextColor(Color.parseColor("#E4287C"));
+
+        tvRecharge.setTextColor(Color.parseColor("#ffffff"));
+
+        imgServices.setBackgroundResource(R.drawable.ic_services);
+        imgShopping.setBackgroundResource(R.drawable.ic_shopping);
+        imgEvents.setBackgroundResource(R.drawable.ic_events);
+
+        imgRecharge.setBackgroundResource(R.drawable.ic_recharge_white);
+    }
+
 
     private void getNewsData() {
         if (Utils.isInternetOn()) {
@@ -583,7 +723,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setViewPager(final int length) {
-        viewPagerAdapter = new ViewPagerAdapter(silders, MainActivity.this);
+        viewPagerAdapter = new ViewPagerAdapter(silders, MainActivity.this, "Main");
         mPager.setAdapter(viewPagerAdapter);
 
 //        // Auto start of viewpager
