@@ -1,6 +1,7 @@
 package com.localkartmarketing.localkart.adapter;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,10 +45,12 @@ public class EventBookTicketAdapter extends RecyclerView.Adapter<EventBookTicket
     @Override
     public void onBindViewHolder(@NonNull final EventBookTicketAdapter.MyViewHolder holder, final int position) {
         final EventTicket eventTicket = arrayList.get(position);
-        if (Integer.parseInt(arrayList.get(position).getPrice()) > 0) {
+        if (arrayList.get(position).getRemaining() > 0) {
             holder.tvDesc.setText(con.getResources().getString(R.string.Rs) + " " + arrayList.get(position).getPrice());
         } else {
-            holder.tvDesc.setText(con.getResources().getString(R.string.Rs) + " " + arrayList.get(position).getPrice() + " Sold Out");
+//            holder.tvDesc.setText(con.getResources().getString(R.string.Rs) + " " + arrayList.get(position).getPrice() + " Sold Out");
+            String text = con.getResources().getString(R.string.Rs) + " " + arrayList.get(position).getPrice() + " " + "<font color=#ff0000>Sold Out</font>";
+            holder.tvDesc.setText(Html.fromHtml(text));
         }
         holder.tvName.setText(arrayList.get(position).getName());
         int currentValue = arrayList.get(position).getRemaining();

@@ -67,6 +67,7 @@ public class ManageEventAdapter extends RecyclerView.Adapter<ManageEventAdapter.
             public void onClick(View view) {
                 Intent intent1 = new Intent(con, ManageEventDetailActivity.class);
                 intent1.putExtra("key", "Events");
+                intent1.putExtra("eventId", arrayList.get(position).getEventId());
                 intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 con.startActivity(intent1);
                 ((Activity) con).finish();

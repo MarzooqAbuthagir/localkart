@@ -163,6 +163,7 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_gravity="center"
                         android:src="@drawable/my_business_new" />
 
                     <TextView
@@ -197,6 +198,7 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_gravity="center"
                         android:src="@drawable/subscription_new" />
 
                     <TextView
@@ -231,6 +233,7 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_gravity="center"
                         android:src="@drawable/post_new" />
 
                     <TextView
@@ -265,6 +268,7 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_gravity="center"
                         android:src="@drawable/history_new" />
 
                     <TextView
@@ -299,6 +303,7 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_gravity="center"
                         android:src="@drawable/digital_vcard" />
 
                     <TextView
@@ -333,6 +338,7 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_gravity="center"
                         android:src="@drawable/help_new" />
 
                     <TextView
@@ -367,6 +373,7 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_gravity="center"
                         android:src="@drawable/job" />
 
                     <TextView
@@ -402,6 +409,7 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_gravity="center"
                         android:src="@drawable/ic_ticketnxt" />
 
                     <TextView
@@ -437,6 +445,7 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_gravity="center"
                         android:src="@drawable/ic_ticketnxt" />
 
                     <TextView

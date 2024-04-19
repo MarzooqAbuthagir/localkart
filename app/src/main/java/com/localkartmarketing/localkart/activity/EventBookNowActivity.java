@@ -20,6 +20,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,7 +39,6 @@ import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.adapter.EventBookTicketAdapter;
 import com.localkartmarketing.localkart.model.EventTicket;
 import com.localkartmarketing.localkart.model.UserDetail;
-import com.localkartmarketing.localkart.support.DividerItemDecorator;
 import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
@@ -56,7 +56,7 @@ public class EventBookNowActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "", indexIntent = "";
+    String keyIntent = "", indexIntent = "", eventId = "";
 
     UserDetail userDetail;
     static SharedPreferences mPrefs;
@@ -83,6 +83,7 @@ public class EventBookNowActivity extends AppCompatActivity {
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
         indexIntent = intent.getStringExtra("index");
+        eventId = intent.getStringExtra("eventId");
 
         Window window = getWindow();
 
@@ -121,7 +122,9 @@ public class EventBookNowActivity extends AppCompatActivity {
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(layoutManager);
 
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(EventBookNowActivity.this, R.drawable.new_divider_line));
+//        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(EventBookNowActivity.this, R.drawable.new_divider_line));
+//        recyclerView.addItemDecoration(dividerItemDecoration);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
 
         tvName = findViewById(R.id.tv_name);
@@ -145,6 +148,7 @@ public class EventBookNowActivity extends AppCompatActivity {
                         Intent intent = new Intent(EventBookNowActivity.this, EventPayNowActivity.class);
                         intent.putExtra("key", keyIntent);
                         intent.putExtra("index", indexIntent);
+                        intent.putExtra("eventId", eventId);
                         intent.putExtra("eventName", tvName.getText().toString());
                         intent.putExtra("eventDate", tvDate.getText().toString());
                         intent.putExtra("eventTime", tvTime.getText().toString());
@@ -194,6 +198,7 @@ public class EventBookNowActivity extends AppCompatActivity {
                 Intent intent = new Intent(EventBookNowActivity.this, EventPayNowActivity.class);
                 intent.putExtra("key", keyIntent);
                 intent.putExtra("index", indexIntent);
+                intent.putExtra("eventId", eventId);
                 intent.putExtra("eventName", tvName.getText().toString());
                 intent.putExtra("eventDate", tvDate.getText().toString());
                 intent.putExtra("eventTime", tvTime.getText().toString());
@@ -211,7 +216,7 @@ public class EventBookNowActivity extends AppCompatActivity {
         if (Utils.isInternetOn()) {
             Utils.showProgress(EventBookNowActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventticketavailablity + "?eventid=15", new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventticketavailablity + "?eventid=" + eventId, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -245,7 +250,7 @@ public class EventBookNowActivity extends AppCompatActivity {
                                         object.getString("description"),
                                         object.getString("price"),
                                         object.getInt("remaining"),
-                                        0
+                                        object.getString("order")
                                 );
                                 tickets.add(ticket);
                             }
@@ -329,6 +334,7 @@ public class EventBookNowActivity extends AppCompatActivity {
             intent = new Intent(EventBookNowActivity.this, EventActivity.class);
         } else {
             intent = new Intent(EventBookNowActivity.this, EventDetailActivity.class);
+            intent.putExtra("eventId", eventId);
         }
         intent.putExtra("key", keyIntent);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

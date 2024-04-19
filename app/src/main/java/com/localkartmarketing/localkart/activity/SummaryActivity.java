@@ -51,7 +51,7 @@ public class SummaryActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "";
+    String keyIntent = "", eventId = "";
 
     UserDetail userDetail;
     static SharedPreferences mPrefs;
@@ -77,6 +77,7 @@ public class SummaryActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
+        eventId = intent.getStringExtra("eventId");
 
         Window window = getWindow();
 
@@ -129,6 +130,7 @@ public class SummaryActivity extends AppCompatActivity {
     private void back() {
         Intent intent = new Intent(SummaryActivity.this, ManageEventDetailActivity.class);
         intent.putExtra("key", keyIntent);
+        intent.putExtra("eventId", eventId);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
@@ -138,7 +140,7 @@ public class SummaryActivity extends AppCompatActivity {
         if (Utils.isInternetOn()) {
             Utils.showProgress(SummaryActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventsummary + "?eventid=25", new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventsummary + "?eventid=" + eventId, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 

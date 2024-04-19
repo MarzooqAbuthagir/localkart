@@ -121,6 +121,7 @@ public class EventActivity extends AppCompatActivity {
     ViewPagerAdapter viewPagerAdapter;
     RelativeLayout layBooking;
     NestedScrollView nestedScrollView;
+    TextView tvNoRecords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,6 +183,7 @@ public class EventActivity extends AppCompatActivity {
         imgRecharge = findViewById(R.id.img_view_recharge);
         layBooking = findViewById(R.id.lay_booking);
         nestedScrollView = findViewById(R.id.nestedScrollView);
+        tvNoRecords = findViewById(R.id.tv_no_records);
 
         layEvents.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -607,7 +609,7 @@ public class EventActivity extends AppCompatActivity {
     private void getBannerImages() {
         if (Utils.isInternetOn()) {
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.categoryslider, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Utils.Api + Utils.homeslider, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -672,8 +674,6 @@ public class EventActivity extends AppCompatActivity {
                     Map<String, String> params = new HashMap<>();
                     params.put("stateId", userDetail.getStateId());
                     params.put("districtId", userDetail.getDistrictId());
-                    params.put("categoryId", "1");
-                    params.put("type", keyIntent);
                     System.out.println(Tag + " getBannerImages inputs " + params);
                     return params;
                 }
@@ -768,7 +768,7 @@ public class EventActivity extends AppCompatActivity {
         if (Utils.isInternetOn()) {
             Utils.showProgress(EventActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.mybookings + "?userid=7129&filter=future", new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.mybookings + "?userid=" + userDetail.getId() + "&filter=future", new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -841,7 +841,8 @@ public class EventActivity extends AppCompatActivity {
 
                         } else if (Integer.parseInt(str_result) == 1) {
                             str_message = obj.getString("message");
-                            Toast.makeText(EventActivity.this, str_message, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(EventActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                            layBooking.setVisibility(View.GONE);
                         }
 
                         getEventList();
@@ -915,7 +916,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void getEventList() {
         stateId = Utils.getStateFilter(EventActivity.this).isEmpty() ? userDetail.getStateId() : Utils.getStateFilter(EventActivity.this);
-        districtId = "752";// Utils.getDistrictFilter(EventActivity.this).isEmpty() ? userDetail.getDistrictId() : Utils.getDistrictFilter(EventActivity.this);
+        districtId = Utils.getDistrictFilter(EventActivity.this).isEmpty() ? userDetail.getDistrictId() : Utils.getDistrictFilter(EventActivity.this);
         if (Utils.isInternetOn()) {
             Utils.showProgress(EventActivity.this);
 
@@ -958,6 +959,7 @@ public class EventActivity extends AppCompatActivity {
                             }
 
                             nestedScrollView.setVisibility(View.VISIBLE);
+                            tvNoRecords.setVisibility(View.GONE);
                             System.out.println("Event List size " + eventListData.size());
                             EventAdapter adapter = new EventAdapter(EventActivity.this, eventListData);
                             recyclerView.setAdapter(adapter);
@@ -968,7 +970,10 @@ public class EventActivity extends AppCompatActivity {
 
                         } else if (Integer.parseInt(str_result) == 1) {
                             str_message = obj.getString("message");
-                            Toast.makeText(EventActivity.this, str_message, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(EventActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                            nestedScrollView.setVisibility(View.GONE);
+                            tvNoRecords.setVisibility(View.VISIBLE);
+                            tvNoRecords.setText(str_message);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

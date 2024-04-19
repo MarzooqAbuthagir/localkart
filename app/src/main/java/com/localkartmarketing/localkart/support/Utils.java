@@ -138,6 +138,7 @@ public class Utils {
     public static String businessTCUrl = "https://localkart.app/business-terms-and-conditions.php";
     public static String howItWorksUrl = "https://localkart.app/app/how-it-works.php";
     public static String ticketUrl = "https://localkart.app/events/";
+    public static String eventUrl = "https://localkart.app/portal/events";
 
     public static String customereventlist = "customereventlist";
     public static String eventdetails = "eventdetails";

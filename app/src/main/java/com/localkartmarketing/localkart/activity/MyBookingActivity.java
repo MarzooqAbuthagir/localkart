@@ -1,6 +1,8 @@
 package com.localkartmarketing.localkart.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
@@ -26,9 +28,11 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
 import com.localkartmarketing.localkart.R;
 import com.localkartmarketing.localkart.adapter.MyBookingAdapter;
 import com.localkartmarketing.localkart.model.MyBooking;
+import com.localkartmarketing.localkart.model.UserDetail;
 import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 
@@ -49,9 +53,12 @@ public class MyBookingActivity extends AppCompatActivity {
     String keyIntent = "";
 
     RecyclerView recyclerView;
+    TextView tvNoRecords;
     String str_result = "", str_message = "";
     private ArrayList<MyBooking> bookingData = new ArrayList<MyBooking>();
 
+    UserDetail userDetail;
+    static SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +66,11 @@ public class MyBookingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_booking);
 
         utils = new Utils(MyBookingActivity.this);
+
+        mPrefs = getSharedPreferences("MY_SHARED_PREF", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString("MyObject", "");
+        userDetail = gson.fromJson(json, UserDetail.class);
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
@@ -100,6 +112,8 @@ public class MyBookingActivity extends AppCompatActivity {
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(layoutManager);
 
+        tvNoRecords = findViewById(R.id.tv_no_records);
+
         getBookingList();
     }
 
@@ -107,7 +121,7 @@ public class MyBookingActivity extends AppCompatActivity {
         if (Utils.isInternetOn()) {
             Utils.showProgress(MyBookingActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.mybookings + "?userid=6", new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.mybookings + "?userid=" + userDetail.getId(), new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -124,6 +138,8 @@ public class MyBookingActivity extends AppCompatActivity {
 
                         if (Integer.parseInt(str_result) == 0) {
                             bookingData.clear();
+                            recyclerView.setVisibility(View.VISIBLE);
+                            tvNoRecords.setVisibility(View.GONE);
 
                             JSONArray json = obj.getJSONArray("result");
                             for (int i = 0; i < json.length(); i++) {
@@ -151,7 +167,10 @@ public class MyBookingActivity extends AppCompatActivity {
 
                         } else if (Integer.parseInt(str_result) == 1) {
                             str_message = obj.getString("message");
-                            Toast.makeText(MyBookingActivity.this, str_message, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MyBookingActivity.this, str_message, Toast.LENGTH_SHORT).show();
+                            recyclerView.setVisibility(View.GONE);
+                            tvNoRecords.setVisibility(View.VISIBLE);
+                            tvNoRecords.setText(str_message);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

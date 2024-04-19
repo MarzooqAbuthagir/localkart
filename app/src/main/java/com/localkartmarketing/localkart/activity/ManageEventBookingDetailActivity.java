@@ -64,7 +64,7 @@ public class ManageEventBookingDetailActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "";
+    String keyIntent = "", eventId = "";
     String str_result = "", str_message = "";
 
     TextView tvName, tvDate, tvTime, tvAddress1, tvAddress2, tvAddress3, tvDistrict, tvState, tvTotalQty, tvTotal, tvTickets, tvTotConvFee;
@@ -92,6 +92,7 @@ public class ManageEventBookingDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
+        eventId = intent.getStringExtra("eventId");
 
         Window window = getWindow();
 
@@ -231,7 +232,7 @@ public class ManageEventBookingDetailActivity extends AppCompatActivity {
         if (Utils.isInternetOn()) {
             Utils.showProgress(ManageEventBookingDetailActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventbookingdetails + "?id=25", new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventbookingdetails + "?id="+eventId, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -415,6 +416,7 @@ public class ManageEventBookingDetailActivity extends AppCompatActivity {
     private void back() {
         Intent intent = new Intent(ManageEventBookingDetailActivity.this, ManageEventBookingActivity.class);
         intent.putExtra("key", keyIntent);
+        intent.putExtra("eventId", eventId);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();

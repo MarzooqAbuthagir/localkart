@@ -22,8 +22,7 @@
             android:fontFamily="@font/roboto_regular"
             android:gravity="end"
             android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
+            android:paddingTop="4dp"
             android:text=""
             android:textColor="@color/black"
             android:textSize="14dp" />
@@ -39,6 +38,8 @@
             android:gravity="end"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:text=""
             android:textColor="@color/black"
             android:textSize="14dp" />

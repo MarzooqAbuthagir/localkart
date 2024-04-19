@@ -19,6 +19,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,7 +37,6 @@ import com.localkartmarketing.localkart.model.EventTicket;
 import com.localkartmarketing.localkart.model.GST;
 import com.localkartmarketing.localkart.model.Ticket;
 import com.localkartmarketing.localkart.model.UserDetail;
-import com.localkartmarketing.localkart.support.DividerItemDecorator;
 import com.localkartmarketing.localkart.support.Utils;
 import com.localkartmarketing.localkart.support.VolleySingleton;
 import com.razorpay.Checkout;
@@ -57,7 +57,7 @@ public class EventPayNowActivity extends AppCompatActivity implements PaymentRes
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "", indexIntent = "", eventName = "", eventDate = "", eventTime = "";
+    String keyIntent = "", indexIntent = "", eventId = "", eventName = "", eventDate = "", eventTime = "";
 
     UserDetail userDetail;
     static SharedPreferences mPrefs;
@@ -91,6 +91,7 @@ public class EventPayNowActivity extends AppCompatActivity implements PaymentRes
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
         indexIntent = intent.getStringExtra("index");
+        eventId = intent.getStringExtra("eventId");
         eventName = intent.getStringExtra("eventName");
         eventDate = intent.getStringExtra("eventDate");
         eventTime = intent.getStringExtra("eventTime");
@@ -131,7 +132,7 @@ public class EventPayNowActivity extends AppCompatActivity implements PaymentRes
         TextView tvTime = findViewById(R.id.tv_time);
         TextView tvTotQty = findViewById(R.id.tv_total_qty);
         tvTotal = findViewById(R.id.tv_total);
-        TextView tvEdit = findViewById(R.id.tv_edit);
+//        TextView tvEdit = findViewById(R.id.tv_edit);
         tvTotConvFee = findViewById(R.id.tv_conv_fee_total);
 
         tvName.setText(eventName);
@@ -157,7 +158,8 @@ public class EventPayNowActivity extends AppCompatActivity implements PaymentRes
         recyclerViewConvFee.setNestedScrollingEnabled(false);
         recyclerViewConvFee.setLayoutManager(layoutManager1);
 
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(EventPayNowActivity.this, R.drawable.new_divider_line));
+//        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(EventPayNowActivity.this, R.drawable.new_divider_line));
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
         recyclerViewConvFee.addItemDecoration(itemDecoration);
 
@@ -195,7 +197,15 @@ public class EventPayNowActivity extends AppCompatActivity implements PaymentRes
 
         getConvenienceDetail();
 
-        tvEdit.setOnClickListener(new View.OnClickListener() {
+//        tvEdit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                back();
+//            }
+//        });
+
+        Button btnEdit = findViewById(R.id.btn_edit);
+        btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 back();
@@ -257,14 +267,15 @@ public class EventPayNowActivity extends AppCompatActivity implements PaymentRes
             Utils.showProgress(EventPayNowActivity.this);
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("userId", "6");
-                jsonObject.put("eventId", "15");
+                jsonObject.put("userId", userDetail.getId());
+                jsonObject.put("eventId", eventId);
                 JSONArray bookTicketArray = new JSONArray();
                 for (int i = 0; i < tickets.size(); i++) {
                     JSONObject ticket1 = new JSONObject();
                     ticket1.put("name", tickets.get(i).getName());
                     ticket1.put("price", tickets.get(i).getPrice());
                     ticket1.put("qty", tickets.get(i).getQty());
+                    ticket1.put("order", tickets.get(i).getOrder());
                     bookTicketArray.put(ticket1);
                 }
 //                bookTicketArray.put(tickets);
@@ -312,7 +323,7 @@ public class EventPayNowActivity extends AppCompatActivity implements PaymentRes
                                         ""
                                 );
                                 ticketsConvFee.add(ticket);
-                                total = total + Integer.parseInt(object.getString("total"));
+                                total = total + Double.parseDouble(object.getString("total"));
                             }
                             System.out.println(Tag + "conv fee size==>" + ticketsConvFee.size());
                             TicketAdapter adapter1 = new TicketAdapter(EventPayNowActivity.this, ticketsConvFee);
@@ -377,6 +388,7 @@ public class EventPayNowActivity extends AppCompatActivity implements PaymentRes
 //        Toast.makeText(this, "Payment Success : " + s, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(EventPayNowActivity.this, PaymentStatusActivity.class);
         intent.putExtra("key", keyIntent);
+        intent.putExtra("eventId", eventId);
         intent.putExtra("payStatus", "success");
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -388,6 +400,7 @@ public class EventPayNowActivity extends AppCompatActivity implements PaymentRes
 //        Toast.makeText(this, "Payment Failed due to error : " + s, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(EventPayNowActivity.this, PaymentStatusActivity.class);
         intent.putExtra("key", keyIntent);
+        intent.putExtra("eventId", eventId);
         intent.putExtra("payStatus", "fail");
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

@@ -40,7 +40,7 @@ public class MyBookingAdapter extends RecyclerView.Adapter<MyBookingAdapter.MyVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
 
         holder.tvName.setText(Html.fromHtml(arrayList.get(position).getEventName()));
         holder.tvDate.setText(arrayList.get(position).getEventDate());
@@ -56,6 +56,7 @@ public class MyBookingAdapter extends RecyclerView.Adapter<MyBookingAdapter.MyVi
                 Intent intent = new Intent(con, BookingDetailsActivity.class);
                 intent.putExtra("key", "Events");
                 intent.putExtra("index", "1");
+                intent.putExtra("eventId", arrayList.get(position).getEventId());
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 con.startActivity(intent);
                 ((Activity) con).finish();

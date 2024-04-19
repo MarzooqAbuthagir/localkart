@@ -55,7 +55,7 @@ public class EventDetailActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "";
+    String keyIntent = "", eventId ="";
 
     String str_result = "", str_message = "", mapLink = "";
     private ArrayList<EventTicket> tickets = new ArrayList<EventTicket>();
@@ -66,6 +66,7 @@ public class EventDetailActivity extends AppCompatActivity {
     TextView tvMobile, tvAltMobile, tvWhatsapp, tvEmail;
 
     LinearLayout layBack, layBookNow;
+    TextView tvDescTitle, tvNotesTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
+        eventId = intent.getStringExtra("eventId");
 
         Window window = getWindow();
 
@@ -134,6 +136,8 @@ public class EventDetailActivity extends AppCompatActivity {
         tvAltMobile = findViewById(R.id.tv_alt_mobile);
         tvWhatsapp = findViewById(R.id.tv_whatsapp);
         tvEmail = findViewById(R.id.tv_email);
+        tvDescTitle = findViewById(R.id.tv_desc_title);
+        tvNotesTitle = findViewById(R.id.tv_notes_title);
 
         layBack = findViewById(R.id.lay_back);
         layBookNow = findViewById(R.id.lay_book_now);
@@ -151,6 +155,7 @@ public class EventDetailActivity extends AppCompatActivity {
                 Intent intent1 = new Intent(EventDetailActivity.this, EventBookNowActivity.class);
                 intent1.putExtra("key", keyIntent);
                 intent1.putExtra("index", "1");
+                intent1.putExtra("eventId", eventId);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent1);
                 finish();
@@ -242,7 +247,7 @@ redirect();
         if (Utils.isInternetOn()) {
             Utils.showProgress(EventDetailActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventdetails + "?id=25", new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventdetails + "?id="+eventId, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -270,6 +275,8 @@ redirect();
                             tvTime.setText(json.getString("start_time") + " To " + json.getString("end_time"));
                             tvDesc.setText(Html.fromHtml(json.getString("description")));
                             tvNotes.setText(Html.fromHtml(json.getString("notes")));
+                            tvDescTitle.setText(Html.fromHtml(json.getString("description_title")));
+                            tvNotesTitle.setText(Html.fromHtml(json.getString("notes_title")));
                             tvAddress1.setText(json.getString("address1")+",");
                             tvAddress2.setText(json.getString("address2")+",");
                             tvAddress3.setText(json.getString("address3")+",");

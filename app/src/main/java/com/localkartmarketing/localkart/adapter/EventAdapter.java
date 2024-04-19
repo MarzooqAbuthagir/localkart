@@ -41,7 +41,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
 
         holder.tvName.setText(Html.fromHtml(arrayList.get(position).getEventName()));
         holder.tvDate.setText(arrayList.get(position).getEventDate());
@@ -55,6 +55,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
                 Intent intent1 = new Intent(con, EventBookNowActivity.class);
                 intent1.putExtra("key", "Events");
                 intent1.putExtra("index", "0");
+                intent1.putExtra("eventId", arrayList.get(position).getId());
                 intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 con.startActivity(intent1);
                 ((Activity) con).finish();
@@ -66,6 +67,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
             public void onClick(View view) {
                 Intent intent1 = new Intent(con, EventDetailActivity.class);
                 intent1.putExtra("key", "Events");
+                intent1.putExtra("eventId", arrayList.get(position).getId());
                 intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 con.startActivity(intent1);
                 ((Activity) con).finish();

@@ -51,7 +51,7 @@
                     android:fontFamily="@font/roboto_regular"
                     android:gravity="center"
                     android:padding="6dp"
-                    android:text="Saree Walkathon - 3km - Walk / Run / Jog"
+                    android:text=""
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14dp"
                     android:textStyle="bold" />
@@ -90,7 +90,7 @@
                             android:paddingLeft="5dp"
                             android:paddingTop="10dp"
                             android:paddingBottom="10dp"
-                            android:text="08-10-2023"
+                            android:text=""
                             android:textColor="@color/black"
                             android:textSize="14dp" />
                     </LinearLayout>
@@ -124,7 +124,7 @@
                             android:paddingLeft="5dp"
                             android:paddingTop="10dp"
                             android:paddingBottom="10dp"
-                            android:text="05:30 AM To 09:00 PM"
+                            android:text=""
                             android:textColor="@color/black"
                             android:textSize="14dp" />
                     </LinearLayout>
@@ -162,7 +162,7 @@
                     android:fontFamily="@font/roboto_regular"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:text="4 Tickets"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="14dp"
                     android:textStyle="bold" />
@@ -230,7 +230,7 @@
                         android:fontFamily="@font/roboto_regular"
 
                         android:paddingTop="10dp"
-                        android:text="Hosur Peoples Park,"
+                        android:text=""
                         android:textColor="@color/black"
                         android:textSize="14dp" />
 
@@ -242,7 +242,7 @@
                         android:fontFamily="@font/roboto_regular"
 
                         android:paddingTop="3dp"
-                        android:text="Hosur Peoples Park,"
+                        android:text=""
                         android:textColor="@color/black"
                         android:textSize="14dp" />
 
@@ -254,7 +254,7 @@
                         android:fontFamily="@font/roboto_regular"
 
                         android:paddingTop="3dp"
-                        android:text="Hosur Peoples Park,"
+                        android:text=""
                         android:textColor="@color/black"
                         android:textSize="14dp" />
 
@@ -266,7 +266,7 @@
                         android:fontFamily="@font/roboto_regular"
 
                         android:paddingTop="3dp"
-                        android:text="Krishnagiri - Hosur,"
+                        android:text=""
                         android:textColor="@color/black"
                         android:textSize="14dp" />
 
@@ -279,7 +279,7 @@
 
                         android:paddingTop="3dp"
                         android:paddingBottom="10dp"
-                        android:text="Tamilnadu - 635109."
+                        android:text=""
                         android:textColor="@color/black"
                         android:textSize="14dp" />
 
@@ -501,7 +501,7 @@
                             android:fontFamily="@font/roboto_regular"
                             android:gravity="center"
                             android:padding="10dp"
-                            android:text="4"
+                            android:text=""
                             android:textColor="@color/black"
                             android:textSize="14dp" />
 
@@ -516,7 +516,7 @@
                             android:gravity="end"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
-                            android:text="1386"
+                            android:text=""
                             android:textColor="@color/black"
                             android:textSize="14dp" />
 

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -47,9 +49,40 @@ public class EventScanActivity extends AppCompatActivity {
     CameraSource cameraSource;
     BarcodeDetector barcodeDetector;
 
+    private static final int REQUEST_CAMERA_PERMISSION = 1001;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    REQUEST_CAMERA_PERMISSION);
+        } else {
+            startScanning();
+        }
+
+    }
+
+    private void back() {
+        Intent intent = new Intent(EventScanActivity.this, ManageEventActivity.class);
+        intent.putExtra("key", keyIntent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        back();
+    }
+
+    private void startScanning() {
+//        new IntentIntegrator(this).initiateScan();
+
         setContentView(R.layout.activity_event_scan);
 
         utils = new Utils(EventScanActivity.this);
@@ -95,12 +128,15 @@ public class EventScanActivity extends AppCompatActivity {
         toolBarTitle.setText("Scan");
 
         TextView tvName = findViewById(R.id.tv_name);
-        tvName.setText(eventName);
+        tvName.setText(Html.fromHtml(eventName));
 
         surfaceView = findViewById(R.id.scan);
 
         barcodeDetector = new BarcodeDetector.Builder(EventScanActivity.this).setBarcodeFormats(Barcode.QR_CODE).build();
-        cameraSource = new CameraSource.Builder(EventScanActivity.this, barcodeDetector).setRequestedPreviewSize(640, 480).build();
+        cameraSource = new CameraSource.Builder(EventScanActivity.this, barcodeDetector)
+//                .setAutoFocusEnabled(true)
+//                .setRequestedPreviewSize(640, 480)
+                .build();
 
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
@@ -109,7 +145,7 @@ public class EventScanActivity extends AppCompatActivity {
                     return;
                 }
                 try {
-                    cameraSource.start(surfaceHolder);
+                    cameraSource.start(surfaceView.getHolder());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -122,7 +158,7 @@ public class EventScanActivity extends AppCompatActivity {
 
             @Override
             public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
-
+                cameraSource.stop();
             }
         });
 
@@ -148,19 +184,41 @@ public class EventScanActivity extends AppCompatActivity {
                 }
             }
         });
-    }
 
-    private void back() {
-        Intent intent = new Intent(EventScanActivity.this, ManageEventActivity.class);
-        intent.putExtra("key", keyIntent);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
     }
-
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+//        if (result != null) {
+//            if (result.getContents() == null) {
+//                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+//            } else {
+////                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+//                System.out.println(result.getContents());
+//                Intent intent = new Intent(EventScanActivity.this, ScanResultActivity.class);
+//                intent.putExtra("key", keyIntent);
+//                intent.putExtra("eventName", eventName);
+//                intent.putExtra("eventId", eventId);
+//                intent.putExtra("bookingId", result.getContents());
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                startActivity(intent);
+//                finish();
+//            }
+//        }
+//    }
+//
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        back();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startScanning();
+            } else {
+                Toast.makeText(this, "Camera permission is required for scanning QR code", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

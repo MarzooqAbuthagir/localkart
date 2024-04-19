@@ -156,7 +156,8 @@
                 android:paddingTop="10dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="10dp"
-                android:text="Description"
+                android:id="@+id/tv_desc_title"
+                android:text=""
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="14dp"
                 android:textStyle="bold" />
@@ -186,7 +187,8 @@
                 android:paddingTop="10dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="10dp"
-                android:text="Notes"
+                android:text=""
+                android:id="@+id/tv_notes_title"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="14dp"
                 android:textStyle="bold" />

@@ -64,7 +64,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "", indexIntent = "";
+    String keyIntent = "", indexIntent = "", eventId = "";
 
     boolean isToggle = false;
     ImageView layConvenienceToggle;
@@ -96,6 +96,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
         indexIntent = intent.getStringExtra("index");
+        eventId = intent.getStringExtra("eventId");
 
         Window window = getWindow();
 
@@ -230,7 +231,7 @@ public class BookingDetailsActivity extends AppCompatActivity {
         if (Utils.isInternetOn()) {
             Utils.showProgress(BookingDetailsActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventbookingdetails + "?id=25", new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventbookingdetails + "?id=" + eventId, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -252,10 +253,10 @@ public class BookingDetailsActivity extends AppCompatActivity {
                             tvName.setText(Html.fromHtml(json.getString("event_name")));
                             tvDate.setText(json.getString("event_date"));
                             tvTime.setText(json.getString("event_time"));
-                            tvAddress1.setText(json.getString("address1")+",");
-                            tvAddress2.setText(json.getString("address2")+",");
-                            tvAddress3.setText(json.getString("address3")+",");
-                            tvDistrict.setText(json.getString("district")+",");
+                            tvAddress1.setText(json.getString("address1") + ",");
+                            tvAddress2.setText(json.getString("address2") + ",");
+                            tvAddress3.setText(json.getString("address3") + ",");
+                            tvDistrict.setText(json.getString("district") + ",");
                             tvState.setText(json.getString("state") + " - " + json.getString("pincode"));
                             bookingId = json.getString("bookingid");
                             TextView tvBookingId = findViewById(R.id.tv_booking_id);

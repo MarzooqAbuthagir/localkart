@@ -53,7 +53,7 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:id="@+id/tv_ticket_qty"
-            android:background="@drawable/grey_curve_box"
+            android:background="@drawable/div_curve_box"
             android:fontFamily="@font/roboto_regular"
             android:gravity="center"
             android:padding="10dp"

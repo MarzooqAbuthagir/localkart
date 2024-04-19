@@ -24,7 +24,7 @@ public class PaymentStatusActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "", payStatus = "";
+    String keyIntent = "", payStatus = "", eventId = "";
 
     ImageView imageView;
     TextView tvPayStatus;
@@ -40,6 +40,7 @@ public class PaymentStatusActivity extends AppCompatActivity {
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
         payStatus = intent.getStringExtra("payStatus");
+        eventId = intent.getStringExtra("eventId");
 
         Window window = getWindow();
 
@@ -94,6 +95,7 @@ public class PaymentStatusActivity extends AppCompatActivity {
                 Intent intent = new Intent(PaymentStatusActivity.this, BookingDetailsActivity.class);
                 intent.putExtra("key", keyIntent);
                 intent.putExtra("index", "1");
+                intent.putExtra("eventId", eventId);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();

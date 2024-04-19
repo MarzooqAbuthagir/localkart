@@ -1,6 +1,7 @@
 package com.localkartmarketing.localkart.activity;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -146,7 +148,16 @@ public class ManageBusinessActivity extends AppCompatActivity {
         cardCreateEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Utils.eventUrl));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setPackage("com.android.chrome");
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    // Chrome browser presumably not installed so allow user to choose instead
+                    intent.setPackage(null);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -403,7 +414,8 @@ public class ManageBusinessActivity extends AppCompatActivity {
         if (Utils.isInternetOn()) {
             Utils.showProgress(ManageBusinessActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.checkorgregister + "?useindexId=250", new Response.Listener<String>() {
+            System.out.println(Tag + " get Tickets input "+ userDetail.getId());
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.checkorgregister + "?useindexId="+userDetail.getId(), new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 

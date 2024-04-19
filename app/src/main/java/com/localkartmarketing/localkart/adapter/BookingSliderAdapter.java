@@ -71,6 +71,7 @@ public class BookingSliderAdapter extends PagerAdapter {
                 Intent intent = new Intent(con, BookingDetailsActivity.class);
                 intent.putExtra("key", "Events");
                 intent.putExtra("index", "0");
+                intent.putExtra("eventId", arrayList.get(position).getEventId());
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 con.startActivity(intent);
                 ((Activity) con).finish();

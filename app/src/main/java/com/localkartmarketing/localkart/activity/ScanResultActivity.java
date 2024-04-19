@@ -158,7 +158,7 @@ public class ScanResultActivity extends AppCompatActivity {
         if (Utils.isInternetOn()) {
             Utils.showProgress(ScanResultActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.checkeventbooking + "?userId=6&eventId=" + eventId + "&bookingId="+bookingId , new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.checkeventbooking + "?userId="+userDetail.getId()+"&eventId=" + eventId + "&bookingId="+bookingId , new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 

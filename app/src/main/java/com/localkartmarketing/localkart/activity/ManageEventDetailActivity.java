@@ -55,7 +55,7 @@ public class ManageEventDetailActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "";
+    String keyIntent = "", eventId = "";
 
     String str_result = "", str_message = "", mapLink = "";
     private ArrayList<EventTicket> tickets = new ArrayList<EventTicket>();
@@ -66,6 +66,7 @@ public class ManageEventDetailActivity extends AppCompatActivity {
     TextView tvMobile, tvAltMobile, tvWhatsapp, tvEmail;
 
     LinearLayout laySummary, layBookings;
+    TextView tvDescTitle, tvNotesTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,7 @@ public class ManageEventDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
+        eventId = intent.getStringExtra("eventId");
 
         Window window = getWindow();
 
@@ -132,6 +134,8 @@ public class ManageEventDetailActivity extends AppCompatActivity {
         tvAddress3 = findViewById(R.id.tv_address3);
         tvDistrict = findViewById(R.id.tv_district);
         tvState = findViewById(R.id.tv_state);
+        tvDescTitle = findViewById(R.id.tv_desc_title);
+        tvNotesTitle = findViewById(R.id.tv_notes_title);
 
         tvMobile = findViewById(R.id.tv_mobile);
         tvAltMobile = findViewById(R.id.tv_alt_mobile);
@@ -146,6 +150,7 @@ public class ManageEventDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ManageEventDetailActivity.this, SummaryActivity.class);
                 intent.putExtra("key", "Events");
+                intent.putExtra("eventId", eventId);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
@@ -157,6 +162,7 @@ public class ManageEventDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ManageEventDetailActivity.this, ManageEventBookingActivity.class);
                 intent.putExtra("key", "Events");
+                intent.putExtra("eventId", eventId);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
@@ -248,7 +254,7 @@ public class ManageEventDetailActivity extends AppCompatActivity {
         if (Utils.isInternetOn()) {
             Utils.showProgress(ManageEventDetailActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventdetails + "?id=25", new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventdetails + "?id=" + eventId, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -276,11 +282,13 @@ public class ManageEventDetailActivity extends AppCompatActivity {
                             tvTime.setText(json.getString("start_time") + " To " + json.getString("end_time"));
                             tvDesc.setText(Html.fromHtml(json.getString("description")));
                             tvNotes.setText(Html.fromHtml(json.getString("notes")));
-                            tvAddress1.setText(json.getString("address1")+",");
-                            tvAddress2.setText(json.getString("address2")+",");
-                            tvAddress3.setText(json.getString("address3")+",");
-                            tvDistrict.setText(json.getString("district")+",");
-                            tvState.setText(json.getString("state_name") + " - " + json.getString("pincode")+ ".");
+                            tvDescTitle.setText(Html.fromHtml(json.getString("description_title")));
+                            tvNotesTitle.setText(Html.fromHtml(json.getString("notes_title")));
+                            tvAddress1.setText(json.getString("address1") + ",");
+                            tvAddress2.setText(json.getString("address2") + ",");
+                            tvAddress3.setText(json.getString("address3") + ",");
+                            tvDistrict.setText(json.getString("district") + ",");
+                            tvState.setText(json.getString("state_name") + " - " + json.getString("pincode") + ".");
 
                             tvMobile.setText(json.getString("contact_mobile"));
                             tvAltMobile.setText(json.getString("contact_alt_mobile"));

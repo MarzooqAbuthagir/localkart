@@ -26,6 +26,7 @@
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/curve_box.xml" value="0.2703125" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/curve_layout.xml" value="0.2703125" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/curve_sel.xml" value="0.1915" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/div_curve_box.xml" value="0.1915" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/divider.xml" value="0.121" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/divider_line.xml" value="0.122" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/drawable/edittext_curve_bg.xml" value="0.1915" />
@@ -93,6 +94,7 @@
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_advertise_business3.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_advertise_business5.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_advertise_business6.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_barcode_capture.xml" value="0.25" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_booking_details.xml" value="0.2" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_create_job.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Marzooq/Android Project/LocalKart/app/src/main/res/layout/activity_create_post.xml" value="0.25416666666666665" />

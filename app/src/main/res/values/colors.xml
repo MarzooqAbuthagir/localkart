@@ -30,4 +30,6 @@
     <color name="red">#ff0000</color>
     <color name="green">#129104</color>
     <color name="new_grey">#d9d9d9</color>
+<!--    <color name="div_line">#FFCCCCCC</color>-->
+    <color name="div_line">#e0e0e0</color>
 </resources>

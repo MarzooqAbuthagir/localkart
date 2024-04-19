@@ -52,7 +52,7 @@ public class ManageEventBookingActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar = null;
 
-    String keyIntent = "";
+    String keyIntent = "", eventId = "";
 
     UserDetail userDetail;
     static SharedPreferences mPrefs;
@@ -77,6 +77,7 @@ public class ManageEventBookingActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         keyIntent = intent.getStringExtra("key");
+        eventId = intent.getStringExtra("eventId");
 
         Window window = getWindow();
 
@@ -121,7 +122,7 @@ public class ManageEventBookingActivity extends AppCompatActivity {
         if (Utils.isInternetOn()) {
             Utils.showProgress(ManageEventBookingActivity.this);
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventbookinglist + "?eventid=25", new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, Utils.Api + Utils.eventbookinglist + "?eventid="+eventId, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
@@ -222,6 +223,7 @@ public class ManageEventBookingActivity extends AppCompatActivity {
     private void back() {
         Intent intent = new Intent(ManageEventBookingActivity.this, ManageEventDetailActivity.class);
         intent.putExtra("key", keyIntent);
+        intent.putExtra("eventId", eventId);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();

@@ -33,7 +33,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/btn_pay_now"
+            android:layout_above="@+id/lay_btm"
             android:fillViewport="true">
 
             <androidx.cardview.widget.CardView
@@ -140,8 +140,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#FEE9F3"
-                        android:orientation="horizontal">
+                        android:background="#FEE9F3">
 
 
                         <TextView
@@ -159,7 +158,45 @@
                             android:textSize="14dp"
                             android:textStyle="bold" />
 
-                        <TextView
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/roboto_regular"
+                                android:gravity="center"
+                                android:layout_marginRight="5dp"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:text="QTY"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:textSize="14dp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/roboto_regular"
+                                android:gravity="right"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:text="@string/Rs"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:textSize="14dp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <!--<TextView
                             android:id="@+id/tv_edit"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -173,7 +210,7 @@
                             android:text="Edit"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="14dp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold" />-->
                     </RelativeLayout>
 
                     <androidx.core.widget.NestedScrollView
@@ -193,7 +230,8 @@
                     <RelativeLayout
                         android:id="@+id/rel_con_lay"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -271,7 +309,8 @@
                                 android:paddingRight="10dp"
                                 android:text=""
                                 android:textColor="@color/black"
-                                android:textSize="14dp" />
+                                android:textSize="14dp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -374,13 +413,14 @@
                                 android:layout_alignParentBottom="true"
                                 android:layout_centerInParent="true"
                                 android:layout_gravity="center"
-                                android:background="@drawable/grey_curve_box"
+                                android:background="@drawable/div_curve_box"
                                 android:fontFamily="@font/roboto_regular"
                                 android:gravity="center"
                                 android:padding="10dp"
                                 android:text=""
                                 android:textColor="@color/black"
-                                android:textSize="14dp" />
+                                android:textSize="14dp"
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/tv_total"
@@ -395,7 +435,8 @@
                                 android:paddingRight="10dp"
                                 android:text=""
                                 android:textColor="@color/black"
-                                android:textSize="14dp" />
+                                android:textSize="14dp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -405,15 +446,39 @@
             </androidx.cardview.widget.CardView>
         </ScrollView>
 
-        <Button
-            android:id="@+id/btn_pay_now"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
+        <LinearLayout
+            android:id="@+id/lay_btm"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorPrimaryDark"
-            android:fontFamily="@font/roboto_regular"
-            android:text="Pay Now"
-            android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/btn_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_weight="1"
+                android:background="@drawable/left_button_theme"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Edit"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+
+            <Button
+                android:id="@+id/btn_pay_now"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_weight="1"
+                android:background="@color/colorPrimaryDark"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Pay Now"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

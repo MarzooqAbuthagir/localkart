@@ -11,6 +11,7 @@ public class EventTicket implements Parcelable {
     private String price;
     private int remaining;
     private int qty;
+    private String order;
 
     public EventTicket(String name, String description, String price) {
         this.name = name;
@@ -24,6 +25,14 @@ public class EventTicket implements Parcelable {
         this.price = price;
         this.remaining = remaining;
         this.qty = qty;
+    }
+
+    public EventTicket(String name, String description, String price, int remaining, String  order) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.remaining = remaining;
+        this.order = order;
     }
 
     public EventTicket(String name, String price, int qty) {
@@ -72,12 +81,21 @@ public class EventTicket implements Parcelable {
         this.qty = qty;
     }
 
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
+    }
+
     protected EventTicket(Parcel in) {
         name = in.readString();
         description = in.readString();
         price = in.readString();
         remaining = in.readInt();
         qty = in.readInt();
+        order = in.readString();
     }
 
     public static final Creator<EventTicket> CREATOR = new Creator<EventTicket>() {
@@ -104,5 +122,6 @@ public class EventTicket implements Parcelable {
         parcel.writeString(price);
         parcel.writeInt(remaining);
         parcel.writeInt(qty);
+        parcel.writeString(order);
     }
 }

@@ -65,6 +65,7 @@ public class EventBookingListAdapter extends RecyclerView.Adapter<EventBookingLi
             public void onClick(View view) {
                 Intent intent = new Intent(con, ManageEventBookingDetailActivity.class);
                 intent.putExtra("key", keyIntent);
+                intent.putExtra("eventId", arrayList.get(i).getId());
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 con.startActivity(intent);
